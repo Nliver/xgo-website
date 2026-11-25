@@ -1,0 +1,20 @@
+{
+  "repository": "goplus/xgo",
+  "ref": "main",
+  "files": [
+    "README.md",
+    "doc/docs.md",
+    "doc/xgo-vs-go.md",
+    "doc/spec-mini.md",
+    "doc/fncall.md",
+    "doc/func-closure.md",
+    "doc/goodbye-printf.md",
+    "doc/slice.md",
+    "doc/map.md",
+    "doc/string.md",
+    "doc/struct-vs-tuple.md",
+    "doc/enum.md",
+    "doc/contributing.md",
+    "demo/mixgo/README.md"
+  ]
+}

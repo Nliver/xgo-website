@@ -1,0 +1,69 @@
+name: Review XGo upstream changes
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [upstream-update]
+  schedule:
+    - cron: '17 3 * * *'
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    # Configure the App in the website repository and its fork before enabling writes.
+    if: ${{ vars.SYNC_FORK_REPOSITORY != '' && vars.SYNC_APP_ID != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Resolve fork owner
+        id: fork
+        env:
+          SYNC_FORK_REPOSITORY: ${{ vars.SYNC_FORK_REPOSITORY }}
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const value = process.env.SYNC_FORK_REPOSITORY;
+          if (!/^[\w.-]+\/[\w.-]+$/.test(value)) throw new Error('Invalid fork repository');
+          const [owner, repository] = value.split('/');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `owner=${owner}\nrepository=${repository}\n`);
+          JS
+      - name: Generate source review candidate using trusted default-branch code
+        run: node scripts/sync-upstream.mjs --write
+      - name: Create fork installation token
+        id: fork-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.SYNC_APP_ID }}
+          private-key: ${{ secrets.SYNC_APP_PRIVATE_KEY }}
+          owner: ${{ steps.fork.outputs.owner }}
+          repositories: ${{ steps.fork.outputs.repository }}
+          permission-contents: write
+      - name: Create website review token
+        id: review-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.SYNC_APP_ID }}
+          private-key: ${{ secrets.SYNC_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-pull-requests: write
+      - name: Open a draft PR or preserve the active human review
+        env:
+          SYNC_FORK_REPOSITORY: ${{ vars.SYNC_FORK_REPOSITORY }}
+          SYNC_BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          SYNC_FORK_TOKEN: ${{ steps.fork-token.outputs.token }}
+          GH_TOKEN: ${{ steps.review-token.outputs.token }}
+        run: node scripts/sync-upstream-pr.mjs
