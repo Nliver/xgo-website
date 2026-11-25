@@ -1,139 +1,96 @@
 # XGo Documentation
 
-The XGo documentation site uses [Next.js](https://nextjs.org/) and
-[Fumadocs](https://fumadocs.dev/). The first edition adapts professional English
-content from the [XGo repository](https://github.com/goplus/xgo). The website
-repository is [Nliver/xgo-website](https://github.com/Nliver/xgo-website).
+[![Documentation CI workflow](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
+[![Code coverage](https://codecov.io/gh/Nliver/xgo-website/branch/main/graph/badge.svg)](https://app.codecov.io/gh/Nliver/xgo-website)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-## Development
+This repository contains the tutorials, language reference, and website for
+[XGo](https://github.com/goplus/xgo), a Go-compatible programming language.
+The project's goal is to make these guides available in multiple languages.
+The current edition is in English.
 
-Use the latest Node.js 22 LTS patch release to match CI and install the locked dependencies.
+## Read the docs
 
-```bash
+- **New to XGo?** [Install XGo](content/docs/getting-started/installation.mdx) and [run your first program](content/docs/getting-started/hello-world.mdx).
+- **Looking up syntax?** Browse the [language reference](content/docs/reference/language.mdx) or look up [strings, slices, maps, and structs](content/docs/reference/types.mdx).
+- **Coming from Go?** [Build a project with Go and XGo](content/docs/interoperability/go.mdx).
+
+## Run locally
+
+Use Git, the latest Node.js 22.x release, and npm. Clone the
+website repository and enter its root directory.
+
+```sh
+git clone https://github.com/Nliver/xgo-website.git
+cd xgo-website
+```
+
+From the repository root containing `package.json`, start the development server.
+
+```sh
 npm ci
 npm run dev
 ```
 
-Open http://localhost:3000 in your browser. Configure `NEXT_PUBLIC_SITE_URL` with
-the public site origin in deployment environments. The deployment platform and
-production domain remain to be selected.
+Open the [documentation](http://localhost:3000/docs). Edit an MDX file in
+[content/docs](content/docs) to see your changes in the browser.
 
-## Validation
+To preview a production build, stop the development server with Ctrl+C and run
+the following commands from the same directory.
 
-```bash
-npm run lint
-npm run types:check
-npm run check:docs
-npm run test:coverage
-npm run check:examples
+```sh
 npm run build
+npm start
 ```
 
-The example checker discovers programs throughout the documentation. Give each
-runnable code block a filename, such as `title="scores.xgo"`, and follow it
-with a `text` block containing the expected output. For a mixed Go/XGo
-example, put both named source blocks before the output. Add the page to
-`content/sources.json` so CI can select its compiler revision.
+## Architecture
 
-Install XGo locally or set `XGO_BIN` to an absolute executable path. CI groups
-runnable pages by their verified and candidate source revisions, builds the
-CLI using each revision's `cmd/go.mod`, and checks the output of each program.
+The site is a TypeScript application built with Next.js and Fumadocs. Authors
+write pages in MDX (Markdown with React components) and set their order with
+`meta.json` files. Fumadocs loads the pages into one collection. The Next.js
+App Router uses that collection to render the site, serve full-text search,
+and export the same pages as Markdown. Each page links to the upstream files
+and Git revision used to write it.
 
-### Test coverage
-
-Run `npm run test:coverage` to run the website tests and the documentation and
-upstream-sync regression suites. The combined report at `coverage/lcov.info`
-includes pages, route handlers, components, shared libraries, the request proxy,
-and production maintenance scripts. Unexecuted source files count toward the
-total. MDX example execution has its own CI job.
-
-Documentation CI uploads the report on pull requests and pushes to `main`.
-Maintainers should enable the website repository in Codecov and configure its
-repository upload token as the GitHub Actions secret `CODECOV_TOKEN`. Codecov
-supports tokenless uploads from fork pull requests targeting a public repository.
-After the first main-branch upload, check the commit SHA in the dashboard and
-verify patch coverage on a pull request that changes executable lines.
-Upload errors fail CI. Project and patch percentages are informational.
-[Website coverage on Codecov](https://app.codecov.io/gh/Nliver/xgo-website)
-
-## Content and source records
-
-- `app/`, `components/`, and `lib/` contain the site implementation.
-- `content/docs/` contains the English MDX pages.
-- `content/sources.json` maps every page to its source revision and files.
-- `content/glossary.json` contains terminology rules.
-- `scripts/` contains validation and upstream synchronization tools.
-- `upstream-sync/` contains the tracked source manifest and review candidates.
-
-This edition follows a fixed XGo source snapshot and tracks 23 source files. Page source records retain
-its Apache 2.0 license and copyright information. Content remains in technical
-review until human technical and English editorial review is complete.
-
-## Review upstream changes
-
-Preview source changes from XGo without writing candidate files.
-
-```bash
-node scripts/sync-upstream.mjs
+```text
+xgo-website/
+├── content/
+│   ├── docs/                  # MDX tutorials, reference pages, and navigation
+│   ├── glossary.json          # Documentation terminology
+│   └── sources.json           # Upstream files and revisions for each page
+├── app/                       # Next.js routes
+│   ├── (home)/                # Landing page
+│   ├── docs/                  # Documentation pages and layout
+│   ├── api/search/            # Full-text search
+│   └── llms.mdx/              # Per-page Markdown exports
+├── components/mdx.tsx         # Components available in MDX
+├── lib/source.ts              # Shared Fumadocs content collection
+├── proxy.ts                   # HTML and Markdown content negotiation
+├── scripts/                   # Content checks, examples, and upstream sync
+├── tests/                     # Site tests and coverage reporting
+├── upstream-sync/             # Upstream baseline and change reports
+└── .github/workflows/         # CI and upstream review workflows
 ```
 
-Generate the source manifest, affected-page index, review report, and source
-diffs in `upstream-sync/`. Explicitly mapped code snippets can also produce
-changes in the English MDX pages and candidate metadata in `content/sources.json`.
+## Check a change
 
-```bash
-node scripts/sync-upstream.mjs --write
-```
-
-The committed baseline records the pinned source revision with no pending
-changes. To initialize a baseline for a newly verified snapshot, use the
-explicit initialization command. It requires the resolved upstream SHA, all
-verified page revisions, and any existing baseline SHA to agree, with no pending
-page candidates.
-
-```bash
-node scripts/sync-upstream.mjs --initialize --write
-```
-
-Use `--write` for routine synchronization.
-
-The generator reads the source allowlist and page mappings, resolves upstream
-to a full SHA, and checks history, file availability, and baseline hashes before
-writing a candidate. `upstreamSnippets` mappings identify a source heading and
-code block and a matching `upstream-snippet` marker in an MDX page. The generator
-replaces that code fragment when the local fragment still matches its verified
-source. A manual edit to the fragment stops generation for human review.
-
-The verified `sourceCommit` stays unchanged. Affected pages receive
-`candidateSourceCommit` and `candidateChangedSources`. A maintainer reviews the
-source changes, updates the English prose and examples, runs validation, and
-completes technical and editorial review. For each accepted page, set its
-`sourceCommit` to the candidate SHA, update `sourceCheckedAt`, and remove both
-candidate fields before merging.
-
-The GitHub workflow supports manual dispatch, the `upstream-update`
-`repository_dispatch` event, and a daily schedule. The upstream event sender
-still requires configuration.
-
-The current Git `origin` points to `Nliver/xgo-website`. A website `upstream`
-remote and the dedicated synchronization fork have not been configured. To
-enable draft PR creation, configure these repository values.
-
-| Setting | Purpose |
+| Command | What it checks |
 | --- | --- |
-| Variable `SYNC_FORK_REPOSITORY` | A direct fork of this website repository in `owner/repository` form |
-| Variable `SYNC_APP_ID` | The GitHub App installed on the website repository and fork |
-| Secret `SYNC_APP_PRIVATE_KEY` | The App private key stored in GitHub Secrets |
+| `npm run check:docs` | Page structure, navigation, links, terminology, and source records. |
+| `npm run check:examples` | Runs the tutorial programs with XGo and compares their output with the docs. Install XGo or set `XGO_BIN` to its executable for this check. |
+| `npm run lint` and `npm run types:check` | ESLint rules and TypeScript types. |
+| `npm run test:coverage` | Site and maintenance script tests. Writes the combined report to `coverage/lcov.info`. |
 
-The App needs contents write access on the fork and pull requests write access
-on the website repository. The workflow obtains separate installation tokens
-for those operations. Each source candidate uses a fingerprinted fork branch,
-`chore/xgo-upstream-<candidateId>`. When a synchronization PR is already open,
-the workflow preserves it and waits for human review. Closing a PR suppresses
-that exact candidate. A later candidate can open a new draft PR after the open
-review is complete. Source deletion, history inconsistencies, and conflicting
-branch contents require manual handling. The workflow executes trusted
-default-branch code. PRs require human review and manual merge.
+## License
 
-Remote CI and draft PR creation remain to be verified after repository
-configuration.
+This repository is licensed under the [Apache License 2.0](LICENSE).
+
+## Core frameworks
+
+The main framework versions are pinned in `package.json` and
+[package-lock.json](package-lock.json).
+
+- Next.js `16.4.6`
+- React `19.3.1`
+- Fumadocs Core and UI `16.19.7`, with Fumadocs MDX `15.6.4`
+- Tailwind CSS `4.3.5`
