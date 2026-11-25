@@ -1,0 +1,70 @@
+---
+title: Go interoperability
+description: Import a Go package and call functions across Go and XGo files.
+---
+
+XGo can use Go packages and mix Go and XGo files in one package.
+
+## Import a Go package
+
+```go title="package.xgo"
+import "fmt"
+
+fmt.Println("Hello from Go")
+```
+
+Run `xgo run package.xgo`.
+
+```text
+Hello from Go
+```
+
+XGo permits omitting `package main` and `func main` in this program.
+
+## Mix Go and XGo files
+
+Create a directory for the example and initialize a module.
+
+```bash
+mkdir mixgo
+cd mixgo
+xgo mod init example.com/mixgo
+```
+
+Create `a.go` with a Go function named `p`.
+
+```go title="a.go"
+package main
+
+import "fmt"
+
+func p(a interface{}) {
+    sayMix()
+    fmt.Println("Hello,", a)
+}
+```
+
+Create `b.xgo` in the same directory.
+
+```go title="b.xgo"
+func sayMix() {
+    println "Mix Go and XGo"
+}
+
+p "world"
+```
+
+The XGo code calls the Go function `p`. That function calls `sayMix`, which is defined in the XGo file.
+
+Run the whole directory.
+
+```bash
+xgo run .
+```
+
+```text
+Mix Go and XGo
+Hello, world
+```
+
+Use [the language reference](/docs/reference/language) to find the upstream specifications and focused syntax guides.

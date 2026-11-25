@@ -1,0 +1,86 @@
+---
+title: Handle errors
+description: Parse numeric input, return conversion errors, and provide a fallback value.
+---
+
+Suppose you need to add two numbers that arrive as strings. If one contains a typo, should the caller see an error, or should the calculation use zero? Write both versions and compare their output.
+
+Before you start, [install XGo](/docs/getting-started/installation). Create an empty directory for the example files and run the commands from that directory.
+
+XGo provides error-wrapping expressions for function calls that return a value and an error.
+
+| Expression | Behavior when the call returns an error |
+| --- | --- |
+| `expr?` | Return from the surrounding function with the error. |
+| `expr?:value` | Use `value` as the result. |
+| `expr!` | Panic. |
+
+When the call succeeds, each expression produces the returned value.
+
+## Return a conversion error
+
+Create `add-input.xgo`. The Go standard library function `strconv.Atoi` converts a string to an integer and returns an error if the conversion fails.
+
+```go title="add-input.xgo"
+import "strconv"
+
+func add(x, y string) (int, error) {
+    return strconv.Atoi(x)? + strconv.Atoi(y)?, nil
+}
+
+sum, err := add("100", "23")
+if err == nil {
+    echo "Total:", sum
+}
+
+sum, err = add("10", "abc")
+if err != nil {
+    echo "Enter two valid integers."
+}
+
+echo "Known valid total:", add("100", "23")!
+```
+
+Run `xgo run add-input.xgo`.
+
+```text
+Total: 123
+Enter two valid integers.
+Known valid total: 123
+```
+
+The `add` function returns an integer and an error. Each `?` checks the error from `strconv.Atoi`. If a conversion fails, `add` returns immediately with that error. If both conversions succeed, it returns their sum and `nil`.
+
+The caller checks `err` to decide what to print. The second call passes `"abc"`, which cannot be converted to an integer, so the program prints a message for invalid input.
+
+The final call uses `!` to extract the result from a call with known valid inputs. If that call returned an error, `!` would panic. Use an error check when the caller needs to handle invalid input, as the second call does.
+
+## Substitute a fallback value
+
+For a calculation that treats invalid input as zero, replace `?` with `?:0`. This version returns a single integer because it handles conversion errors inside the function.
+
+Create `add-fallback.xgo`.
+
+```go title="add-fallback.xgo"
+import "strconv"
+
+func addSafe(x, y string) int {
+    return strconv.Atoi(x)?:0 + strconv.Atoi(y)?:0
+}
+
+echo "Both valid:", addSafe("100", "23")
+echo "One invalid:", addSafe("10", "abc")
+echo "Both invalid:", addSafe("abc", "def")
+```
+
+Run `xgo run add-fallback.xgo`.
+
+```text
+Both valid: 123
+One invalid: 10
+Both invalid: 0
+```
+
+Each `?:0` applies to one conversion. In the second call, `"10"` becomes `10` and `"abc"` contributes the fallback `0`. The function adds those values and returns `10`. It gives the caller a total without reporting which input failed.
+
+Continue with [Types and values](/docs/reference/types) to work with strings, collections, and structs.
