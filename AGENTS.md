@@ -1,0 +1,39 @@
+# XGo documentation site
+
+This repository publishes XGo tutorials and a language reference. Write pages and interface text for the English edition in English. The site uses Next.js App Router, React, TypeScript, Fumadocs, and Tailwind CSS.
+
+## Working locally
+
+Use an existing checkout for questions and reviews. If the expected source files are missing, run `git status -sb` and `git worktree list` to locate the relevant checkout. Check its branch and local changes before editing.
+
+Use npm with the latest stable Node.js release (minimum version 26.0.0). Run `npm ci` from the directory containing `package.json` to install dependencies, then `npm run dev` to preview the site at `/docs`. Preserve the lockfile. Edit source files and let the tools generate `.next/`, `.source/`, `coverage/`, and `next-env.d.ts`.
+
+## Writing pages and examples
+
+- Put pages in `content/docs/`. For a new page, supply a title and description, place it in the appropriate `meta.json` navigation list, and record its upstream sources in `content/sources.json`. When moving a page, update incoming links, navigation entries, and its source record together.
+- Start each tutorial with a task the reader can complete. Give the required files, commands, and expected result. Keep detailed semantics and limitations in the reference page that owns the topic and link to it from the tutorial. Use the terms in `content/glossary.json`.
+- For examples covered by `npm run check:examples`, give each source block a filename such as `title="hello.xgo"`. Follow each standalone XGo program with its expected output in a `text` block. For a mixed Go and XGo project, group its named source blocks before the shared output block. Verify any changed shell commands separately. Preserve paired `upstream-snippet` markers and their identifiers when editing synchronized excerpts.
+
+## Verifying upstream changes
+
+- Check language and toolchain claims against the revision recorded in `content/sources.json`. A page inherits the top-level `sourceCommit` unless it specifies its own. For new syntax, check the semantic implementation or run an example at that revision. For ecosystem tools such as LLGo or SPX, identify the tool, prerequisites, and source for the behavior described.
+- A `candidateSourceCommit` identifies a revision awaiting review. Use `upstream-sync/report.md` to inspect the source changes, affected pages, and examples. After human technical and English editorial review, set each approved page's `sourceCommit` to its candidate revision, update `sourceCheckedAt`, and remove its `candidateSourceCommit` and `candidateChangedSources` fields.
+
+## Customizing the site
+
+- Trace the target page's imports and MDX component mapping in `components/mdx.tsx` to find the implementation to customize. For imports from `fumadocs-ui`, check the dependency mapping in `package.json`. It currently resolves to `@fumadocs/base-ui`.
+- Routes live in `app/`, shared layout options in `lib/layout.shared.tsx`, and global styles in `app/global.css`. Pages, search, and Markdown exports share the content collection in `lib/source.ts`. For URL changes, check the route settings in `lib/shared.ts`, rewrites in `next.config.mjs`, and content negotiation in `proxy.ts`. Verify the HTML page, the explicit `.md` URL, and the page requested with `Accept: text/markdown`.
+- Preview layout changes on the affected page at desktop and narrow widths. Exercise changed search, navigation, and copy controls with a keyboard. Give icon-only controls accessible names and keep keyboard focus visible. Check keyboard access to scrollable code blocks and reduced-motion preferences when changing those features.
+
+## Choosing checks
+
+| Change | Checks |
+| --- | --- |
+| Pages, links, navigation, terminology, or source records | `npm run check:docs` |
+| Runnable tutorial examples or expected output | `npm run check:examples` with XGo built from the documented revision. Set `XGO_BIN` to select the executable. |
+| Components, routes, or shared TypeScript | `npm run lint` and `npm run types:check`. Use `npm run test:site` for site behavior. |
+| Documentation checker or upstream synchronization | `npm run test:docs` or `npm run test:sync`, respectively |
+| MDX compilation, site configuration, or production routing | `npm run build` |
+| Coverage collection or reporting | `npm run test:coverage` and inspect `coverage/lcov.info` |
+
+For a behavior fix, identify a case that fails before the change. Add it to the relevant suite if existing tests miss it. Verify reader-facing fixes through the affected page, search, or export endpoint. Report which checks ran and identify any examples that still need verification with the documented XGo revision. See `package.json` for script definitions and `.github/workflows/ci.yml` for the full CI workflow.
