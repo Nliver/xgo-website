@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getPageImageUrl } from '@/lib/shared';
+import { getPageImageUrl, homePaths } from '@/lib/shared';
 
 const description = 'Install XGo, run your first program, and learn how XGo works with Go.';
 const image = getPageImageUrl({ slugs: [] }).url;
 export const metadata: Metadata = {
-  alternates: { canonical: '/' },
+  alternates: { canonical: homePaths.en, languages: homePaths },
   description,
   openGraph: { type: 'website', url: '/', title: 'XGo Documentation', description, images: [image] },
   twitter: { card: 'summary_large_image', title: 'XGo Documentation', description, images: [image] },
