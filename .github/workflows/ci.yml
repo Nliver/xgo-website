@@ -27,6 +27,7 @@ jobs:
       - run: npm run types:check
       - run: npm run check:docs
       - run: npm run test:docs
+      - run: npm run test:sync
       - run: npm run build
 
   examples:

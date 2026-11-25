@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 3,
+  "generatorVersion": 3,
+  "repository": "goplus/xgo",
+  "ref": "main",
+  "commit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+  "sourceUpdatedAt": "2026-11-24T10:16:09+08:00",
+  "files": [
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "sha256": "25fb6caf4b808ace850528f7e18007ee37cba04a00f55b58d27371a4b0abfc7b",
+      "bytes": 5217,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/CODE_OF_CONDUCT.md"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "0a15c7f1df742af0cb5cbe168a0327fb46cb105c1bf8d7fd4f10a71f9f408fb0",
+      "bytes": 11347,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/LICENSE"
+    },
+    {
+      "path": "README.md",
+      "sha256": "21479c02a73c4ac18e947d4b8522063ab8ef5b0f545f49333387d869d559af04",
+      "bytes": 16140,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/README.md"
+    },
+    {
+      "path": "all.bash",
+      "sha256": "3050d47fe017e2f908175d1a375e0a7a8ac43aaa5ab143a7afb51676bd584f70",
+      "bytes": 702,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/all.bash"
+    },
+    {
+      "path": "all.bat",
+      "sha256": "595ff3787ed90dea82cb75c3afa8912e1972fbd0b5ec96a718e383227e80628c",
+      "bytes": 51,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/all.bat"
+    },
+    {
+      "path": "cmd/go.mod",
+      "sha256": "2adaf498ca757a01b607520b821a3f3a23e4c63b6c1e1c21f6117bbcc1a9524e",
+      "bytes": 501,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/cmd/go.mod"
+    },
+    {
+      "path": "cmd/internal/mod/init.go",
+      "sha256": "ed23d12e524c1df853bbea62e768d7ffcac653aef1d7a7ac62cb9f9e570587e6",
+      "bytes": 2539,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/cmd/internal/mod/init.go"
+    },
+    {
+      "path": "demo/mixgo/README.md",
+      "sha256": "5a841c3f4d87868a15915ea4c398098dcbf497b56c1a0a2e6fa1d2aca2e9bd41",
+      "bytes": 727,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/demo/mixgo/README.md"
+    },
+    {
+      "path": "doc/contributing.md",
+      "sha256": "9bfef6ac29029b3825ff6a765fa4bd0181d5c4b33e033ec7d20bb701dd48d594",
+      "bytes": 8660,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/contributing.md"
+    },
+    {
+      "path": "doc/docs.md",
+      "sha256": "2c170172b0927ab06be9bb4b040e78170c031f91555e9cf58d07114b393c3255",
+      "bytes": 36618,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/docs.md"
+    },
+    {
+      "path": "doc/enum.md",
+      "sha256": "262bd9c822a8e3daa244f123eb738483b6b3a40884ab74e782b0982ad526b17d",
+      "bytes": 5409,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/enum.md"
+    },
+    {
+      "path": "doc/fncall.md",
+      "sha256": "be15824f6810512bca6a9f2df3b70d21ba8418192dd8ca9748fab3ae30cb2505",
+      "bytes": 9902,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/fncall.md"
+    },
+    {
+      "path": "doc/func-closure.md",
+      "sha256": "c3d05d9fff9c981180abf0bb0e3f4ec843bf0c04ebde7a160f87e5335cfff600",
+      "bytes": 12997,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/func-closure.md"
+    },
+    {
+      "path": "doc/goodbye-printf.md",
+      "sha256": "9db67ce3573b4ebd3ef10e57267c8afa0b6664dac2e9c3330b9cf7c8b134510a",
+      "bytes": 1438,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/goodbye-printf.md"
+    },
+    {
+      "path": "doc/map.md",
+      "sha256": "33e5caf33b2fbdfcf4bf1c687b1ae93664f43ca686f3a5b82373ecf9f38e0f2e",
+      "bytes": 15416,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/map.md"
+    },
+    {
+      "path": "doc/slice.md",
+      "sha256": "e5f202cd8735d5d7d456ac2ba596e78a365bd122d917d23e4b80c4046410df10",
+      "bytes": 20121,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/slice.md"
+    },
+    {
+      "path": "doc/spec-mini.md",
+      "sha256": "b582ea991b11e6f4da19ffcdfcdc488bdd07d28fd5ac4a5aa3e48297a335e09d",
+      "bytes": 141254,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/spec-mini.md"
+    },
+    {
+      "path": "doc/spec.md",
+      "sha256": "d306821387d1355a3b898e5f84cbea0645210de9dd41063cff7e1f06112c01a7",
+      "bytes": 12959,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/spec.md"
+    },
+    {
+      "path": "doc/string.md",
+      "sha256": "2c3b1010dffc134a777e0efd9f4e1a191b09d79062e88580633fdfbf48491706",
+      "bytes": 16783,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/string.md"
+    },
+    {
+      "path": "doc/struct-vs-tuple.md",
+      "sha256": "3ab3d02f5c737fb47395fece35a0e990c1a0f951a68efc46fb604397eaccfec9",
+      "bytes": 7794,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/struct-vs-tuple.md"
+    },
+    {
+      "path": "doc/xgo-vs-go.md",
+      "sha256": "cfe4fd26266f6da94fa7931b207df6837aeaae78ff4f0b85d791e2ccf1adecbe",
+      "bytes": 3931,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/xgo-vs-go.md"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "502df53e7435b810bbc89707642fb256d438d4309e6429262ffec9c307e3a979",
+      "bytes": 375,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/go.mod"
+    },
+    {
+      "path": "x/gocmd/gocmd.go",
+      "sha256": "dafe3d3e24557a3896bb50024f16d2ad90d48390928ce8e9a856307ad9dcccf1",
+      "bytes": 2596,
+      "url": "https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/x/gocmd/gocmd.go"
+    }
+  ]
+}
