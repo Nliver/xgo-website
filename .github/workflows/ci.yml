@@ -14,10 +14,10 @@ jobs:
       example-revisions: ${{ steps.sources.outputs.revisions }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
         with:
-          node-version: 22
+          node-version: lts/*
           cache: npm
       - run: npm ci
       - name: Read documentation example revisions
@@ -31,12 +31,12 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7.1.0
         with:
-          node-version: 22
+          node-version: lts/*
           cache: npm
       - run: npm ci
       - run: npm run test:coverage
@@ -56,22 +56,22 @@ jobs:
         revision: ${{ fromJSON(needs.validate.outputs.example-revisions) }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7.1.0
         with:
-          node-version: 22
+          node-version: lts/*
           cache: npm
       - run: npm ci
       - name: Check out the documented XGo revision
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           repository: goplus/xgo
           ref: ${{ matrix.revision }}
           path: .ci/xgo
           persist-credentials: false
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7.1.0
         with:
           go-version-file: .ci/xgo/cmd/go.mod
           cache-dependency-path: |
