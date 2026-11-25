@@ -17,15 +17,16 @@ The current edition is in English.
 
 ## Run locally
 
-Use Git, the latest Node.js 22.x release, and npm. Clone the
-website repository and enter its root directory.
+Install Git and the latest Node.js LTS release. Node.js includes npm.
+Clone the website repository and enter its root directory.
 
 ```sh
 git clone https://github.com/Nliver/xgo-website.git
 cd xgo-website
 ```
 
-From the repository root containing `package.json`, start the development server.
+If you use nvm, run nvm install --lts and nvm use --lts.
+Install the dependencies and start the development server.
 
 ```sh
 npm ci
