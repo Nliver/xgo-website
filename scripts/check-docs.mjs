@@ -34,8 +34,15 @@ function listFiles(directory) {
 }
 
 function pageUrl(file) {
-  const slug = file.replace(/\.mdx?$/, '').replace(/(^|\/)index$/, '');
-  return `/docs${slug ? `/${slug.replace(/\/$/, '')}` : ''}`;
+  const { slug, locale } = pageIdentity(file);
+  const pathname = slug.replace(/(^|\/)index$/, '').replace(/\/$/, '');
+  return `${locale === 'en' ? '' : `/${locale}`}/docs${pathname ? `/${pathname}` : ''}`;
+}
+
+function pageIdentity(file) {
+  const name = file.replace(/\.(mdx?|json)$/, '');
+  const locale = name.match(/\.(en|zh-CN)$/)?.[1] ?? 'en';
+  return { slug: name.replace(/\.(en|zh-CN)$/, ''), locale };
 }
 
 function nodeText(node) {
@@ -91,7 +98,8 @@ export function checkDocs(root) {
     const relative = path.relative(root, file).replaceAll(path.sep, '/');
     const url = pageUrl(localPath);
     const fail = (message) => report(relative, message);
-    if (!localPath.replace(/\.mdx?$/, '').split('/').every((part) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(part))) fail('slug must use lowercase words separated by hyphens');
+    const { slug, locale } = pageIdentity(localPath);
+    if (!slug.split('/').every((part) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(part))) fail('slug must use lowercase words separated by hyphens');
     if (pages.has(url)) fail(`duplicate URL ${url}`);
     let page;
     try { page = readPage(file); } catch (error) { fail(error.message); continue; }
@@ -109,7 +117,7 @@ export function checkDocs(root) {
     }
     checkFences(body, fail);
     const prose = collectNodes(tree, (node) => node.type === 'text').map(nodeText).join('\n');
-    if (/[\u4e00-\u9fff]/u.test(prose)) fail('Chinese prose detected in the English edition');
+    if (locale === 'en' && /[\u4e00-\u9fff]/u.test(prose)) fail('Chinese prose detected in the English edition');
     for (const term of glossary.terms ?? []) {
       for (const forbidden of term.forbidden ?? []) {
         const escaped = forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -127,6 +135,12 @@ export function checkDocs(root) {
       if (typeof metadata.applicableVersion !== 'string' || !metadata.applicableVersion.trim()) fail('missing applicableVersion');
       if (metadata.sourceCommit && !shaPattern.test(metadata.sourceCommit)) fail('invalid sourceCommit override');
       if (metadata.sourceCheckedAt && !validDate(metadata.sourceCheckedAt)) fail('invalid sourceCheckedAt override');
+      if (metadata.locale !== undefined && metadata.locale !== locale) fail('source locale does not match the page locale');
+      if (locale !== 'en') {
+        const original = `content/docs/${slug}.mdx`;
+        if (metadata.translationOf !== original || !manifest.pages[original]) fail('translationOf must reference the corresponding English page');
+        if (!['pending', 'reviewed'].includes(metadata.translationReviewStatus)) fail('invalid translationReviewStatus');
+      }
       if (metadata.candidateSourceCommit !== undefined && !shaPattern.test(metadata.candidateSourceCommit)) fail('invalid candidateSourceCommit');
       const sourcePaths = [metadata.sourcePath, ...(Array.isArray(metadata.additionalSourcePaths) ? metadata.additionalSourcePaths : [])];
       if (metadata.candidateChangedSources !== undefined && (!Array.isArray(metadata.candidateChangedSources) || !metadata.candidateChangedSources.every((source) => validSourcePath(source) && [...sourcePaths, manifest.licensePath].includes(source)))) fail('invalid candidateChangedSources');
@@ -178,7 +192,7 @@ export function checkDocs(root) {
         targetPath = pageFiles.get(targetFile) ?? targetPath;
       }
       if (href.startsWith('#')) targetPath = url;
-      if (targetPath === '/docs' || targetPath.startsWith('/docs/')) {
+      if (/^(?:\/zh-CN)?\/docs(?:\/|$)/.test(targetPath)) {
         const target = pages.get(targetPath);
         if (!target) report(page.relative, `internal link points to missing page ${href}`);
         else if (destination.hash && !target.anchors.has(decodeURIComponent(destination.hash.slice(1)))) report(page.relative, `internal link points to missing heading ${href}`);
@@ -189,8 +203,9 @@ export function checkDocs(root) {
     }
   }
 
-  for (const file of allFiles.filter((file) => path.basename(file) === 'meta.json')) {
+  for (const file of allFiles.filter((file) => /^meta(?:\.(?:en|zh-CN))?\.json$/.test(path.basename(file)))) {
     const relative = path.relative(root, file).replaceAll(path.sep, '/');
+    const { locale } = pageIdentity(file);
     let meta;
     try { meta = JSON.parse(fs.readFileSync(file, 'utf8')); } catch { report(relative, 'invalid JSON'); continue; }
     if (typeof meta.title !== 'string' || !meta.title.trim()) report(relative, 'missing navigation title');
@@ -199,8 +214,9 @@ export function checkDocs(root) {
       if (typeof entry !== 'string') { report(relative, 'navigation entries must be strings'); continue; }
       if (entry === '...' || entry.startsWith('---') || entry.startsWith('[')) continue;
       const target = path.resolve(path.dirname(file), entry.replace(/^!/, '').replace(/\/\*$/, ''));
+      const suffix = locale === 'en' ? '' : `.${locale}`;
       if (!target.startsWith(docsRoot + path.sep) && target !== docsRoot) report(relative, `navigation escapes content directory ${entry}`);
-      else if (!fs.existsSync(target) && !fs.existsSync(`${target}.mdx`) && !fs.existsSync(`${target}.md`)) report(relative, `navigation target is missing ${entry}`);
+      else if (!fs.existsSync(target) && !fs.existsSync(`${target}${suffix}.mdx`) && !fs.existsSync(`${target}${suffix}.md`)) report(relative, `navigation target is missing ${entry}`);
     }
   }
   return { errors, count: files.length };
@@ -210,6 +226,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   try {
     const { errors, count } = checkDocs(path.resolve(process.argv[2] ?? process.cwd()));
     if (errors.length) { console.error(errors.map((error) => `- ${error}`).join('\n')); process.exitCode = 1; }
-    else console.log(`Checked ${count} English documentation pages, source records, links, and navigation.`);
+    else console.log(`Checked ${count} documentation pages, source records, links, and navigation.`);
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

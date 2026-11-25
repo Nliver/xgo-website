@@ -14,6 +14,8 @@ export default defineConfig({
   test: {
     include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
     environment: 'node',
+    // A cached MDX glob can omit documents added since the previous run.
+    fsModuleCache: false,
     coverage: {
       provider: 'v8',
       include: ['app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}', 'lib/**/*.{ts,tsx}', 'proxy.ts'],
