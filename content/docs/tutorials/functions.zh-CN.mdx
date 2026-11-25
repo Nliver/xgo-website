@@ -1,0 +1,67 @@
+---
+title: 函数
+description: 定义函数，传入参数，并返回一个或多个值。
+---
+
+把打印问候语的代码写成函数，就可以用同一个函数向不同的人打招呼。声明函数时，先写 `func`，再写函数名、参数列表和函数体。
+
+## 传入参数
+
+```go title="greet.xgo"
+func greet(name string) {
+    echo "Hello,", name
+}
+
+greet "Alice"
+greet "Bob"
+```
+
+运行 `xgo run greet.xgo`。
+
+```text
+Hello, Alice
+Hello, Bob
+```
+
+参数 `name` 的类型是 `string`。这个函数会输出一条消息，没有返回值。调用时使用命令式写法。
+
+## 返回一个值
+
+在参数列表后写出类型，即可声明返回值的类型。
+
+```go title="add.xgo"
+func add(x, y int) int {
+    return x + y
+}
+
+echo add(2, 3)
+```
+
+运行 `xgo run add.xgo`。
+
+```text
+5
+```
+
+相邻的同类型参数可以只写一次类型。`x, y int` 表示 `x` 和 `y` 都是 `int`。这里用括号调用 `add`，再把返回值传给 `echo`。
+
+## 返回多个值
+
+在括号中列出多个返回类型，然后用不同变量接收这些结果。
+
+```go title="results.xgo"
+func values() (int, int) {
+    return 2, 3
+}
+
+first, second := values()
+echo first, second
+```
+
+运行 `xgo run results.xgo`。
+
+```text
+2 3
+```
+
+继续阅读[控制流](/zh-CN/docs/tutorials/control-flow)，学习选择分支和遍历切片。

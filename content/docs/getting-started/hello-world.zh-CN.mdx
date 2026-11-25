@@ -1,0 +1,30 @@
+---
+title: 你的第一个 XGo 程序
+description: 编写并运行一个只有一行代码的 XGo 程序。
+---
+
+创建一个名为 `hello.xgo` 的文件。
+
+{/* upstream-snippet:hello-world:start */}
+```go title="hello.xgo"
+println "Hello world"
+```
+{/* upstream-snippet:hello-world:end */}
+
+在终端中运行这个文件。
+
+```bash
+xgo run hello.xgo
+```
+
+程序会输出以下内容。
+
+```text
+Hello world
+```
+
+这个程序使用命令式函数调用。参数直接跟在函数名后面，无需括号。`println` 将值写入标准输出。XGo 也提供 `echo` 作为 `println` 的别名。
+
+若要编译文件而不运行，使用 `xgo build hello.xgo`。运行 `xgo help` 可以查看可用命令。
+
+继续阅读[编写一个小型 XGo 程序](/zh-CN/docs/tutorials/first-program)，学习如何声明变量，并在字符串中插入变量的值。

@@ -1,0 +1,86 @@
+---
+title: 处理错误
+description: 将输入转换为整数，返回转换错误或使用备用值。
+---
+
+假设你要把两个用字符串表示的整数相加。如果其中一个字符串无法转换为整数，应该把错误返回给调用方，还是按零计算？写出这两个版本，比较它们的输出。
+
+开始前，请先[安装 XGo](/zh-CN/docs/getting-started/installation)。创建一个空目录存放示例文件，并在这个目录中执行命令。
+
+对于返回一个值和一个错误的函数调用，XGo 提供错误包装表达式。
+
+| 表达式 | 调用返回错误时的行为 |
+| --- | --- |
+| `expr?` | 提前退出当前函数，返回错误。 |
+| `expr?:value` | 使用 `value` 作为结果。 |
+| `expr!` | 触发 panic。 |
+
+调用成功时，这三种写法都会取出函数返回的值。
+
+## 返回转换错误
+
+创建 `add-input.xgo`。Go 标准库函数 `strconv.Atoi` 会把字符串转换为整数，转换失败时返回错误。
+
+```go title="add-input.xgo"
+import "strconv"
+
+func add(x, y string) (int, error) {
+    return strconv.Atoi(x)? + strconv.Atoi(y)?, nil
+}
+
+sum, err := add("100", "23")
+if err == nil {
+    echo "Total:", sum
+}
+
+sum, err = add("10", "abc")
+if err != nil {
+    echo "Enter two valid integers."
+}
+
+echo "Known valid total:", add("100", "23")!
+```
+
+运行 `xgo run add-input.xgo`。
+
+```text
+Total: 123
+Enter two valid integers.
+Known valid total: 123
+```
+
+`add` 函数返回一个整数和一个错误。每个 `?` 都会检查 `strconv.Atoi` 的错误返回值。如果转换失败，`add` 会立即退出，把错误返回给调用方。如果两次转换都成功，它会返回两数之和以及 `nil`。
+
+调用方检查 `err`，再决定输出内容。第二次调用传入了无法转换为整数的 `"abc"`，因此程序会输出无效输入提示。
+
+最后一次调用的输入已知有效，程序用 `!` 直接取出计算结果。如果调用返回错误，`!` 会触发 panic。调用方需要处理无效输入时，应像第二次调用那样检查错误。
+
+## 使用备用值
+
+如果计算逻辑要把无效输入当作零，可以把 `?` 换成 `?:0`。这个版本会在函数内部处理转换错误，因此只返回一个整数。
+
+创建 `add-fallback.xgo`。
+
+```go title="add-fallback.xgo"
+import "strconv"
+
+func addSafe(x, y string) int {
+    return strconv.Atoi(x)?:0 + strconv.Atoi(y)?:0
+}
+
+echo "Both valid:", addSafe("100", "23")
+echo "One invalid:", addSafe("10", "abc")
+echo "Both invalid:", addSafe("abc", "def")
+```
+
+运行 `xgo run add-fallback.xgo`。
+
+```text
+Both valid: 123
+One invalid: 10
+Both invalid: 0
+```
+
+每个 `?:0` 只应用于一次转换。第二次调用中，`"10"` 转换为 `10`，`"abc"` 使用备用值 `0`。函数将两个值相加并返回 `10`。调用方可以得到总数，但无法知道具体是哪项输入失败。
+
+继续阅读[类型和值](/zh-CN/docs/reference/types)，学习使用字符串、集合和结构体。
