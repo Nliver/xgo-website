@@ -12,15 +12,16 @@ permissions:
   issues: write
   pull-requests: write
 
-concurrency:
-  group: vercel-production
-  cancel-in-progress: true
-
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
+    concurrency:
+      group: vercel-production
+      cancel-in-progress: true
     steps:
       - name: Check out repository
         uses: actions/checkout@v7.0.1
@@ -110,7 +111,7 @@ jobs:
                 'This is a temporary Vercel Preview. Production deployment is handled after merging to `main`.',
               ].join('\n');
 
-              const { data: comments } = await github.rest.issues.listComments({
+              const comments = await github.paginate(github.rest.issues.listComments, {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pullRequest.number,
