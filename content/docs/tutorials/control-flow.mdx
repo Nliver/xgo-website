@@ -1,0 +1,93 @@
+---
+title: Control flow
+description: Choose a branch, process a collection, and control a loop.
+---
+
+Use conditions and loops to classify and total a set of scores. Save each example under the filename shown and run it with `xgo run`.
+
+## Choose a branch
+
+Classify a score with `if`, `else if`, and `else`.
+
+```go title="classify-score.xgo"
+score := 72
+
+if score >= 90 {
+    echo "Excellent"
+} else if score >= 60 {
+    echo "Passed"
+} else {
+    echo "Try again"
+}
+```
+
+Run `xgo run classify-score.xgo`.
+
+```text
+Passed
+```
+
+The conditions are checked in order. The first true condition selects its block. If neither condition is true, the `else` block runs. Conditions do not need surrounding parentheses, and each block requires braces.
+
+Change the score to `95` or `40` and run the program again to try the other branches.
+
+## Process a collection
+
+Use `for index, value in collection` to visit each score and compute a total.
+
+```go title="score-total.xgo"
+scores := [92, 58, 76]
+total := 0
+
+for index, score in scores {
+    echo "Result ${index + 1}: ${score}"
+    total += score
+}
+
+echo "Total:", total
+```
+
+Run `xgo run score-total.xgo`.
+
+```text
+Result 1: 92
+Result 2: 58
+Result 3: 76
+Total: 226
+```
+
+The index starts at zero. Adding one gives each result a number suitable for display. `total += score` adds the current score to the running total.
+
+If you only need the value, use `for score in scores`. See [Types and values](/docs/reference/types) for more about slices.
+
+## Skip a value or stop the loop
+
+Suppose a score of `0` means an entry should be skipped, and `-1` marks the end of the input. Use `continue` to move to the next entry and `break` to stop the loop.
+
+```go title="select-scores.xgo"
+scores := [92, 0, 58, 76, -1, 88]
+
+for score in scores {
+    if score == -1 {
+        break
+    }
+    if score == 0 {
+        continue
+    }
+    echo score
+}
+```
+
+Run `xgo run select-scores.xgo`.
+
+```text
+92
+58
+76
+```
+
+`continue` skips the remaining statements in the current iteration. `break` exits the loop, so the final score, `88`, is never reached. In nested loops, these unlabelled statements affect the innermost loop.
+
+The upstream [Quick Start](https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/docs.md#for-loop) also describes numeric ranges, filtered iteration, and condition-controlled loops.
+
+Continue with [Handle errors](/docs/tutorials/error-handling) to handle operations that can fail.

@@ -1,0 +1,84 @@
+---
+title: Types and values
+description: Work with strings, slices, maps, and structs in a complete XGo program.
+---
+
+Use `:=` to declare a variable with an inferred type. You can also declare a type explicitly with `var`.
+
+## Strings
+
+Double-quoted strings support escape sequences and `${expression}` interpolation. Backtick strings preserve their literal contents.
+
+```go title="strings.xgo"
+name := "Bob"
+echo "Hello, ${name}"
+echo `Line 1\nLine 2`
+```
+
+Run `xgo run strings.xgo`.
+
+```text
+Hello, Bob
+Line 1\nLine 2
+```
+
+## Slices
+
+XGo uses *list* and *slice* for the same data structure. Square brackets create a slice literal. Indexes start at zero. The `<-` form appends values.
+
+```go title="slices.xgo"
+numbers := [1, 2, 3]
+numbers[1] = 5
+numbers <- 8
+
+echo numbers
+echo numbers[1:3]
+```
+
+Run `xgo run slices.xgo`.
+
+```text
+[1 5 3 8]
+[5 3]
+```
+
+The slice expression `[1:3]` includes indexes 1 and 2.
+
+## Maps
+
+A map stores values by key. Braces create a map literal, and bracket notation reads or writes an entry.
+
+```go title="maps.xgo"
+scores := {"Alice": 3, "Bob": 2}
+scores["Alice"] = 4
+
+echo scores["Alice"]
+```
+
+Run `xgo run maps.xgo`.
+
+```text
+4
+```
+
+## Structs
+
+A struct groups named fields. A keyed composite literal supplies values by field name. Fields omitted from that literal receive their zero values.
+
+```go title="structs.xgo"
+type Point struct {
+    X int
+    Y int
+}
+
+point := Point{X: 3, Y: 4}
+echo point.X, point.Y
+```
+
+Run `xgo run structs.xgo`.
+
+```text
+3 4
+```
+
+Continue with [Go interoperability](/docs/interoperability/go) to call functions across Go and XGo files.

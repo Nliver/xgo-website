@@ -1,0 +1,30 @@
+---
+title: Your first XGo program
+description: Write, run, and understand a minimal XGo program.
+---
+
+Create a file named `hello.xgo`.
+
+{/* upstream-snippet:hello-world:start */}
+```go title="hello.xgo"
+println "Hello world"
+```
+{/* upstream-snippet:hello-world:end */}
+
+Run the file in a terminal.
+
+```bash
+xgo run hello.xgo
+```
+
+You should see this output.
+
+```text
+Hello world
+```
+
+This program uses a command-style function call. The argument follows the function name without parentheses. `println` writes the value to standard output. XGo also provides `echo` as an alias for `println`.
+
+To compile the file without running it, use `xgo build hello.xgo`. Run `xgo help` to see the available commands.
+
+Continue with [Build a small XGo program](/docs/tutorials/first-program) to declare a variable and insert its value into a string.

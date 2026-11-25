@@ -1,0 +1,31 @@
+---
+title: Build a small XGo program
+description: Declare variables and insert their values into a greeting.
+---
+
+Start with the [Hello World program](/docs/getting-started/hello-world). Replace its contents with this greeting.
+
+```go title="greeting.xgo"
+name := "XGo"
+echo "Hello, ${name}"
+
+name = "Alice"
+echo "Hello, ${name}"
+```
+
+Save it as `greeting.xgo`, then run it.
+
+```bash
+xgo run greeting.xgo
+```
+
+```text
+Hello, XGo
+Hello, Alice
+```
+
+`:=` declares a variable and initializes it. XGo infers the variable's type from the value. Here, `name` has type `string`. After the declaration, `=` assigns a new value to the same variable.
+
+Inside a double-quoted string, `${expression}` inserts the expression's value. Each call to `echo` uses the current value of `name`.
+
+Change `Alice` to your name and run the program again. Continue with [Functions](/docs/tutorials/functions) to give the greeting a reusable name.

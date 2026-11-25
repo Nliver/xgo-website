@@ -1,0 +1,67 @@
+---
+title: Functions
+description: Define functions with parameters, return values, and multiple results.
+---
+
+A function groups an operation under a name. Declare a function with `func`, followed by its name, parameters, and body.
+
+## Pass an argument
+
+```go title="greet.xgo"
+func greet(name string) {
+    echo "Hello,", name
+}
+
+greet "Alice"
+greet "Bob"
+```
+
+Run `xgo run greet.xgo`.
+
+```text
+Hello, Alice
+Hello, Bob
+```
+
+The parameter `name` has type `string`. This function prints a message and has no return type. The calls use command style.
+
+## Return a value
+
+Add a type after the parameter list to declare the result type.
+
+```go title="add.xgo"
+func add(x, y int) int {
+    return x + y
+}
+
+echo add(2, 3)
+```
+
+Run `xgo run add.xgo`.
+
+```text
+5
+```
+
+Consecutive parameters can share a type declaration. `x, y int` declares two `int` parameters. The call to `add` uses parentheses inside the argument to `echo`.
+
+## Return multiple values
+
+List result types in parentheses and receive the results in separate variables.
+
+```go title="results.xgo"
+func values() (int, int) {
+    return 2, 3
+}
+
+first, second := values()
+echo first, second
+```
+
+Run `xgo run results.xgo`.
+
+```text
+2 3
+```
+
+Continue with [Control flow](/docs/tutorials/control-flow) to choose a branch and loop over a slice.

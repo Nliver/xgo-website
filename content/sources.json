@@ -1,0 +1,143 @@
+{
+  "sourceRepository": "goplus/xgo",
+  "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+  "sourceCheckedAt": "2026-11-25",
+  "pages": {
+    "content/docs/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/getting-started/installation.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "README.md",
+        "go.mod",
+        "cmd/go.mod",
+        "all.bash",
+        "all.bat",
+        "x/gocmd/gocmd.go"
+      ]
+    },
+    "content/docs/getting-started/hello-world.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "upstreamSnippets": [
+        {
+          "id": "hello-world",
+          "sourcePath": "doc/docs.md",
+          "heading": "Hello World",
+          "codeBlockIndex": 0
+        }
+      ]
+    },
+    "content/docs/tutorials/first-program.mdx": {
+      "sourcePath": "doc/goodbye-printf.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/docs.md"
+      ]
+    },
+    "content/docs/tutorials/functions.mdx": {
+      "sourcePath": "doc/func-closure.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/tutorials/control-flow.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec-mini.md",
+        "doc/goodbye-printf.md"
+      ]
+    },
+    "content/docs/tutorials/error-handling.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/reference/language.mdx": {
+      "sourcePath": "doc/spec-mini.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec.md",
+        "doc/fncall.md",
+        "doc/func-closure.md"
+      ]
+    },
+    "content/docs/reference/types.mdx": {
+      "sourcePath": "doc/spec.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/string.md",
+        "doc/slice.md",
+        "doc/map.md",
+        "doc/docs.md"
+      ]
+    },
+    "content/docs/interoperability/go.mdx": {
+      "sourcePath": "demo/mixgo/README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "README.md",
+        "doc/docs.md",
+        "cmd/internal/mod/init.go"
+      ]
+    },
+    "content/docs/toolchain/playground.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/toolchain/repl.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/contributing.mdx": {
+      "sourcePath": "doc/contributing.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "CODE_OF_CONDUCT.md"
+      ]
+    }
+  },
+  "sourceLicense": "Apache-2.0",
+  "licensePath": "LICENSE",
+  "sourceCopyright": "Copyright (c) 2021 The XGo Authors (xgo.dev). All rights reserved."
+}
