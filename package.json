@@ -11,7 +11,11 @@
     "check:docs": "node scripts/check-docs.mjs",
     "test:sync": "node --test scripts/sync-upstream.test.mjs",
     "test:docs": "node --test scripts/check-docs.test.mjs",
-    "check:examples": "node scripts/check-examples.mjs"
+    "check:examples": "node scripts/check-examples.mjs",
+    "test:site": "vitest run",
+    "test:coverage:site": "vitest run --coverage",
+    "test:coverage:scripts": "c8 node --test scripts/*.test.mjs",
+    "test:coverage": "node tests/coverage/run.mjs"
   },
   "dependencies": {
     "cn": "^0.5.2",

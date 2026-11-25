@@ -1,0 +1,10 @@
+{
+  "all": true,
+  "src": ["scripts"],
+  "include": ["scripts/*.mjs"],
+  "exclude": ["scripts/*.test.mjs", "scripts/*.spec.mjs"],
+  "extension": [".mjs"],
+  "reporter": ["json", "text-summary"],
+  "reports-dir": "coverage/scripts",
+  "temp-directory": "coverage/scripts/.tmp"
+}

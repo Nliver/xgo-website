@@ -24,8 +24,7 @@ production domain remain to be selected.
 npm run lint
 npm run types:check
 npm run check:docs
-npm run test:docs
-npm run test:sync
+npm run test:coverage
 npm run check:examples
 npm run build
 ```
@@ -39,6 +38,23 @@ example, put both named source blocks before the output. Add the page to
 Install XGo locally or set `XGO_BIN` to an absolute executable path. CI groups
 runnable pages by their verified and candidate source revisions, builds the
 CLI using each revision's `cmd/go.mod`, and checks the output of each program.
+
+### Test coverage
+
+Run `npm run test:coverage` to run the website tests and the documentation and
+upstream-sync regression suites. The combined report at `coverage/lcov.info`
+includes pages, route handlers, components, shared libraries, the request proxy,
+and production maintenance scripts. Unexecuted source files count toward the
+total. MDX example execution has its own CI job.
+
+Documentation CI uploads the report on pull requests and pushes to `main`.
+Maintainers should enable the website repository in Codecov and configure its
+repository upload token as the GitHub Actions secret `CODECOV_TOKEN`. Codecov
+supports tokenless uploads from fork pull requests targeting a public repository.
+After the first main-branch upload, check the commit SHA in the dashboard and
+verify patch coverage on a pull request that changes executable lines.
+Upload errors fail CI. Project and patch percentages are informational.
+[Website coverage on Codecov](https://app.codecov.io/gh/Nliver/xgo-website)
 
 ## Content and source records
 
