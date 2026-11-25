@@ -25,6 +25,14 @@ Use npm with the latest stable Node.js release (minimum version 26.0.0). Run `np
 - Routes live in `app/`, shared layout options in `lib/layout.shared.tsx`, and global styles in `app/global.css`. Pages, search, and Markdown exports share the content collection in `lib/source.ts`. For URL changes, check the route settings in `lib/shared.ts`, rewrites in `next.config.mjs`, and content negotiation in `proxy.ts`. Verify the HTML page, the explicit `.md` URL, and the page requested with `Accept: text/markdown`.
 - Preview layout changes on the affected page at desktop and narrow widths. Exercise changed search, navigation, and copy controls with a keyboard. Give icon-only controls accessible names and keep keyboard focus visible. Check keyboard access to scrollable code blocks and reduced-motion preferences when changing those features.
 
+## Fumadocs layout conventions
+
+- Treat the official Fumadocs documentation as the source of truth for UI and layout behavior. Prefer the local checkout at /Users/admin/Desktop/Project/fumadocs/; use the official references when needed: https://www.fumadocs.dev/docs, https://www.fumadocs.dev/docs/ui, https://www.fumadocs.dev/docs/headless, https://www.fumadocs.dev/docs/mdx, and https://www.fumadocs.dev/docs/cli.
+- Reuse Fumadocs HomeLayout, DocsLayout, Notebook, and their responsive behavior before considering custom UI. Prefer BaseLayoutProps configuration such as links, githubUrl, nav, and sidebar for site-specific choices.
+- Use layout slots or custom components only when an official component and configuration cannot meet a documented requirement. Do not copy or rewrite Fumadocs navigation, sidebar drawers, search, language controls, theme controls, or responsive CSS.
+- If a custom nav.component or layout slot is necessary, first read the relevant Fumadocs documentation and source, then preserve Fumadocs CSS variables, responsive states, keyboard behavior, and accessible names.
+- Customize bilingual content and route data as needed, while keeping Fumadocs UI and layout behavior on the official implementation path. Prefer the local Fumadocs source checkout over assumptions from older versions.
+
 ## Choosing checks
 
 | Change | Checks |
