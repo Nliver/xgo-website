@@ -5,13 +5,14 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  experimental: { globalNotFound: true },
   async rewrites() {
-    return [
-      { source: '/docs.md', destination: '/llms.mdx/docs.md' },
-      { source: '/docs.txt', destination: '/llms.mdx/docs.md' },
-      { source: '/docs/:path+.md', destination: '/llms.mdx/docs/:path+.md' },
-      { source: '/docs/:path+.txt', destination: '/llms.mdx/docs/:path+.md' },
-    ];
+    return ['/docs', '/zh-CN/docs'].flatMap((base) =>
+      ['md', 'txt'].flatMap((extension) => [
+        { source: `${base}.${extension}`, destination: `/llms.mdx${base}.md` },
+        { source: `${base}/:path+.${extension}`, destination: `/llms.mdx${base}/:path+.md` },
+      ]),
+    );
   },
 };
 
