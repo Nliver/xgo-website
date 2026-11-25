@@ -17,7 +17,7 @@ The current edition is in English.
 
 ## Run locally
 
-Install Git and the latest Node.js LTS release. Node.js includes npm.
+Install Git and the latest stable Node.js release (26.0.0 or later). Node.js includes npm.
 Clone the website repository and enter its root directory.
 
 ```sh
@@ -25,7 +25,7 @@ git clone https://github.com/Nliver/xgo-website.git
 cd xgo-website
 ```
 
-If you use nvm, run nvm install --lts and nvm use --lts.
+If you use nvm, run `nvm install node` and `nvm use node`. CI tests against Node.js 26.x.
 Install the dependencies and start the development server.
 
 ```sh
