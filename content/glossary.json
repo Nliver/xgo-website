@@ -1,0 +1,6 @@
+{
+  "terms": [
+    {"canonical": "XGo", "forbidden": ["XGO"]},
+    {"canonical": "Playground", "forbidden": ["play ground"]}
+  ]
+}

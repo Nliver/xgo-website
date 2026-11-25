@@ -7,7 +7,10 @@
     "dev": "next dev",
     "start": "next start",
     "types:check": "next typegen && tsc --noEmit",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:docs": "node scripts/check-docs.mjs",
+    "test:docs": "node --test scripts/check-docs.test.mjs",
+    "check:examples": "node scripts/check-examples.mjs"
   },
   "dependencies": {
     "cn": "^0.5.2",

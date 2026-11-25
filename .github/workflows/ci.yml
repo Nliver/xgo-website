@@ -1,0 +1,67 @@
+name: Documentation CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    outputs:
+      example-revisions: ${{ steps.sources.outputs.revisions }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Read documentation example revisions
+        id: sources
+        run: echo "revisions=$(node scripts/check-examples.mjs --revisions)" >> "$GITHUB_OUTPUT"
+      - run: npm run lint
+      - run: npm run types:check
+      - run: npm run check:docs
+      - run: npm run test:docs
+      - run: npm run build
+
+  examples:
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        revision: ${{ fromJSON(needs.validate.outputs.example-revisions) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check out the documented XGo revision
+        uses: actions/checkout@v4
+        with:
+          repository: goplus/xgo
+          ref: ${{ matrix.revision }}
+          path: .ci/xgo
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: .ci/xgo/cmd/go.mod
+          cache-dependency-path: |
+            .ci/xgo/go.sum
+            .ci/xgo/cmd/go.sum
+      - name: Build the documented XGo compiler
+        working-directory: .ci/xgo/cmd
+        run: go build -o "$RUNNER_TEMP/xgo-doc-bin/xgo" ./xgo
+      - run: npm run check:examples
+        env:
+          XGO_BIN: ${{ runner.temp }}/xgo-doc-bin/xgo
+          XGO_SOURCE_COMMIT: ${{ matrix.revision }}

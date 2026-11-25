@@ -1,0 +1,162 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import test from 'node:test';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { checkDocs } from './check-docs.mjs';
+import { discoverExamples, examplePagesForRevision, exampleRevisions } from './check-examples.mjs';
+
+function withFixture(run) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xgo-doc-check-'));
+  const docs = path.join(root, 'content/docs');
+  fs.mkdirSync(docs, { recursive: true });
+  const header = '---\ntitle: Example\ndescription: An example page.\n---\n';
+  fs.writeFileSync(path.join(docs, 'index.mdx'), `${header}\n[Next](/docs/next?mode=read#details)\n<Card href="/docs/next" />\n`);
+  fs.writeFileSync(path.join(docs, 'next.mdx'), `${header}\n## Details\n\nAn example.\n`);
+  fs.writeFileSync(path.join(docs, 'meta.json'), JSON.stringify({ title: 'Docs', pages: ['index', 'next'] }));
+  const metadata = { sourcePath: 'doc/docs.md', contentType: 'guide', sourceStatus: 'editorial', reviewStatus: 'technical-review', applicableVersion: 'source-snapshot' };
+  fs.writeFileSync(path.join(root, 'content/sources.json'), JSON.stringify({
+    sourceRepository: 'goplus/xgo', sourceCommit: 'c'.repeat(40), sourceCheckedAt: '2026-11-25',
+    sourceLicense: 'Apache-2.0', licensePath: 'LICENSE',
+    pages: { 'content/docs/index.mdx': metadata, 'content/docs/next.mdx': metadata },
+  }));
+  fs.writeFileSync(path.join(root, 'content/glossary.json'), JSON.stringify({ terms: [] }));
+  try { run(root, docs, header); } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
+test('accepts quoted MDX links, query strings, anchors, and root index URLs', () => withFixture((root) => {
+  assert.deepEqual(checkDocs(root).errors, []);
+}));
+
+test('rejects missing Markdown and quoted JSX link targets and fragments', () => withFixture((root, docs) => {
+  fs.appendFileSync(path.join(docs, 'index.mdx'), '\n[Missing](/docs/absent)\n<Card href="/docs/missing" />\n[Fragment](/docs/next#absent)\n');
+  const errors = checkDocs(root).errors.join('\n');
+  for (const target of ['/docs/absent', '/docs/missing', '/docs/next#absent']) assert.ok(errors.includes(target));
+}));
+
+test('rejects language-free and unclosed fences', () => withFixture((root, docs) => {
+  fs.appendFileSync(path.join(docs, 'index.mdx'), '\n```\nhello\n```\n\n```go\necho "hello"\n');
+  const errors = checkDocs(root).errors.join('\n');
+  assert.match(errors, /missing a language/);
+  assert.match(errors, /unclosed code fence/);
+}));
+
+test('rejects invalid source values and missing navigation targets', () => withFixture((root, docs) => {
+  const manifestPath = path.join(root, 'content/sources.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  manifest.sourceCommit = 'main';
+  manifest.sourceCheckedAt = '2026-02-30';
+  manifest.pages['content/docs/index.mdx'].sourceStatus = 'unchecked';
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+  fs.writeFileSync(path.join(docs, 'meta.json'), JSON.stringify({ title: 'Docs', pages: ['absent'] }));
+  const errors = checkDocs(root).errors.join('\n');
+  for (const expected of ['full commit SHA', 'ISO calendar date', 'invalid sourceStatus', 'navigation target is missing']) assert.ok(errors.includes(expected));
+}));
+
+test('rejects duplicate index URLs and body h1 headings', () => withFixture((root, docs, header) => {
+  fs.mkdirSync(path.join(docs, 'next'));
+  fs.writeFileSync(path.join(docs, 'next/index.mdx'), `${header}\n# Duplicate title\n`);
+  const errors = checkDocs(root).errors.join('\n');
+  assert.match(errors, /duplicate URL \/docs\/next/);
+  assert.match(errors, /body h1 duplicates/);
+}));
+
+test('rejects invalid candidate revisions and snippet mappings', () => withFixture((root) => {
+  const file = path.join(root, 'content/sources.json');
+  const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const metadata = manifest.pages['content/docs/index.mdx'];
+  metadata.candidateSourceCommit = 'main';
+  metadata.candidateChangedSources = ['unmapped.md'];
+  metadata.upstreamSnippets = [{ id: 'hello', sourcePath: 'unmapped.md', heading: 'Example', codeBlockIndex: -1 }];
+  fs.writeFileSync(file, JSON.stringify(manifest));
+  const errors = checkDocs(root).errors.join('\n');
+  for (const expected of ['invalid candidateSourceCommit', 'invalid candidateChangedSources', 'must use a mapped sourcePath', 'invalid upstream snippet selector', 'invalid upstream snippet markers']) assert.ok(errors.includes(expected));
+}));
+
+function withExamplesFixture(run) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xgo-example-check-'));
+  const docs = path.join(root, 'content/docs');
+  const header = '---\ntitle: Example\ndescription: An example page.\n---\n';
+  const example = '```go title="hello.xgo"\nprintln "Hello"\n```\n\n```text\nHello\n```\n';
+  const manifest = { sourceCommit: 'a'.repeat(40), pages: {} };
+  for (const page of ['getting-started/hello-world.mdx', 'tutorials/new-topic.mdx', 'reference/overview.mdx']) {
+    const file = path.join(docs, page);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, header + (page.startsWith('reference/') ? 'A page without executable examples.\n' : example));
+    manifest.pages[`content/docs/${page}`] = { sourcePath: 'doc/docs.md' };
+  }
+  const manifestPath = path.join(root, 'content/sources.json');
+  const saveManifest = () => fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+  saveManifest();
+  const executable = path.join(root, 'mock-xgo');
+  const log = path.join(root, 'executions.jsonl');
+  fs.writeFileSync(executable, `#!/usr/bin/env node
+const fs = require('node:fs');
+const args = process.argv.slice(2);
+fs.appendFileSync(process.env.EXAMPLE_LOG, JSON.stringify({ args, files: fs.readdirSync(process.cwd()) }) + '\\n');
+if (args[0] === 'version') console.log('xgo test compiler');
+if (args[0] === 'run') console.log('Hello');
+`, { mode: 0o755 });
+  const script = fileURLToPath(new URL('./check-examples.mjs', import.meta.url));
+  const invoke = (args = [], revision) => {
+    const env = { ...process.env, XGO_BIN: executable, EXAMPLE_LOG: log };
+    delete env.XGO_SOURCE_COMMIT;
+    if (revision !== undefined) env.XGO_SOURCE_COMMIT = revision;
+    return spawnSync(process.execPath, [script, ...args], { cwd: root, encoding: 'utf8', env });
+  };
+  try { run({ root, docs, manifest, saveManifest, invoke, log }); }
+  finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
+test('discovers old and newly added runnable pages and executes both through the CLI', () => withExamplesFixture(({ root, docs, manifest, invoke, log }) => {
+  assert.deepEqual(examplePagesForRevision(manifest, undefined, root), ['getting-started/hello-world.mdx', 'tutorials/new-topic.mdx']);
+  fs.writeFileSync(path.join(docs, 'tutorials/new-topic.mdx'), '---\ntitle: Mixed example\ndescription: Mix Go and XGo.\n---\n```go title="a.go"\npackage main\n```\n```go title="b.xgo"\nprintln "Hello"\n```\n```text\nHello\n```\n');
+  const result = invoke();
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Executed 2 documentation examples successfully/);
+  const executions = fs.readFileSync(log, 'utf8').trim().split('\n').map((line) => JSON.parse(line));
+  assert.deepEqual(executions.filter(({ args }) => args[0] === 'run').map(({ args }) => args), [['run', 'hello.xgo'], ['run', '.']]);
+  assert.ok(executions.some(({ args, files }) => args[0] === 'run' && files.includes('a.go') && files.includes('b.xgo')));
+}));
+
+test('selects discovered examples at per-page verified and candidate revisions', () => withExamplesFixture(({ root, manifest, saveManifest, invoke }) => {
+  manifest.pages['content/docs/tutorials/new-topic.mdx'] = { sourcePath: 'doc/docs.md', sourceCommit: 'b'.repeat(40), candidateSourceCommit: 'c'.repeat(40) };
+  saveManifest();
+  assert.deepEqual(exampleRevisions(manifest, root), ['a'.repeat(40), 'b'.repeat(40), 'c'.repeat(40)]);
+  assert.deepEqual(examplePagesForRevision(manifest, 'a'.repeat(40), root), ['getting-started/hello-world.mdx']);
+  for (const revision of ['b'.repeat(40), 'c'.repeat(40)]) {
+    assert.deepEqual(examplePagesForRevision(manifest, revision, root), ['tutorials/new-topic.mdx']);
+    const result = invoke([], revision);
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /Executed 1 documentation examples successfully/);
+  }
+  const revisions = invoke(['--revisions']);
+  assert.equal(revisions.status, 0, revisions.stderr);
+  assert.deepEqual(JSON.parse(revisions.stdout), ['a'.repeat(40), 'b'.repeat(40), 'c'.repeat(40)]);
+  assert.deepEqual(examplePagesForRevision(manifest, 'd'.repeat(40), root), []);
+  manifest.pages['content/docs/tutorials/new-topic.mdx'].candidateSourceCommit = 'main';
+  assert.throws(() => exampleRevisions(manifest, root), /full commit SHAs/);
+}));
+
+test('rejects newly discovered examples without source metadata in local and CI discovery', () => withExamplesFixture(({ root, manifest, saveManifest, invoke }) => {
+  delete manifest.pages['content/docs/tutorials/new-topic.mdx'];
+  saveManifest();
+  assert.throws(() => exampleRevisions(manifest, root), /new-topic.mdx: missing source metadata/);
+  for (const args of [[], ['--revisions']]) {
+    const result = invoke(args, manifest.sourceCommit);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /new-topic.mdx: missing source metadata/);
+  }
+}));
+
+test('rejects examples without expected output in local and CI discovery', () => withExamplesFixture(({ root, docs, manifest, invoke }) => {
+  fs.appendFileSync(path.join(docs, 'tutorials/new-topic.mdx'), '\n```go title="missing.xgo"\nprintln "Hello"\n```\n');
+  assert.throws(() => discoverExamples(root), /missing a text output block/);
+  for (const args of [[], ['--revisions']]) {
+    const result = invoke(args, manifest.sourceCommit);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /new-topic.mdx: example is missing a text output block/);
+  }
+}));
