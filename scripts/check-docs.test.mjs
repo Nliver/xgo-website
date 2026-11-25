@@ -75,6 +75,37 @@ test('rejects invalid candidate revisions and snippet mappings', () => withFixtu
   for (const expected of ['invalid candidateSourceCommit', 'invalid candidateChangedSources', 'must use a mapped sourcePath', 'invalid upstream snippet selector', 'invalid upstream snippet markers']) assert.ok(errors.includes(expected));
 }));
 
+test('checks translated pages, links, and navigation without mixing English content', () => withFixture((root, docs) => {
+  const file = path.join(root, 'content/sources.json');
+  const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+  manifest.pages['content/docs/next.zh-CN.mdx'] = {
+    ...manifest.pages['content/docs/next.mdx'],
+    locale: 'zh-CN',
+    translationOf: 'content/docs/next.mdx',
+    translationReviewStatus: 'pending',
+  };
+  fs.writeFileSync(file, JSON.stringify(manifest));
+  fs.writeFileSync(path.join(docs, 'next.zh-CN.mdx'), '---\ntitle: 示例\ndescription: 编写第一个程序。\n---\n## 运行程序\n\n[原文](/docs/next)\n[本节](/zh-CN/docs/next#运行程序)\n');
+  fs.writeFileSync(path.join(docs, 'meta.zh-CN.json'), JSON.stringify({ title: '文档', pages: ['next'] }));
+  assert.deepEqual(checkDocs(root).errors, []);
+  fs.writeFileSync(path.join(docs, 'meta.zh-CN.json'), JSON.stringify({ title: '文档', pages: ['index'] }));
+  assert.match(checkDocs(root).errors.join('\n'), /navigation target is missing index/);
+  fs.appendFileSync(path.join(docs, 'next.mdx'), '\n中文正文\n');
+  assert.match(checkDocs(root).errors.join('\n'), /Chinese prose detected in the English edition/);
+}));
+
+test('requires translated pages to identify their original and review status', () => withFixture((root, docs, header) => {
+  const file = path.join(root, 'content/sources.json');
+  const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+  manifest.pages['content/docs/next.zh-CN.mdx'] = { ...manifest.pages['content/docs/next.mdx'], locale: 'en' };
+  fs.writeFileSync(file, JSON.stringify(manifest));
+  fs.writeFileSync(path.join(docs, 'next.zh-CN.mdx'), header);
+  const errors = checkDocs(root).errors.join('\n');
+  assert.match(errors, /source locale does not match/);
+  assert.match(errors, /translationOf must reference/);
+  assert.match(errors, /invalid translationReviewStatus/);
+}));
+
 function withExamplesFixture(run) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xgo-example-check-'));
   const docs = path.join(root, 'content/docs');
@@ -159,4 +190,17 @@ test('rejects examples without expected output in local and CI discovery', () =>
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /new-topic.mdx: example is missing a text output block/);
   }
+}));
+
+test('discovers translated runnable examples using their own source record', () => withExamplesFixture(({ root, docs, manifest, saveManifest, invoke }) => {
+  fs.copyFileSync(path.join(docs, 'getting-started/hello-world.mdx'), path.join(docs, 'getting-started/hello-world.zh-CN.mdx'));
+  manifest.pages['content/docs/getting-started/hello-world.zh-CN.mdx'] = {
+    ...manifest.pages['content/docs/getting-started/hello-world.mdx'],
+    translationOf: 'content/docs/getting-started/hello-world.mdx',
+  };
+  saveManifest();
+  assert.ok(examplePagesForRevision(manifest, manifest.sourceCommit, root).includes('getting-started/hello-world.zh-CN.mdx'));
+  const result = invoke([], manifest.sourceCommit);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Executed 3 documentation examples successfully/);
 }));
