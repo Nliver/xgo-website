@@ -1,0 +1,93 @@
+---
+title: 控制流
+description: 选择分支、处理集合并控制循环。
+---
+
+用条件判断分数是否及格，再用循环计算一组分数的总和。按代码块上方标注的文件名保存各个示例，用 `xgo run` 运行。
+
+## 选择分支
+
+使用 `if`、`else if` 和 `else` 给分数分类。
+
+```go title="classify-score.xgo"
+score := 72
+
+if score >= 90 {
+    echo "Excellent"
+} else if score >= 60 {
+    echo "Passed"
+} else {
+    echo "Try again"
+}
+```
+
+运行 `xgo run classify-score.xgo`。
+
+```text
+Passed
+```
+
+程序按顺序判断条件，执行第一个满足条件的分支。如果所有条件都不满足，就执行 `else` 分支。条件无须加圆括号，每个分支的代码块都必须用花括号括起来。
+
+把分数改为 `95` 或 `40`，再次运行程序，试试其他分支。
+
+## 处理集合
+
+使用 `for index, value in collection` 遍历每个分数并计算总和。
+
+```go title="score-total.xgo"
+scores := [92, 58, 76]
+total := 0
+
+for index, score in scores {
+    echo "Result ${index + 1}: ${score}"
+    total += score
+}
+
+echo "Total:", total
+```
+
+运行 `xgo run score-total.xgo`。
+
+```text
+Result 1: 92
+Result 2: 58
+Result 3: 76
+Total: 226
+```
+
+索引从零开始。加一后可以得到适合展示的结果编号。`total += score` 会把当前分数加到累计总分中。
+
+如果只需要值，可以使用 `for score in scores`。关于切片的更多内容，请参阅[类型和值](/zh-CN/docs/reference/types)。
+
+## 跳过值或结束循环
+
+假设分数 `0` 表示跳过这条记录，`-1` 表示输入结束。使用 `continue` 跳到下一条记录，使用 `break` 结束循环。
+
+```go title="select-scores.xgo"
+scores := [92, 0, 58, 76, -1, 88]
+
+for score in scores {
+    if score == -1 {
+        break
+    }
+    if score == 0 {
+        continue
+    }
+    echo score
+}
+```
+
+运行 `xgo run select-scores.xgo`。
+
+```text
+92
+58
+76
+```
+
+`continue` 跳过本轮剩余的语句，从下一轮继续。`break` 直接退出循环，因此程序不会处理最后的 `88`。在嵌套循环中，不带标签的 `break` 和 `continue` 在这里都作用于最内层循环。
+
+上游[快速入门](https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/docs.md#for-loop)还介绍了如何遍历数值范围、按条件筛选元素，以及用条件控制循环。
+
+继续阅读[处理错误](/zh-CN/docs/tutorials/error-handling)，学习处理可能失败的操作。

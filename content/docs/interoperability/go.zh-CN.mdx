@@ -1,0 +1,70 @@
+---
+title: Go 互操作
+description: 导入 Go 包，并在 Go 与 XGo 文件之间调用函数。
+---
+
+XGo 可以使用 Go 包，也可以在同一个包中混合 Go 文件和 XGo 文件。
+
+## 导入 Go 包
+
+```go title="package.xgo"
+import "fmt"
+
+fmt.Println("Hello from Go")
+```
+
+运行 `xgo run package.xgo`。
+
+```text
+Hello from Go
+```
+
+这个程序可以省略 `package main` 和 `func main`。
+
+## 混合 Go 文件和 XGo 文件
+
+创建示例目录并初始化模块。
+
+```bash
+mkdir mixgo
+cd mixgo
+xgo mod init example.com/mixgo
+```
+
+创建 `a.go`，在其中定义名为 `p` 的 Go 函数。
+
+```go title="a.go"
+package main
+
+import "fmt"
+
+func p(a interface{}) {
+    sayMix()
+    fmt.Println("Hello,", a)
+}
+```
+
+在同一个目录中创建 `b.xgo`。
+
+```go title="b.xgo"
+func sayMix() {
+    println "Mix Go and XGo"
+}
+
+p "world"
+```
+
+XGo 代码调用 Go 函数 `p`。这个函数又调用了 XGo 文件中定义的 `sayMix`。
+
+运行整个目录。
+
+```bash
+xgo run .
+```
+
+```text
+Mix Go and XGo
+Hello, world
+```
+
+阅读[语言参考](/zh-CN/docs/reference/language)，查找上游规范和专题语法说明。

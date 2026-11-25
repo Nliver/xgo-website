@@ -1,0 +1,84 @@
+---
+title: 类型和值
+description: 在可运行的 XGo 示例中使用字符串、切片、映射和结构体。
+---
+
+使用 `:=` 声明变量时，XGo 会根据初始值推断变量类型。也可以用 `var` 显式声明类型。
+
+## 字符串
+
+双引号字符串支持转义序列，也支持用 `${expression}` 插入表达式的值。用反引号括起来的字符串会保留原始内容。
+
+```go title="strings.xgo"
+name := "Bob"
+echo "Hello, ${name}"
+echo `Line 1\nLine 2`
+```
+
+运行 `xgo run strings.xgo`。
+
+```text
+Hello, Bob
+Line 1\nLine 2
+```
+
+## 切片
+
+在 XGo 中，列表（list）和切片（slice）指的是同一种数据结构。用方括号可以写出切片字面量。索引从 0 开始，可用 `<-` 向切片追加元素。
+
+```go title="slices.xgo"
+numbers := [1, 2, 3]
+numbers[1] = 5
+numbers <- 8
+
+echo numbers
+echo numbers[1:3]
+```
+
+运行 `xgo run slices.xgo`。
+
+```text
+[1 5 3 8]
+[5 3]
+```
+
+切片表达式 `[1:3]` 取出索引为 1 和 2 的元素，不包含索引 3。
+
+## 映射
+
+映射（map）按键存储值。用花括号可以写出映射字面量，用方括号指定键即可读取或更新对应的值。
+
+```go title="maps.xgo"
+scores := {"Alice": 3, "Bob": 2}
+scores["Alice"] = 4
+
+echo scores["Alice"]
+```
+
+运行 `xgo run maps.xgo`。
+
+```text
+4
+```
+
+## 结构体
+
+结构体由多个具名字段组成。用结构体复合字面量初始化时，可以按字段名赋值。省略的字段会取其类型的零值。
+
+```go title="structs.xgo"
+type Point struct {
+    X int
+    Y int
+}
+
+point := Point{X: 3, Y: 4}
+echo point.X, point.Y
+```
+
+运行 `xgo run structs.xgo`。
+
+```text
+3 4
+```
+
+接下来，阅读 [Go 互操作](/zh-CN/docs/interoperability/go)，了解如何在 Go 和 XGo 文件之间调用函数。

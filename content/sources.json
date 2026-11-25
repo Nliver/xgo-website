@@ -135,6 +135,178 @@
       "additionalSourcePaths": [
         "CODE_OF_CONDUCT.md"
       ]
+    },
+    "content/docs/getting-started/hello-world.zh-CN.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "upstreamSnippets": [
+        {
+          "id": "hello-world",
+          "sourcePath": "doc/docs.md",
+          "heading": "Hello World",
+          "codeBlockIndex": 0
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/getting-started/hello-world.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/contributing.zh-CN.mdx": {
+      "sourcePath": "doc/contributing.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "CODE_OF_CONDUCT.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/contributing.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/interoperability/go.zh-CN.mdx": {
+      "sourcePath": "demo/mixgo/README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "README.md",
+        "doc/docs.md",
+        "cmd/internal/mod/init.go"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/interoperability/go.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/tutorials/first-program.zh-CN.mdx": {
+      "sourcePath": "doc/goodbye-printf.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/docs.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/tutorials/first-program.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/tutorials/functions.zh-CN.mdx": {
+      "sourcePath": "doc/func-closure.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/tutorials/functions.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/tutorials/control-flow.zh-CN.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec-mini.md",
+        "doc/goodbye-printf.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/tutorials/control-flow.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/tutorials/error-handling.zh-CN.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/tutorials/error-handling.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/getting-started/installation.zh-CN.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "README.md",
+        "go.mod",
+        "cmd/go.mod",
+        "all.bash",
+        "all.bat",
+        "x/gocmd/gocmd.go"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/getting-started/installation.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/reference/language.zh-CN.mdx": {
+      "sourcePath": "doc/spec-mini.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec.md",
+        "doc/fncall.md",
+        "doc/func-closure.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/reference/language.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/reference/types.zh-CN.mdx": {
+      "sourcePath": "doc/spec.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/string.md",
+        "doc/slice.md",
+        "doc/map.md",
+        "doc/docs.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/reference/types.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/toolchain/playground.zh-CN.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/toolchain/playground.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/toolchain/repl.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/toolchain/repl.mdx",
+      "translationReviewStatus": "pending"
     }
   },
   "sourceLicense": "Apache-2.0",

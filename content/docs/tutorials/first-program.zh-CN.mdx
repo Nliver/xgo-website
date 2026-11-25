@@ -1,0 +1,31 @@
+---
+title: 编写一个小型 XGo 程序
+description: 声明变量，并将变量值插入问候语。
+---
+
+从[你的第一个 XGo 程序](/zh-CN/docs/getting-started/hello-world)开始，把文件内容换成下面的代码，让程序根据变量值打印问候语。
+
+```go title="greeting.xgo"
+name := "XGo"
+echo "Hello, ${name}"
+
+name = "Alice"
+echo "Hello, ${name}"
+```
+
+将文件保存为 `greeting.xgo`，然后运行它。
+
+```bash
+xgo run greeting.xgo
+```
+
+```text
+Hello, XGo
+Hello, Alice
+```
+
+`:=` 会声明变量并为它赋初值。XGo 会根据初始值推断变量类型。这里 `name` 的类型是 `string`。声明变量后，可以使用 `=` 为同一个变量赋新值。
+
+在双引号字符串中，`${expression}` 会插入表达式的值。每次调用 `echo` 时，使用的都是 `name` 的当前值。
+
+把 `Alice` 换成你的名字，再运行一次。接下来阅读[函数](/zh-CN/docs/tutorials/functions)，把打印问候语的代码封装成可复用的函数。
