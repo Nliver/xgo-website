@@ -4,9 +4,13 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+  deployment_status:
 
 permissions:
   contents: read
+  deployments: read
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: vercel-production
@@ -14,6 +18,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -59,3 +64,73 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  comment-preview:
+    if: >-
+      github.event_name == 'deployment_status' &&
+      github.event.deployment_status.state == 'success' &&
+      (github.event.deployment_status.environment == 'Preview' ||
+      github.event.deployment_status.environment == 'preview')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish preview details on the pull request
+        uses: actions/github-script@v8.0.0
+        with:
+          script: |
+            const deployment = context.payload.deployment;
+            const status = context.payload.deployment_status;
+            const sha = deployment.sha;
+            const { data: pullRequests } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: sha,
+              per_page: 100,
+            });
+
+            const previewUrl = status.environment_url || deployment.environment_url || status.target_url || deployment.payload?.web_url || '';
+            const deploymentUrl = status.target_url || '';
+            const commitUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${sha}`;
+            const shortSha = sha.slice(0, 7);
+            const branch = deployment.ref || 'unknown';
+            const marker = '<!-- vercel-preview-comment -->';
+
+            for (const pullRequest of pullRequests) {
+              const body = [
+                marker,
+                '## ✅ Deploy Preview ready',
+                '',
+                '| Name | Link |',
+                '| --- | --- |',
+                `| 🔨 Latest commit | [\`${shortSha}\`](${commitUrl}) |`,
+                `| 🌿 Branch | \`${branch}\` |`,
+                '| 🧪 Environment | `Preview` |',
+                previewUrl ? `| 🌐 Deploy Preview | [Open preview](${previewUrl}) |` : '| 🌐 Deploy Preview | URL unavailable |',
+                deploymentUrl ? `| 📋 Latest deploy log | [View deployment](${deploymentUrl}) |` : '| 📋 Latest deploy log | URL unavailable |',
+                '',
+                'This is a temporary Vercel Preview. Production deployment is handled after merging to `main`.',
+              ].join('\n');
+
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pullRequest.number,
+                per_page: 100,
+              });
+              const previous = comments.find((comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker));
+
+              if (previous) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: previous.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pullRequest.number,
+                  body,
+                });
+              }
+            }
