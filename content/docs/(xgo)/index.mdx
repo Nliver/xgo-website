@@ -3,12 +3,23 @@ title: XGo Documentation
 description: Install XGo, write your first program, and learn its language features.
 ---
 
+import { Cpu, Terminal, PanelsTopLeft, Gamepad2 } from 'lucide-react';
+
 XGo is a Go-compatible programming language designed for engineering, STEM education, and data science. Its syntax includes command-style function calls, string interpolation, and concise collection literals.
 
 <Cards>
   <Card title="Start here" href="/docs/getting-started/installation" description="Install XGo and run your first program." />
   <Card title="Follow the tutorial" href="/docs/tutorials/first-program" description="Write a greeting, then define and call functions." />
   <Card title="Read the reference" href="/docs/reference/language" description="Find syntax guides and the upstream specifications." />
+</Cards>
+
+## Ecosystem projects
+
+<Cards>
+  <Card icon={<Cpu />} title="LLGo" href="/docs/llgo" description="Compile and run Go programs with LLVM." />
+  <Card icon={<Terminal />} title="iXGo" href="/docs/ixgo" description="Run scripts or embed the interpreter in a Go application." />
+  <Card icon={<PanelsTopLeft />} title="XBuilder" href="/docs/xbuilder" description="Build and preview a game in your browser." />
+  <Card icon={<Gamepad2 />} title="SPX" href="/docs/spx" description="Create sprites, handle events, and run games locally." />
 </Cards>
 
 ## Learning path
@@ -23,6 +34,13 @@ XGo is a Go-compatible programming language designed for engineering, STEM educa
 8. [Use Go packages and mixed Go/XGo code](/docs/interoperability/go).
 
 You can also try the external [Playground](/docs/toolchain/playground) or [REPL](/docs/toolchain/repl).
+
+## Go further
+
+- Find build, test, formatting, and project configuration commands in the [command-line reference](/docs/toolchain/command-reference).
+- [Work through the example programs](/docs/examples/overview), including templates, data queries, native libraries, and classfiles.
+- [Explore the XGo ecosystem](/docs/ecosystem) for LLGo, iXGo, XBuilder, SPX, and class framework guides.
+- Practice [collection queries](/docs/tutorials/process-collections), [exact arithmetic](/docs/tutorials/exact-arithmetic), [custom iterators](/docs/tutorials/structs-and-methods), and [multi-file projects](/docs/tutorials/organize-projects).
 
 ## About this edition
 

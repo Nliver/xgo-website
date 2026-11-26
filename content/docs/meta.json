@@ -1,6 +1,14 @@
 {
   "title": "Documentation",
   "pages": [
-    "(xgo)"
+    "(xgo)",
+    "llgo",
+    "ixgo",
+    "xbuilder",
+    "spx",
+    "mcp",
+    "yap",
+    "cobra",
+    "blog"
   ]
 }
