@@ -55,12 +55,46 @@ test('rejects invalid source values and missing navigation targets', () => withF
   for (const expected of ['full commit SHA', 'ISO calendar date', 'invalid sourceStatus', 'navigation target is missing']) assert.ok(errors.includes(expected));
 }));
 
+test('requires pinned revisions and relative paths for related projects', () => withFixture((root) => {
+  const file = path.join(root, 'content/sources.json');
+  const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+  for (const [commit, sourcePath] of [['main', 'README.md'], ['b'.repeat(40), '../README.md']]) {
+    manifest.pages['content/docs/index.mdx'].externalSources = [{ repository: 'goplus/spx', commit, path: sourcePath }];
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    assert.match(checkDocs(root).errors.join(' '), /invalid externalSources/);
+  }
+}));
+
 test('rejects duplicate index URLs and body h1 headings', () => withFixture((root, docs, header) => {
   fs.mkdirSync(path.join(docs, 'next'));
   fs.writeFileSync(path.join(docs, 'next/index.mdx'), `${header}\n# Duplicate title\n`);
   const errors = checkDocs(root).errors.join('\n');
   assert.match(errors, /duplicate URL \/docs\/next/);
   assert.match(errors, /body h1 duplicates/);
+}));
+
+test('uses public URLs and physical source paths for a pathless docs group', () => withFixture((root, docs) => {
+  const group = path.join(docs, '(xgo)');
+  fs.mkdirSync(group);
+  for (const name of ['index.mdx', 'next.mdx', 'meta.json']) {
+    fs.renameSync(path.join(docs, name), path.join(group, name));
+  }
+  fs.writeFileSync(path.join(docs, 'meta.json'), JSON.stringify({ title: 'Docs', pages: ['(xgo)'] }));
+  fs.writeFileSync(path.join(group, 'next.zh-CN.mdx'), '---\ntitle: 示例\ndescription: 编写第一个程序。\n---\n[原文](/docs/next#details)\n');
+  const manifestPath = path.join(root, 'content/sources.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  const original = 'content/docs/(xgo)/next.mdx';
+  manifest.pages = {
+    'content/docs/(xgo)/index.mdx': manifest.pages['content/docs/index.mdx'],
+    [original]: manifest.pages['content/docs/next.mdx'],
+    'content/docs/(xgo)/next.zh-CN.mdx': {
+      ...manifest.pages['content/docs/next.mdx'],
+      translationOf: original,
+      translationReviewStatus: 'pending',
+    },
+  };
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+  assert.deepEqual(checkDocs(root).errors, []);
 }));
 
 test('rejects invalid candidate revisions and snippet mappings', () => withFixture((root) => {

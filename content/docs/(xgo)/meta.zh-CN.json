@@ -1,0 +1,15 @@
+{
+  "title": "XGo",
+  "description": "学习 XGo 语言和工具链。",
+  "root": true,
+  "icon": "BookOpen",
+  "pages": [
+    "index",
+    "getting-started",
+    "tutorials",
+    "reference",
+    "interoperability",
+    "toolchain",
+    "contributing"
+  ]
+}

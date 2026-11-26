@@ -3,14 +3,14 @@
   "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
   "sourceCheckedAt": "2026-11-25",
   "pages": {
-    "content/docs/index.mdx": {
+    "content/docs/(xgo)/index.mdx": {
       "sourcePath": "README.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot"
     },
-    "content/docs/getting-started/installation.mdx": {
+    "content/docs/(xgo)/getting-started/installation.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
@@ -25,7 +25,7 @@
         "x/gocmd/gocmd.go"
       ]
     },
-    "content/docs/getting-started/hello-world.mdx": {
+    "content/docs/(xgo)/getting-started/hello-world.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
@@ -40,7 +40,7 @@
         }
       ]
     },
-    "content/docs/tutorials/first-program.mdx": {
+    "content/docs/(xgo)/tutorials/first-program.mdx": {
       "sourcePath": "doc/goodbye-printf.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
@@ -50,14 +50,14 @@
         "doc/docs.md"
       ]
     },
-    "content/docs/tutorials/functions.mdx": {
+    "content/docs/(xgo)/tutorials/functions.mdx": {
       "sourcePath": "doc/func-closure.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot"
     },
-    "content/docs/tutorials/control-flow.mdx": {
+    "content/docs/(xgo)/tutorials/control-flow.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
@@ -68,14 +68,14 @@
         "doc/goodbye-printf.md"
       ]
     },
-    "content/docs/tutorials/error-handling.mdx": {
+    "content/docs/(xgo)/tutorials/error-handling.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot"
     },
-    "content/docs/reference/language.mdx": {
+    "content/docs/(xgo)/reference/language.mdx": {
       "sourcePath": "doc/spec-mini.md",
       "contentType": "reference",
       "sourceStatus": "editorial",
@@ -87,7 +87,7 @@
         "doc/func-closure.md"
       ]
     },
-    "content/docs/reference/types.mdx": {
+    "content/docs/(xgo)/reference/types.mdx": {
       "sourcePath": "doc/spec.md",
       "contentType": "reference",
       "sourceStatus": "editorial",
@@ -100,7 +100,7 @@
         "doc/docs.md"
       ]
     },
-    "content/docs/interoperability/go.mdx": {
+    "content/docs/(xgo)/interoperability/go.mdx": {
       "sourcePath": "demo/mixgo/README.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
@@ -112,21 +112,21 @@
         "cmd/internal/mod/init.go"
       ]
     },
-    "content/docs/toolchain/playground.mdx": {
+    "content/docs/(xgo)/toolchain/playground.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot"
     },
-    "content/docs/toolchain/repl.mdx": {
+    "content/docs/(xgo)/toolchain/repl.mdx": {
       "sourcePath": "README.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot"
     },
-    "content/docs/contributing.mdx": {
+    "content/docs/(xgo)/contributing.mdx": {
       "sourcePath": "doc/contributing.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
@@ -136,7 +136,7 @@
         "CODE_OF_CONDUCT.md"
       ]
     },
-    "content/docs/getting-started/hello-world.zh-CN.mdx": {
+    "content/docs/(xgo)/getting-started/hello-world.zh-CN.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
@@ -151,20 +151,20 @@
         }
       ],
       "locale": "zh-CN",
-      "translationOf": "content/docs/getting-started/hello-world.mdx",
+      "translationOf": "content/docs/(xgo)/getting-started/hello-world.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/index.zh-CN.mdx": {
+    "content/docs/(xgo)/index.zh-CN.mdx": {
       "sourcePath": "README.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
-      "translationOf": "content/docs/index.mdx",
+      "translationOf": "content/docs/(xgo)/index.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/contributing.zh-CN.mdx": {
+    "content/docs/(xgo)/contributing.zh-CN.mdx": {
       "sourcePath": "doc/contributing.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
@@ -174,10 +174,10 @@
         "CODE_OF_CONDUCT.md"
       ],
       "locale": "zh-CN",
-      "translationOf": "content/docs/contributing.mdx",
+      "translationOf": "content/docs/(xgo)/contributing.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/interoperability/go.zh-CN.mdx": {
+    "content/docs/(xgo)/interoperability/go.zh-CN.mdx": {
       "sourcePath": "demo/mixgo/README.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
@@ -189,10 +189,10 @@
         "cmd/internal/mod/init.go"
       ],
       "locale": "zh-CN",
-      "translationOf": "content/docs/interoperability/go.mdx",
+      "translationOf": "content/docs/(xgo)/interoperability/go.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/tutorials/first-program.zh-CN.mdx": {
+    "content/docs/(xgo)/tutorials/first-program.zh-CN.mdx": {
       "sourcePath": "doc/goodbye-printf.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
@@ -202,20 +202,20 @@
         "doc/docs.md"
       ],
       "locale": "zh-CN",
-      "translationOf": "content/docs/tutorials/first-program.mdx",
+      "translationOf": "content/docs/(xgo)/tutorials/first-program.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/tutorials/functions.zh-CN.mdx": {
+    "content/docs/(xgo)/tutorials/functions.zh-CN.mdx": {
       "sourcePath": "doc/func-closure.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
-      "translationOf": "content/docs/tutorials/functions.mdx",
+      "translationOf": "content/docs/(xgo)/tutorials/functions.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/tutorials/control-flow.zh-CN.mdx": {
+    "content/docs/(xgo)/tutorials/control-flow.zh-CN.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
@@ -226,20 +226,20 @@
         "doc/goodbye-printf.md"
       ],
       "locale": "zh-CN",
-      "translationOf": "content/docs/tutorials/control-flow.mdx",
+      "translationOf": "content/docs/(xgo)/tutorials/control-flow.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/tutorials/error-handling.zh-CN.mdx": {
+    "content/docs/(xgo)/tutorials/error-handling.zh-CN.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "tutorial",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
-      "translationOf": "content/docs/tutorials/error-handling.mdx",
+      "translationOf": "content/docs/(xgo)/tutorials/error-handling.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/getting-started/installation.zh-CN.mdx": {
+    "content/docs/(xgo)/getting-started/installation.zh-CN.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
@@ -254,10 +254,10 @@
         "x/gocmd/gocmd.go"
       ],
       "locale": "zh-CN",
-      "translationOf": "content/docs/getting-started/installation.mdx",
+      "translationOf": "content/docs/(xgo)/getting-started/installation.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/reference/language.zh-CN.mdx": {
+    "content/docs/(xgo)/reference/language.zh-CN.mdx": {
       "sourcePath": "doc/spec-mini.md",
       "contentType": "reference",
       "sourceStatus": "editorial",
@@ -269,10 +269,10 @@
         "doc/func-closure.md"
       ],
       "locale": "zh-CN",
-      "translationOf": "content/docs/reference/language.mdx",
+      "translationOf": "content/docs/(xgo)/reference/language.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/reference/types.zh-CN.mdx": {
+    "content/docs/(xgo)/reference/types.zh-CN.mdx": {
       "sourcePath": "doc/spec.md",
       "contentType": "reference",
       "sourceStatus": "editorial",
@@ -285,27 +285,27 @@
         "doc/docs.md"
       ],
       "locale": "zh-CN",
-      "translationOf": "content/docs/reference/types.mdx",
+      "translationOf": "content/docs/(xgo)/reference/types.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/toolchain/playground.zh-CN.mdx": {
+    "content/docs/(xgo)/toolchain/playground.zh-CN.mdx": {
       "sourcePath": "doc/docs.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
-      "translationOf": "content/docs/toolchain/playground.mdx",
+      "translationOf": "content/docs/(xgo)/toolchain/playground.mdx",
       "translationReviewStatus": "pending"
     },
-    "content/docs/toolchain/repl.zh-CN.mdx": {
+    "content/docs/(xgo)/toolchain/repl.zh-CN.mdx": {
       "sourcePath": "README.md",
       "contentType": "guide",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
-      "translationOf": "content/docs/toolchain/repl.mdx",
+      "translationOf": "content/docs/(xgo)/toolchain/repl.mdx",
       "translationReviewStatus": "pending"
     }
   },

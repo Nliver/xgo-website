@@ -1,0 +1,15 @@
+{
+  "title": "XGo",
+  "description": "Learn the XGo language and its toolchain.",
+  "root": true,
+  "icon": "BookOpen",
+  "pages": [
+    "index",
+    "getting-started",
+    "tutorials",
+    "reference",
+    "interoperability",
+    "toolchain",
+    "contributing"
+  ]
+}
