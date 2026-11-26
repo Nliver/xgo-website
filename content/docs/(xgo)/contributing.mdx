@@ -3,22 +3,349 @@ title: Contributing
 description: Report issues and propose code or documentation improvements to XGo.
 ---
 
-The upstream contribution guide describes how to propose changes to XGo. Discuss significant changes through an issue before starting implementation. Except for trivial changes, the guide asks contributors to relate their changes to an existing issue.
+Thank you for your interest in contributing to the XGo project! Your efforts
+help us build and improve this powerful language.
 
-## Prepare a contribution
+Please be aware that participation in the XGo project requires adherence to our
+established [code of conduct](/docs/contributing#code-of-conduct). Your involvement signifies your agreement to comply
+with the guidelines set forth within these terms. We appreciate your cooperation
+in fostering a respectful and inclusive environment for all contributors.
 
-1. Read the contribution guide and code of conduct.
-2. Fork the repository and synchronize your fork with upstream.
-3. Create a branch for one focused change.
-4. Check the change, then prepare a commit with a `Signed-off-by` trailer.
-5. Push the branch to your fork and open a pull request for review.
+To ensure a smooth contribution process, this guide outlines the steps and best
+practices for contributing to XGo. It's assumed that you have a foundational
+knowledge of XGo and are comfortable using Git and GitHub for version control
+and collaboration.
 
-The upstream guide explains commit messages and the Developer Certificate of Origin. Read those requirements before signing a commit.
+## Before contributing code
 
-[Read the XGo contribution guide](https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/contributing.md)
+The XGo project welcomes code contributions. However, to ensure coordination,
+please discuss any significant changes beforehand. It's recommended to signal
+your intent to contribute via the issue tracker, either by filing a new issue or
+claiming an existing one.
 
-[Read the XGo code of conduct](https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/CODE_OF_CONDUCT.md)
+The issue tracker is your go-to, whether you've got a contribution in mind or
+are looking for inspiration. Issues are organized to streamline the workflow.
 
-## Report a documentation problem
+Except for very trivial changes, all contributions should relate to an existing
+issue. Feel free to open one and discuss your plans. This process allows
+validation of design, prevents duplicate efforts, ensures alignment with
+language and tool goals, and confirms design validity before coding.
 
-Include the page URL, the XGo version you used, the command you ran, and the result you expected. A small reproducible program helps maintainers check the issue.
+## Making a code contribution
+
+Let's say you want to fix a typo in the `README.md` file of the
+the `goplus/xgo` repository, changing "Github" to "GitHub",
+and you wish to merge this contribution into the `main` branch of the upstream
+repository.
+
+### Step 1: Fork the upstream repository
+
+First, you need to fork the upstream repository to your own username (or an
+organization you own) by following [this guide](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo). Then you can start making your
+contributions.
+
+Let's say you've forked `goplus/xgo` to
+`https://github.com/YOUR_USERNAME/gop.git`.
+
+### Step 2: Clone the forked repository
+
+Open your terminal, clone the repository you just forked, and change into the
+cloned directory:
+
+```sh
+git clone https://github.com/YOUR_USERNAME/gop.git
+cd gop
+```
+
+This directory will serve as the working directory in the following steps.
+
+### Step 3: Create a new branch
+
+We recommend that every contribution should have its own branch, and this branch
+should be deleted after the contribution is merged into the target branch of the
+upstream repository.
+
+First, you need to sync your fork's `main` branch to keep it up-to-date with the
+upstream's `main` branch by following [this guide](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork).
+
+Then, you can create and switch to a branch for your contribution:
+
+```sh
+git checkout -b typo main
+```
+
+### Step 4: Make the changes
+
+This step is where you'll spend most of your effort when contributing. It
+typically takes up the majority of the time needed to make a contribution.
+
+However, in our case, we just want to correct a typo in the `README.md` file,
+changing "Github" to "GitHub". So, go ahead and make that change.
+
+### Step 5: Commit and push
+
+After making your changes, you need to commit them:
+
+```sh
+git add README.md
+git commit -s -m 'README.md: correct typo "Github" to "GitHub"'
+```
+
+The commit message here is very straightforward, but it's recommended to read
+the [Commit Messages](#commit-messages) section for crafting better commit messages.
+
+Once you've committed your changes, you also need to push your commit to your
+fork on GitHub:
+
+```sh
+git push --set-upstream origin typo
+```
+
+### Step 6: Open a pull request
+
+Head to the upstream repository and open a pull request by following
+[this guide](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request). Your pull request should clearly describe the change you're
+proposing and why it's beneficial.
+
+Typically, the title and description of the pull request you open will come from
+the first commit message in the branch of your fork. You can modify them if
+necessary.
+
+### Step 7: Engage with feedback
+
+Be open to feedback from upstream repository maintainers. They might request
+further changes or provide insights that could enhance your contribution.
+
+After making any further changes, simply repeat [Step 5](#step-5-commit-and-push). However, when
+committing, it's recommended to use the `--amend` option. This ensures that all
+your changes are contained within a single commit, maintaining a linear commit
+history. For example:
+
+```sh
+git add README.md
+git commit --amend
+```
+
+This isn't a strict requirement, though. You can create as many commits as you
+like.
+
+### Step 8: Do post-merge cleanup
+
+As mentioned in [Step 3](#step-3-create-a-new-branch), we recommend dedicating a branch to each contribution.
+Once a contribution's pull request is [squash and merged](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits), the branch should be
+deleted:
+
+```sh
+git checkout main
+git branch -d typo
+git push origin -d typo
+```
+
+## Commit messages
+
+Commit messages in XGo adhere to specific conventions outlined in this section.
+
+A well-crafted commit message looks like this:
+
+```text
+docs: revise contribution guidelines for clarity and inclusivity
+
+As our project grows, we want to ensure that our community understands
+how to contribute effectively and feels welcomed to do so. This update
+to our contribution guidelines aims to clarify the process and encourage
+more developers to get involved.
+
+Key changes include:
+  - Simplified the language to make the guidelines more accessible to
+    non-native English speakers and newcomers to open source.
+  - Included a step-by-step guide on setting up the development
+    environment, submitting a pull request, and what to expect during
+    the review process.
+  - Added a new section on community standards and code of conduct to
+    foster a respectful and inclusive community atmosphere.
+  - Provided clear examples of desirable contributions, such as bug
+    fixes, feature proposals, and documentation improvements.
+
+Fixes #123
+
+Signed-off-by: John Doe <john@example.com>
+```
+
+### First line
+
+The first line of a commit message typically serves as a concise one-line
+summary, beginning with the primary component it impacts (e.g., a specific
+package). This summary should ideally be brief, with many Git interfaces
+favoring a limit of approximately 72 characters. While XGo is not strict on the
+length limit, it's a good guideline to follow.
+
+Think of the summary as finishing the sentence "This commit modifies XGo to
+_____." As such, it does not begin with a capital letter, form a complete
+sentence, or diverge from succinctly stating the commit's effect.
+
+After the summary, ensure to separate the main content (if any) with a blank
+line.
+
+### Main content
+
+The rest of the commit message should elaborate, offering context and a clear
+explanation of the commit. Employ complete sentences and proper punctuation.
+Refrain from using HTML, Markdown, or any form of markup language.
+
+Include relevant information, like benchmark data, if the commit impacts
+performance.
+
+Adhere to a line width of approximately 72 characters to accommodate Git viewing
+tools, except when longer lines are necessary (such as for ASCII art, tables, or
+extended URLs).
+
+### Referencing issues
+
+The special notation `Fixes #123` links the commit directly to issue 123 in the
+issue tracker. Upon merging this commit, the issue tracker will automatically
+mark the issue as resolved.
+
+For commits that partially address an issue, use `Updates #123`. This notation
+will not close the issue upon the commit's integration.
+
+To reference multiple issues within a single commit, list them by appending each
+issue number with a comma and a space, such as `Fixes #123, #456`. This indicates
+that the commit resolves both referenced issues.
+
+For cross-repository references, use the full `user/repo#number` syntax, such as
+`Fixes goplus/xgo#123`.
+
+### Signed-off-by
+
+For contributions to be accepted, we mandate that a `Signed-off-by` line, in
+accordance with the [Developer Certificate of Origin](https://developercertificate.org/), be included at the
+conclusion of each commit message.
+
+## Code of Conduct
+
+## Our Pledge
+
+We as members, contributors, and leaders pledge to make participation in our
+community a harassment-free experience for everyone, regardless of age, body
+size, visible or invisible disability, ethnicity, sex characteristics, gender
+identity and expression, level of experience, education, socio-economic status,
+nationality, personal appearance, race, religion, or sexual identity
+and orientation.
+
+We pledge to act and interact in ways that contribute to an open, welcoming,
+diverse, inclusive, and healthy community.
+
+## Our Standards
+
+Examples of behavior that contributes to a positive environment for our
+community include:
+
+* Demonstrating empathy and kindness toward other people
+* Being respectful of differing opinions, viewpoints, and experiences
+* Giving and gracefully accepting constructive feedback
+* Accepting responsibility and apologizing to those affected by our mistakes,
+  and learning from the experience
+* Focusing on what is best not just for us as individuals, but for the
+  overall community
+
+Examples of unacceptable behavior include:
+
+* The use of sexualized language or imagery, and sexual attention or
+  advances of any kind
+* Trolling, insulting or derogatory comments, and personal or political attacks
+* Public or private harassment
+* Publishing others' private information, such as a physical or email
+  address, without their explicit permission
+* Other conduct which could reasonably be considered inappropriate in a
+  professional setting
+
+## Enforcement Responsibilities
+
+Community leaders are responsible for clarifying and enforcing our standards of
+acceptable behavior and will take appropriate and fair corrective action in
+response to any behavior that they deem inappropriate, threatening, offensive,
+or harmful.
+
+Community leaders have the right and responsibility to remove, edit, or reject
+comments, commits, code, wiki edits, issues, and other contributions that are
+not aligned to this Code of Conduct, and will communicate reasons for moderation
+decisions when appropriate.
+
+## Scope
+
+This Code of Conduct applies within all community spaces, and also applies when
+an individual is officially representing the community in public spaces.
+Examples of representing our community include using an official e-mail address,
+posting via an official social media account, or acting as an appointed
+representative at an online or offline event.
+
+## Enforcement
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be
+reported to the community leaders responsible for enforcement at
+conduct@xgo.dev.
+All complaints will be reviewed and investigated promptly and fairly.
+
+All community leaders are obligated to respect the privacy and security of the
+reporter of any incident.
+
+## Enforcement Guidelines
+
+Community leaders will follow these Community Impact Guidelines in determining
+the consequences for any action they deem in violation of this Code of Conduct:
+
+### 1. Correction
+
+**Community Impact**: Use of inappropriate language or other behavior deemed
+unprofessional or unwelcome in the community.
+
+**Consequence**: A private, written warning from community leaders, providing
+clarity around the nature of the violation and an explanation of why the
+behavior was inappropriate. A public apology may be requested.
+
+### 2. Warning
+
+**Community Impact**: A violation through a single incident or series
+of actions.
+
+**Consequence**: A warning with consequences for continued behavior. No
+interaction with the people involved, including unsolicited interaction with
+those enforcing the Code of Conduct, for a specified period of time. This
+includes avoiding interactions in community spaces as well as external channels
+like social media. Violating these terms may lead to a temporary or
+permanent ban.
+
+### 3. Temporary Ban
+
+**Community Impact**: A serious violation of community standards, including
+sustained inappropriate behavior.
+
+**Consequence**: A temporary ban from any sort of interaction or public
+communication with the community for a specified period of time. No public or
+private interaction with the people involved, including unsolicited interaction
+with those enforcing the Code of Conduct, is allowed during this period.
+Violating these terms may lead to a permanent ban.
+
+### 4. Permanent Ban
+
+**Community Impact**: Demonstrating a pattern of violation of community
+standards, including sustained inappropriate behavior,  harassment of an
+individual, or aggression toward or disparagement of classes of individuals.
+
+**Consequence**: A permanent ban from any sort of public interaction within
+the community.
+
+## Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant][homepage],
+version 2.0, available at
+https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
+
+Community Impact Guidelines were inspired by [Mozilla's code of conduct
+enforcement ladder](https://github.com/mozilla/diversity).
+
+[homepage]: https://www.contributor-covenant.org
+
+For answers to common questions about this code of conduct, see the FAQ at
+https://www.contributor-covenant.org/faq. Translations are available at
+https://www.contributor-covenant.org/translations.
