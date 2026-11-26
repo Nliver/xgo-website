@@ -15,13 +15,28 @@ go version
 
 构建本文所用的 XGo 源码需要 Go 1.27.0 或与之兼容的更高版本。包管理器提供的 XGo 发行版可能不同，对 Go 的版本要求也可能不同。要使用与本文一致的版本，请参照下方的源码构建步骤。
 
-## Windows
+## 软件包安装
+
+<Tabs defaultValue="windows">
+  <TabsList aria-label="软件包安装" activateOnFocus>
+    <TabsTrigger value="windows"><PlatformLogo name="windows" />Windows</TabsTrigger>
+    <TabsTrigger value="debian"><PlatformLogo name="debian" />Debian / Ubuntu</TabsTrigger>
+    <TabsTrigger value="redhat"><PlatformLogo name="redhat" />Red Hat / CentOS / Fedora</TabsTrigger>
+    <TabsTrigger value="homebrew"><PlatformLogo name="homebrew" />Homebrew</TabsTrigger>
+  </TabsList>
+
+<TabsContent value="windows" keepMounted>
+
+### Windows
 
 ```bash
 winget install goplus.xgo
 ```
 
-## Debian 或 Ubuntu
+</TabsContent>
+<TabsContent value="debian" keepMounted>
+
+### Debian 或 Ubuntu
 
 上游给出的命令使用了 `trusted=yes`。即使软件源未通过身份验证，APT 也会将其视为可信。
 
@@ -33,7 +48,10 @@ sudo apt update
 sudo apt install xgo
 ```
 
-## Red Hat、CentOS 或 Fedora
+</TabsContent>
+<TabsContent value="redhat" keepMounted>
+
+### Red Hat、CentOS 或 Fedora
 
 上游给出的命令使用了 `gpgcheck=0`，会关闭该软件源的软件包签名校验。
 
@@ -42,11 +60,18 @@ sudo bash -c 'echo -e "[goplus]\nname=XGo Repo\nbaseurl=https://pkgs.xgo.dev/yum
 sudo yum install xgo
 ```
 
-## macOS 或 Linux（使用 Homebrew）
+</TabsContent>
+<TabsContent value="homebrew" keepMounted>
+
+### macOS 或 Linux（使用 Homebrew）
 
 ```bash
 brew install xgo
 ```
+
+</TabsContent>
+
+</Tabs>
 
 ## 从本文对应的源码版本构建
 
@@ -58,17 +83,32 @@ cd xgo
 git checkout c70869bd8cc9936c9fa2f3023566662c8963c49a
 ```
 
+<Tabs defaultValue="unix">
+  <TabsList aria-label="按平台运行构建脚本" activateOnFocus>
+    <TabsTrigger value="unix"><PlatformLogo name="apple" /><PlatformLogo name="linux" />macOS / Linux</TabsTrigger>
+    <TabsTrigger value="windows"><PlatformLogo name="windows" />Windows</TabsTrigger>
+  </TabsList>
+
+<TabsContent value="unix" keepMounted>
+
 在 macOS 或 Linux 上运行以下构建脚本。
 
 ```bash
 ./all.bash
 ```
 
+</TabsContent>
+<TabsContent value="windows" keepMounted>
+
 在 Windows 上运行以下批处理脚本。
 
 ```bat
 all.bat
 ```
+
+</TabsContent>
+
+</Tabs>
 
 这两个脚本都会调用 `go run cmd/make.go`。
 
@@ -84,3 +124,13 @@ xgo version
 ```
 
 如果终端提示找不到命令，请检查对应的安装目录是否已加入 `PATH`。接下来，按照[你的第一个 XGo 程序](/zh-CN/docs/getting-started/hello-world)创建 `hello.xgo`，再执行 `xgo run hello.xgo`。
+
+## 在容器中查看 XGo 版本
+
+安装了 Docker 的环境可以从 GitHub Container Registry 拉取 XGo 的发行镜像。例如，查询 1.8.0 镜像内的工具链版本：
+
+```sh
+docker run --rm ghcr.io/goplus/xgo:1.8.0 xgo version
+```
+
+容器的工作目录是 `/xgo`。要运行本机项目，可将项目目录挂载到该位置，再将命令换为 `xgo run .`。
