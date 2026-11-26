@@ -30,7 +30,7 @@ Key           = FieldName | Expression | LiteralValue .
 FieldName     = identifier .
 Element       = Expression | LiteralValue .
 ```
-The LiteralType's underlying type `T` must be a [struct](#struct-types) or a classfile type. The types of the elements and keys must be assignable to the respective field; there is no additional conversion. It is an error to specify multiple elements with the same field name.
+The LiteralType's underlying type `T` must be a [struct](#struct-types) or a [classfile](/docs/toolchain/classfile-specification) type. The types of the elements and keys must be assignable to the respective field; there is no additional conversion. It is an error to specify multiple elements with the same field name.
 
 * A key must be a field name declared in the struct type.
 * An element list that does not contain any keys must list an element for each struct field in the order in which the fields are declared.

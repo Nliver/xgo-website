@@ -86,7 +86,7 @@ In contrast, struct field names are fully preserved at runtime, which enables st
 
 In XGo's design philosophy, **tuple does not encourage objectification**, meaning it's not recommended to add methods to tuples. This aligns with tuple's positioning as a simple data container—it should remain lightweight and simple, avoiding the burden of excessive behavioral logic.
 
-If methods are genuinely needed for a data structure, XGo recommends using classfile to achieve more complete object-oriented features.
+If methods are genuinely needed for a data structure, XGo recommends using [classfile](/docs/toolchain/classfiles) to achieve more complete object-oriented features.
 
 ## Practical Application Limitations
 
@@ -98,7 +98,7 @@ More broadly, almost all **functionalities that depend on reflect must use struc
 
 An important consideration when choosing between tuple and struct is their position in **XGo's recommended syntax set (XGo MiniSpec)**. Tuple is included in the XGo MiniSpec, while struct is not.
 
-This design choice reflects XGo's philosophy that **tuple combined with classfile can completely replace all scenarios where struct is used in Go**. The combination provides:
+This design choice reflects XGo's philosophy that **tuple combined with [classfile](/docs/toolchain/classfiles) can completely replace all scenarios where struct is used in Go**. The combination provides:
 - Tuple for lightweight data containers and function return values
 - Classfile for complex types requiring encapsulation, methods, and object-oriented features
 
