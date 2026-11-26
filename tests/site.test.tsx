@@ -40,6 +40,7 @@ import { getPageEditUrl, getPageSources, siteRepositoryUrl, upstreamUrl } from '
 import { appName, getPageImageUrl, siteOrigin } from '@/lib/shared';
 import { cn } from '@/lib/cn';
 import { getMDXComponents, useMDXComponents } from '@/components/mdx';
+import { ContentPageFooter } from '@/components/docs-page';
 import manifest from '@/content/sources.json';
 import { baseOptions } from '@/lib/layout.shared';
 import { getLayoutTabs } from 'fumadocs-ui/layouts/shared';
@@ -293,6 +294,8 @@ describe('actual documentation content and provenance', () => {
     expect(article.indexOf(editHref)).toBeGreaterThan(article.indexOf('class="doc-sources"'));
     expect(toc.indexOf(editHref)).toBeGreaterThan(toc.indexOf('id="toc-title"'));
     expect(html.split(editHref)).toHaveLength(3);
+    expect(article).toContain(locale === 'en' ? '>Edit this page</a>' : '>编辑此页</a>');
+    expect(article).toContain(locale === 'en' ? 'Last updated:' : '最后更新：');
   });
 
   it('puts the blog edit action after the article content', async () => {
@@ -307,6 +310,25 @@ describe('actual documentation content and provenance', () => {
     const editHref = 'href="' + getPageEditUrl(page.path) + '"';
     expect(html.indexOf(editHref)).toBeGreaterThan(html.indexOf('class="doc-sources"'));
     expect(html.split(editHref)).toHaveLength(2);
+    expect(html).toContain('>Edit this page</a>');
+    expect(html).toContain('Last updated:');
+  });
+
+  it.each([
+    ['en', 'Last updated:', 'Nov 26, 2026', 'Unavailable'],
+    ['zh-CN', '最后更新：', '2026年11月26日', '暂无记录'],
+  ] as const)('renders the update timestamp and an empty-history label in %s', (locale, label, localDate, empty) => {
+    const editUrl = getPageEditUrl('example.mdx');
+    const lastModified = new Date('2026-11-26T08:15:42.000Z');
+    const html = renderToStaticMarkup(<ContentPageFooter editUrl={editUrl} lastModified={lastModified} locale={locale} />);
+    expect(html).toContain(label);
+    expect(html).toContain('<time dateTime="2026-11-26T08:15:42.000Z">');
+    expect(html).toContain(localDate);
+    expect(html).toContain('08:15:42');
+    expect(html).toContain('UTC');
+    const missing = renderToStaticMarkup(<ContentPageFooter editUrl={editUrl} locale={locale} />);
+    expect(missing).toContain(empty);
+    expect(missing).not.toContain('<time');
   });
 
   it('redirects a missing Chinese translation to the English original', async () => {
