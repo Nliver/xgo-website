@@ -1,0 +1,128 @@
+---
+title: 使用 LLGo 编译第一个程序
+description: 安装 LLGo，生成本机可执行文件，并检查链接所需的依赖。
+---
+
+将输出一行问候语的 Go 程序编译成本机可执行文件。本例使用 LLGo `v1.0.10` 和 Go 1.27。
+
+## 准备工具链
+
+下载对应操作系统和处理器的 LLGo 发行包并解压，将其中的 `bin` 加入 `PATH`。保留发行包的目录结构，以便 LLGo 找到运行时。Go 可执行文件也需要在 `PATH` 中，以便加载模块和包。
+
+在 macOS 或 Linux 上，独立发行包还需要本机 C 工具链、`pkg-config` 和 Boehm 垃圾回收库。
+
+<Tabs defaultValue="macos">
+  <TabsList aria-label="按平台准备 LLGo" activateOnFocus>
+    <TabsTrigger value="macos"><PlatformLogo name="apple" />macOS</TabsTrigger>
+    <TabsTrigger value="linux"><PlatformLogo name="linux" />Linux</TabsTrigger>
+  </TabsList>
+
+<TabsContent value="macos">
+
+**macOS**
+
+用 Homebrew 安装依赖时，Boehm 垃圾回收库的包名为 `bdw-gc`。也可直接用 Homebrew 安装 LLGo，再检查实际版本。
+
+```sh
+brew install llgo
+```
+
+</TabsContent>
+<TabsContent value="linux">
+
+**Linux**
+
+在 Debian 或 Ubuntu 上，Boehm 垃圾回收库的开发包名为 `libgc-dev`。
+
+</TabsContent>
+
+</Tabs>
+
+在 macOS 或 Linux 上，运行 `pkg-config --libs bdw-gc` 确认能查到链接参数。然后在终端检查 LLGo 的版本。
+
+```sh
+llgo version
+```
+
+## 编译并运行
+
+在空目录中把以下代码保存为 `main.go`。
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, LLGo")
+}
+```
+
+```sh
+go mod init example.com/llgohello
+llgo build -o hello .
+./hello
+```
+
+如果链接器提示找不到 `-lgc`，且垃圾回收库装在自定义位置，可给这次构建传入它的库目录。
+
+```sh
+LDFLAGS="$(pkg-config --libs-only-L bdw-gc)" llgo build -o hello .
+./hello
+```
+
+Windows 上使用 `llgo build -o hello.exe .`，再在 PowerShell 中执行 `.\hello.exe`。预期输出如下。
+
+```text
+Hello, LLGo
+```
+
+也可以用 `llgo run .` 一次完成构建和运行。使用 XGo 调用原生库的示例见 [LLGo 互操作（英文）](/docs/llgo/interoperability)。
+
+## 编译本地 C 源文件
+
+在另一个空目录运行 `go mod init example.com/nativeadd`，并创建名为 `_wrap` 的子目录。将 Go 代码保存为 `main.go`，C 代码保存为 `_wrap/add.c`，然后使用前面的 LLGo 环境编译并运行。
+
+```files
+nativeadd/
+├── _wrap/
+│   └── add.c
+└── main.go
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	_ "unsafe"
+)
+
+const LLGoFiles = "_wrap/add.c"
+
+//go:linkname add C.add32
+func add(a, b int32) int32
+
+func main() {
+	fmt.Println(add(19, 23))
+}
+```
+
+```c
+#include <stdint.h>
+
+int32_t add32(int32_t a, int32_t b) {
+    return a + b;
+}
+```
+
+```sh
+llgo build -o hello .
+./hello
+```
+
+```text
+42
+```
+
+LLGo 从包目录解析 `LLGoFiles` 中的相对路径，多个文件用分号分隔。`go:linkname` 将 Go 声明绑定到 C 符号。两个文件中对应的参数与返回值都使用 32 位有符号整数。

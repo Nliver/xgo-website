@@ -36,6 +36,32 @@ test('rejects missing Markdown and quoted JSX link targets and fragments', () =>
   for (const target of ['/docs/absent', '/docs/missing', '/docs/next#absent']) assert.ok(errors.includes(target));
 }));
 
+test('checks standalone blog URLs and rejects links to the former docs paths', () => withFixture((root, docs, header) => {
+  const file = path.join(root, 'content/sources.json');
+  const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const metadata = { ...manifest.pages['content/docs/next.mdx'], contentType: 'blog' };
+  manifest.pages['content/docs/blog/index.mdx'] = metadata;
+  manifest.pages['content/docs/blog/post.mdx'] = metadata;
+  manifest.pages['content/docs/blog/post.zh-CN.mdx'] = {
+    ...metadata,
+    locale: 'zh-CN',
+    translationOf: 'content/docs/blog/post.mdx',
+    translationReviewStatus: 'pending',
+  };
+  fs.writeFileSync(file, JSON.stringify(manifest));
+  fs.mkdirSync(path.join(docs, 'blog'));
+  fs.writeFileSync(path.join(docs, 'blog/index.mdx'), `${header}\n<a href="/blog/post#details">Read the post</a>\n`);
+  fs.writeFileSync(path.join(docs, 'blog/post.mdx'), `${header}\n## Details\n\n[All posts](/blog)\n`);
+  fs.writeFileSync(path.join(docs, 'blog/post.zh-CN.mdx'), `${header}\n## 详情\n\n[本节](/zh-CN/blog/post#详情)\n`);
+  fs.appendFileSync(path.join(docs, 'index.mdx'), '\n[Blog](/blog)\n');
+  assert.deepEqual(checkDocs(root).errors, []);
+
+  fs.appendFileSync(path.join(docs, 'index.mdx'), '\n[Old URL](/docs/blog/post)\n[Missing heading](/blog/post#missing)\n');
+  const errors = checkDocs(root).errors.join('\n');
+  assert.match(errors, /internal link points to missing page \/docs\/blog\/post/);
+  assert.match(errors, /internal link points to missing heading \/blog\/post#missing/);
+}));
+
 test('rejects language-free and unclosed fences', () => withFixture((root, docs) => {
   fs.appendFileSync(path.join(docs, 'index.mdx'), '\n```\nhello\n```\n\n```go\necho "hello"\n');
   const errors = checkDocs(root).errors.join('\n');

@@ -1,0 +1,22 @@
+---
+title: XGo 生态项目
+description: 从编译、解释执行和游戏开发等任务进入相应项目的指南。
+---
+
+import { XGoLogo } from '@/components/xgo-logo';
+import { Cpu, Gamepad2, Network, PanelsTopLeft, Server, SquareTerminal, Terminal } from 'lucide-react';
+
+<Cards>
+  <Card title="XGo" icon={<XGoLogo className="w-10!" />} href="/zh-CN/docs" description="编写并运行第一个 XGo 程序。" />
+  <Card title="LLGo" icon={<Cpu />} href="/zh-CN/docs/llgo" description="把 Go 程序编译成本机可执行文件。" />
+  <Card title="iXGo" icon={<Terminal />} href="/zh-CN/docs/ixgo" description="运行 XGo 脚本，尝试交互式解释器。" />
+  <Card title="XBuilder" icon={<PanelsTopLeft />} href="/zh-CN/docs/xbuilder" description="在浏览器创建 SPX 项目，预览精灵的对白。" />
+  <Card title="SPX" icon={<Gamepad2 />} href="/zh-CN/docs/spx" description="在本地运行 Hello 游戏，用事件让精灵互动。" />
+  <Card title="MCP 和 mcptest（英文）" icon={<Network />} href="/docs/mcp" description="构建并测试一个模型上下文协议工具。" />
+  <Card title="YAP、yaptest 和 YDB（英文）" icon={<Server />} href="/docs/yap" description="处理 HTTP 请求、测试响应和查询内存数据库。" />
+  <Card title="Cobra xcmd（英文）" icon={<SquareTerminal />} href="/docs/cobra" description="创建带命名选项的命令行工具。" />
+</Cards>
+
+## 类框架和其他工具
+
+英文版还有 [GSH 脚本](/docs/ecosystem/gsh)和[从 HDQ 迁移到 DQL](/docs/ecosystem/hdq)的指南。

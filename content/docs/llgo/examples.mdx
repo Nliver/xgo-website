@@ -1,0 +1,533 @@
+---
+title: "LLGo demo programs"
+description: "Use LLGo to run XGo examples that call C, C++, and Python libraries."
+---
+
+Install LLGo and place `llgo` on your command path. Run each command from its listed directory in the XGo checkout. Python demos need the Python runtime that LLGo is configured to use. See [LLGo first compilation](/docs/llgo) for setup and the [LLGo interoperability guide](/docs/llgo/interoperability) for native and Python imports.
+
+The shared module pins `github.com/goplus/lib v0.2.0`. Generate Go source with `xgo go .`, then run that package with `llgo run .`. LLGo v1.0.10 rejects the linker flags that this XGo revision passes when invoked through `XGO_GOCMD=llgo xgo run .`.
+
+## Hello world
+
+Run from `demo/_llgo/hello`.
+
+Print a line using the XGo `echo` builtin.
+
+### hello.xgo
+
+```xgo
+echo "Hello world"
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## C standard streams
+
+Run from `demo/_llgo/hellollgo`.
+
+Import libc using `import "c"`, the abbreviated spelling of `import "github.com/goplus/lib/c"`. The example uses C string literals and writes to stdout with `printf` and stderr with `fprintf`.
+
+### hello.xgo
+
+```xgo
+import "c"
+
+c.printf c"Hello, llgo!\n"
+c.fprintf c.Stderr, c"Hi, %6.1f\n", 3.14
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+The program prints these lines.
+
+```text
+Hello, llgo!
+Hi,    3.1
+```
+
+## Call C printf
+
+Run from `demo/_llgo/chello`.
+
+Print a C string through libc.
+
+### hello.xgo
+
+```xgo
+import "c"
+
+c.printf c"Hello world\n"
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Read a C++ string
+
+Run from `demo/_llgo/cpphello`.
+
+Construct a C++ standard-library string using the `cpp/std` binding.
+
+### cpphello.xgo
+
+```xgo
+import "cpp/std"
+
+println std.str("Hello world").str
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Call Python print
+
+Run from `demo/_llgo/pyhello`.
+
+Pass a Python string literal to the Python printing function.
+
+### hello.xgo
+
+```xgo
+import "py/std"
+
+std.print py"Hello world"
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Convert a float to a Python value
+
+Run from `demo/_llgo/pyprint`.
+
+Wrap a floating-point number as a Python object and print it.
+
+### print.xgo
+
+```xgo
+import (
+	"py"
+	"py/std"
+)
+
+x := py.float(3.14)
+std.print(x)
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Call Python max
+
+Run from `demo/_llgo/pymax`.
+
+Find the maximum first from positional Python arguments and then from a Python list iterator.
+
+### pymax.xgo
+
+```xgo
+import (
+	"py"
+	"py/std"
+)
+
+x := std.max(py.float(3.0), py.float(9.0), py.float(23.0), py.float(100.0))
+std.print(x)
+
+list := py.list(3.0, 9.0, 23.0, 100.0)
+y := std.max(std.iter(list))
+std.print(y)
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Call the Python math module
+
+Run from `demo/_llgo/callpy`.
+
+Compute the square root of two with Python and format the result using libc.
+
+### callpy.xgo
+
+```xgo
+import (
+	"c"
+	"py"
+	"py/math"
+)
+
+x := math.sqrt(py.float(2))
+c.printf c"sqrt(2) = %f\n", x.float64
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Add matrices with NumPy
+
+Run from `demo/_llgo/matrix`.
+
+Install NumPy in the Python environment that LLGo uses. The sample passes nested Python lists to `numpy.add`.
+
+### matrix.xgo
+
+```xgo
+import (
+	"c"
+	"py"
+	"py/numpy"
+)
+
+a := py.list(
+	py.list(1.0, 2.0, 3.0),
+	py.list(4.0, 5.0, 6.0),
+	py.list(7.0, 8.0, 9.0),
+)
+b := py.list(
+	py.list(9.0, 8.0, 7.0),
+	py.list(6.0, 5.0, 4.0),
+	py.list(3.0, 2.0, 1.0),
+)
+x := numpy.add(a, b)
+c.printf c"a+b = %s\n", x.str.cStr
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Build a PyTorch tensor
+
+Run from `demo/_llgo/pytensor`.
+
+Install PyTorch in the Python environment that LLGo uses. The sample converts nested Python lists to a tensor.
+
+### tensor.xgo
+
+```xgo
+import (
+	"py"
+	"py/std"
+	"py/torch"
+)
+
+data := py.list(
+	py.list(1.0, 2.0),
+	py.list(3.0, 4.0),
+)
+x := torch.tensor(data)
+std.print(x)
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Call Python statistics
+
+Run from `demo/_llgo/statistics`.
+
+Compute the arithmetic mean of a Python list and print it through libc.
+
+### statistics.xgo
+
+```xgo
+import (
+	"c"
+	"py"
+	"py/statistics"
+)
+
+list := py.list(1.0, 2.0, 3.0, 4.0, 4.0)
+mean := statistics.mean(list)
+c.printf c"mean(1, 2, 3, 4, 4) = %f\n", mean.float64
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Defer C calls
+
+Run from `demo/_llgo/defer`.
+
+Observe the deferred calls execute in reverse order before the program exits.
+
+### defer.xgo
+
+```xgo
+import "c"
+
+func f(s string) bool {
+	return len(s) > 2
+}
+
+defer func() {
+	c.printf c"hi\n"
+}()
+if s := "hello"; f(s) {
+	defer c.printf(c"%s\n", c.allocaCStr(s))
+} else {
+	defer c.printf(c"world\n")
+}
+defer c.printf(c"bye\n")
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Format a custom error
+
+Run from `demo/_llgo/errors`.
+
+Implement Go’s `error` interface and pass the formatted error to C.
+
+### errors.xgo
+
+```xgo
+import (
+	"c"
+)
+
+// New returns an error that formats as the given text.
+// Each call to New returns a distinct error value even if the text is identical.
+func New(text string) error {
+	return &errorString{text}
+}
+
+// errorString is a trivial implementation of error.
+type errorString struct {
+	s string
+}
+
+func (e *errorString) Error() string {
+	return e.s
+}
+
+e := new("an error")
+c.printf c.allocaCStr(e.error+"\n")
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Start a goroutine
+
+Run from `demo/_llgo/goroutine`.
+
+Read the sample as a demonstration of goroutine syntax. The shared `done` flag is accessed without synchronization, so output and termination depend on runtime behavior.
+
+### goroutine.xgo
+
+```xgo
+import "c"
+
+done := false
+go func() {
+	c.printf c"Hello, goroutine\n"
+	done = true
+}()
+for !done {
+	c.printf c"."
+}
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Pass a comparison callback to C
+
+Run from `demo/_llgo/qsort`.
+
+Use a lambda as the comparison callback for libc’s `qsort`.
+
+### qsort.xgo
+
+```xgo
+import (
+	"c"
+	"unsafe"
+)
+
+a := [100, 8, 23, 2, 7]
+c.qsort unsafe.Pointer(&a[0]), 5, unsafe.Sizeof(0), (a, b) => {
+	return c.Int(*(*int)(a) - *(*int)(b))
+}
+for v in a {
+	c.printf c"%d\n", v
+}
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Construct a slice with reflection
+
+Run from `demo/_llgo/reflect`.
+
+Build a slice type, append integers, and print the reflected values.
+
+### reflect.xgo
+
+```xgo
+import (
+	"c"
+	"reflect"
+)
+
+tyIntSlice := reflect.sliceOf(reflect.typeOf(0))
+v := reflect.zero(tyIntSlice)
+v = reflect.append(v, reflect.valueOf(1), reflect.valueOf(2), reflect.valueOf(3))
+for i, n := 0, v.len; i < n; i++ {
+	item := v.index(i)
+	c.Printf c"%d\n", item.int
+}
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Run an SQLite query
+
+Run from `demo/_llgo/sqlitedemo`.
+
+Install SQLite for the LLGo target. Run this in a scratch directory because the example removes and recreates `test.db` in its working directory.
+
+### sqlitedemo.xgo
+
+```xgo
+import (
+	"c"
+	"c/os"
+	"c/sqlite"
+)
+
+func check(err sqlite.Errno, db *sqlite.Sqlite3, at string) {
+	if err != sqlite.OK {
+		c.printf c"==> %s Error: (%d) %s\n", c.allocaCStr(at), err, db.errmsg
+		c.exit 1
+	}
+}
+
+func checkDone(err sqlite.Errno, db *sqlite.Sqlite3, at string) {
+	if err != sqlite.Done {
+		check err, db, at
+	}
+}
+
+os.remove c"test.db"
+
+db, err := sqlite.open(c"test.db")
+check err, db, "sqlite: Open"
+
+err = db.exec(c"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)", nil, nil, nil)
+check err, db, "sqlite: Exec CREATE TABLE"
+
+stmt, err := db.prepareV3("INSERT INTO users (id, name) VALUES (?, ?)", 0, nil)
+check err, db, "sqlite: PrepareV3 INSERT"
+
+stmt.bindInt 1, 100
+stmt.bindText 2, c"Hello World", -1, nil
+
+err = stmt.step
+checkDone err, db, "sqlite: Step INSERT 1"
+
+stmt.reset
+stmt.bindInt 1, 200
+stmt.bindText 2, c"This is llgo", -1, nil
+
+err = stmt.step
+checkDone err, db, "sqlite: Step INSERT 2"
+
+stmt.close
+
+stmt, err = db.prepareV3("SELECT * FROM users", 0, nil)
+check err, db, "sqlite: PrepareV3 SELECT"
+
+for {
+	if err = stmt.step; err != sqlite.HasRow {
+		break
+	}
+	c.printf c"==> id=%d, name=%s\n", stmt.columnInt(0), stmt.columnText(1)
+}
+checkDone err, db, "sqlite: Step done"
+
+stmt.close
+db.close
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## Open a native raylib window
+
+Run from `demo/_llgo/tetris` with a graphical display and a raylib installation for the LLGo target. The binding looks for raylib through `pkg-config` and can fall back to `-lraylib`.
+
+```sh
+pkg-config --libs raylib
+xgo go .
+llgo run .
+```
+
+The game opens a 300 by 600 pixel window with a 10-column, 20-row board. Use Left and Right to move. Press Space, Up, or Down to rotate. The program rejects moves and rotations that collide with the board or a locked block. A completed row adds 100 points and shifts the rows above it down. When the next piece cannot spawn, the program displays the score on a Game Over screen.
+
+Read `checkCollision` and `clearLines` first to see how the grid state changes. The main loop uses frame time to drop pieces at 0.2-second intervals and converts grid coordinates to pixels for raylib's drawing functions. The example uses `c.sprintf` to format its score into a C string for `raylib.drawText`.
+
+### Initialize the window
+
+The demo initializes raylib with the dimensions defined by the board constants and requests 60 frames per second.
+
+```xgo
+raylib.initWindow SCREENWIDTH, SCREENHEIGHT, c"tetris (powered by raylib and XGo)"
+raylib.setTargetFPS 60
+```
+
+### Draw the board
+
+Inside the frame loop, the program clears the background and draws the color stored in each grid cell. Subtracting one from the rectangle dimensions leaves a gap between adjacent cells.
+
+```xgo
+raylib.beginDrawing
+raylib.clearBackground raylib.RAYWHITE
+for y := 0; y < BOARD_HEIGHT; y++ {
+	for x := 0; x < BOARD_WIDTH; x++ {
+		raylib.drawRectangle c.Int(x*BLOCK_SIZE), c.Int(y*BLOCK_SIZE), c.Int(BLOCK_SIZE-1), c.Int(BLOCK_SIZE-1), board[y][x]
+	}
+}
+```
+
+The original `tetris.xgo` also draws the active piece and score before it calls `raylib.endDrawing`.

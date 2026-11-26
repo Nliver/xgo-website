@@ -1,0 +1,20 @@
+---
+title: Trace movement and collisions in MazePlay
+description: Trace the event handlers in MazePlay, a game written with SPX v1.1.0.
+---
+
+## Inspect the project
+
+```sh
+git clone https://github.com/goplus/MazePlay.git
+cd MazePlay
+git checkout --detach 48b33bae8adeed19d07d982768e2e5edabda9a14
+```
+
+Read `main.spx` for the shared game state, then open `Calf.spx` for the sprite's event handlers. Keep the `assets/` directory alongside the scripts. The project's historical launch command is `gop run .` with a compatible Go+ toolchain and a graphical desktop. This project uses SPX v1.1.0. For the current engine and launcher, see the [SPX guide](/docs/spx).
+
+## Trace the events
+
+Each arrow-key handler moves the calf three units along one axis. A separate start handler checks collisions in a loop. Touching the maze plays the hit sound and puts the calf back at (−204, 145). Touching Red displays “You win”, waits three seconds and exits.
+
+Compare the right-arrow handler with the collision loop. The handler only changes x. The loop checks the new position and waits 0.03 seconds between checks.

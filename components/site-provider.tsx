@@ -4,7 +4,7 @@ import { RootProvider } from 'fumadocs-ui/provider/next';
 import { i18nProvider } from 'fumadocs-ui/i18n';
 import { usePathname, useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { translations } from '@/lib/shared';
+import { blogRoute, docsRoute, translations } from '@/lib/shared';
 
 export function SiteProvider({ locale, translatedPaths, children }: {
   locale: 'en' | 'zh-CN';
@@ -15,6 +15,9 @@ export function SiteProvider({ locale, translatedPaths, children }: {
   const router = useRouter();
   const englishPath = pathname.replace(/^\/zh-CN(?=\/|$)/, '') || '/';
   const translated = translatedPaths.includes(englishPath);
+  const isContentPage = [docsRoute, blogRoute].some((route) =>
+    englishPath === route || englishPath.startsWith(`${route}/`),
+  );
 
   function changeLanguage(language: string) {
     if (language === locale) return;
@@ -22,7 +25,7 @@ export function SiteProvider({ locale, translatedPaths, children }: {
       router.push(englishPath);
       return;
     }
-    if (!englishPath.startsWith('/docs')) {
+    if (!isContentPage) {
       router.push('/zh-CN');
       return;
     }
@@ -37,7 +40,7 @@ export function SiteProvider({ locale, translatedPaths, children }: {
       ...provider,
       locales: [
         { locale: 'en', name: 'English' },
-        { locale: 'zh-CN', name: englishPath.startsWith('/docs') && !translated ? '简体中文（此页暂无译文）' : '简体中文' },
+        { locale: 'zh-CN', name: isContentPage && !translated ? '简体中文（此页暂无译文）' : '简体中文' },
       ],
       onLocaleChange: changeLanguage,
     }}>

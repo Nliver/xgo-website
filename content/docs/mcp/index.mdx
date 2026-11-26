@@ -1,0 +1,69 @@
+---
+title: MCP server and tests in XGo
+description: Build a greeting tool using MCP classfiles and test it locally with mcptest.
+---
+
+Create a Model Context Protocol (MCP) server that handles a greeting request. The test uses a mocked server and sends an MCP tool call locally.
+
+## Create a module
+
+Install XGo and run these commands in an empty directory.
+
+```sh
+xgo mod init example.com/mcphello
+go get github.com/goplus/mcp@v0.9.8
+```
+
+In `go.mod`, set the comment on the MCP dependency to `//xgo:class` so XGo loads its class framework.
+
+Save this server declaration as `main_mcp.gox`.
+
+```xgo
+server "Greeting Demo", "1.0.0"
+```
+
+Save this tool as `hello_tool.gox`. The tool schema declares a required string named `name`, and the body reads it through the class framework's environment expression.
+
+```xgo
+tool "helloWorld", => {
+    description "Say hello to someone"
+    string "name", => {
+        required
+        description "Name of the person to greet"
+    }
+}
+
+name, ok := ${name}.(string)
+if !ok {
+    return newError("name must be a string")
+}
+
+return text("Hello, ${name}!")
+```
+
+## Test the tool
+
+Save this test as `hello_mtest.gox`.
+
+```xgo
+mock new(MCPApp)
+
+initialize nil
+ret {}
+
+call "helloWorld", {"name": "Ken"}
+ret {
+    "content": [{"type": "text", "text": "Hello, Ken!"}],
+}
+```
+
+Run the test.
+
+```sh
+xgo mod tidy
+xgo test -v .
+```
+
+The test runner reports `PASS`. The assertion checks that the tool response contains the text `Hello, Ken!`. To run the server for a client, use `xgo run .`. MCP also provides `_res.gox` classfiles for resources and resource templates, and `_prompt.gox` classfiles for prompts.
+
+See [Classfiles](/docs/toolchain/classfiles) for how suffixes select classes in a framework.

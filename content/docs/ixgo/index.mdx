@@ -1,0 +1,69 @@
+---
+title: iXGo interpreter
+description: Run a Go or XGo file, use the interactive REPL, and embed the iXGo interpreter in a Go program.
+---
+
+Use iXGo to interpret an XGo file and try an expression in a read-eval-print loop (REPL). The documented snapshot supports Go 1.26 and 1.27.
+
+## Install the command
+
+Install the CLI into your Go executable directory. Add `go env GOBIN` to `PATH` if it is set, or use the `bin` directory under `go env GOPATH`.
+
+```sh
+go install github.com/goplus/ixgo/cmd/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
+ixgo version
+```
+
+## Run an XGo file
+
+Save the program as `squares.xgo` in a new directory.
+
+```xgo
+values := [2, 3, 5]
+echo [n*n for n in values]
+```
+
+```sh
+ixgo run squares.xgo
+```
+
+```text
+[4 9 25]
+```
+
+Use `ixgo run .` to run the package in the current directory. With `ixgo test`, the documented snapshot leaves fuzzing and coverage flags unsupported.
+
+## Try the REPL
+
+Run `ixgo repl` and enter `echo "hello from the REPL"`. It prints `hello from the REPL`. With `ixgo repl -go`, the REPL accepts Go syntax. There is also a [browser REPL](/docs/toolchain/repl).
+
+## Embed iXGo
+
+In a separate directory, create a Go module.
+
+```sh
+go mod init example.com/ixgoembed
+go get github.com/goplus/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
+```
+
+Save this program as `main.go`. The blank import registers the XGo builder so `RunFile` can process the `.xgo` source.
+
+```go
+package main
+
+import (
+    "github.com/goplus/ixgo"
+    _ "github.com/goplus/ixgo/xgobuild"
+)
+
+func main() {
+    _, err := ixgo.RunFile("main.xgo", `echo "Hello from embedded XGo"`, nil, 0)
+    if err != nil {
+        panic(err)
+    }
+}
+```
+
+Run `go mod tidy` and `go run .`. The program prints `Hello from embedded XGo`.
+
+For embedded Go source that imports standard-library packages, register the relevant exports, for example with a blank import of `github.com/goplus/ixgo/pkg/fmt`. The [iXGo host guide](/docs/ixgo/embedding) shows how to add direct-call adapters, return an interpreted callback to Go, and control memoization per interpreter context.

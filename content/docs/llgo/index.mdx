@@ -1,0 +1,130 @@
+---
+title: LLGo first compilation
+description: Install LLGo, compile a Go program, and confirm the compiler and runtime setup.
+---
+
+Compile a Go program with LLGo and run the native executable. LLGo uses LLVM as its compiler backend and can call libraries that expose the C application binary interface (ABI).
+
+## Install and check LLGo
+
+The example uses LLGo `v1.0.10` and Go 1.27. Download the release archive for your operating system and processor, extract it, and add its `bin` directory to `PATH`. Keep the surrounding distribution directory intact so LLGo can find the runtime. Keep the Go toolchain on `PATH` for module and package loading.
+
+On macOS and Linux, the standalone archive also needs a native C toolchain, `pkg-config`, and the Boehm garbage collector.
+
+<Tabs defaultValue="macos">
+  <TabsList aria-label="LLGo by platform" activateOnFocus>
+    <TabsTrigger value="macos"><PlatformLogo name="apple" />macOS</TabsTrigger>
+    <TabsTrigger value="linux"><PlatformLogo name="linux" />Linux</TabsTrigger>
+  </TabsList>
+
+<TabsContent value="macos">
+
+**macOS**
+
+Homebrew provides the Boehm garbage collector as `bdw-gc`. To install LLGo through Homebrew, use the command below and check the actual version. The package can advance independently of this guide.
+
+```sh
+brew install llgo
+```
+
+</TabsContent>
+<TabsContent value="linux">
+
+**Linux**
+
+On Debian or Ubuntu, the Boehm garbage collector development package is `libgc-dev`.
+
+</TabsContent>
+
+</Tabs>
+
+On macOS or Linux, run `pkg-config --libs bdw-gc` to check the linker flags. Then check the LLGo version in your terminal.
+
+```sh
+llgo version
+```
+
+## Compile and run
+
+In a new directory, create `main.go`.
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, LLGo")
+}
+```
+
+Initialize a module, build it, and run the result from the same directory.
+
+```sh
+go mod init example.com/llgohello
+llgo build -o hello .
+./hello
+```
+
+If the linker reports that it cannot find `-lgc` and your Boehm GC library is installed in a custom directory, pass the directory reported by `pkg-config` to the build.
+
+```sh
+LDFLAGS="$(pkg-config --libs-only-L bdw-gc)" llgo build -o hello .
+./hello
+```
+
+On Windows, build with `llgo build -o hello.exe .` and run `.\hello.exe` from PowerShell.
+
+```text
+Hello, LLGo
+```
+
+Use `llgo run .` to build and execute the package in one step. See the [LLGo interoperability guide](/docs/llgo/interoperability) for XGo modules that use C, C++, or Python packages, and the [LLGo examples](/docs/llgo/examples) for the native-library prerequisites of each demo.
+
+## Compile a local C source file
+
+In a separate empty directory, run `go mod init example.com/nativeadd` and create a directory named `_wrap`. Save the Go code as `main.go` and the C code as `_wrap/add.c`. Build and run the executable using the same LLGo setup as above.
+
+```files
+nativeadd/
+├── _wrap/
+│   └── add.c
+└── main.go
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	_ "unsafe"
+)
+
+const LLGoFiles = "_wrap/add.c"
+
+//go:linkname add C.add32
+func add(a, b int32) int32
+
+func main() {
+	fmt.Println(add(19, 23))
+}
+```
+
+```c
+#include <stdint.h>
+
+int32_t add32(int32_t a, int32_t b) {
+    return a + b;
+}
+```
+
+```sh
+llgo build -o hello .
+./hello
+```
+
+```text
+42
+```
+
+LLGo resolves the paths in `LLGoFiles` relative to the package directory. Separate multiple files with a semicolon. The linkname directive connects the Go declaration to the C symbol. Both sides use a signed 32-bit integer for the parameters and the return value.

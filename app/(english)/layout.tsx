@@ -5,6 +5,7 @@ import '../global.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
+  icons: { icon: { url: '/logos/xgo.svg', type: 'image/svg+xml', sizes: 'any' } },
   title: {
     default: 'XGo Documentation',
     template: '%s | XGo Documentation',

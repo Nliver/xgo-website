@@ -1,5 +1,5 @@
 import { DocumentationPage, documentationMetadata } from '@/components/docs-page';
-import { source } from '@/lib/source';
+import { getDocsPages } from '@/lib/source';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const { slug } = await props.params;
@@ -7,7 +7,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
 }
 
 export function generateStaticParams() {
-  return source.getPages('en').map((page) => ({ slug: page.slugs }));
+  return getDocsPages('en').map((page) => ({ slug: page.slugs }));
 }
 
 export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>) {

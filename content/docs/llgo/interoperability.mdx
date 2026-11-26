@@ -1,0 +1,107 @@
+---
+title: LLGo interoperability
+description: Use XGo with LLGo to call C, C++, and Python libraries.
+---
+
+XGo can use different Go compilers as its underlying support. The upstream project documents the official Go compiler, [LLGo](/docs/llgo), and [TinyGo](/docs/examples/tinygo-demos). LLGo is an LLVM-based Go compiler maintained by the XGo team. Its foreign-language packages let XGo programs call C, C++, and Python libraries.
+
+## Selecting LLGo
+
+Initialize a module with the `-llgo` option.
+
+```sh
+xgo mod init -llgo YourModulePath
+```
+
+The generated `go.mod` contains a compiler annotation similar to this.
+
+```text
+module YourModulePath
+
+go 1.21 // llgo 1.0
+
+require github.com/goplus/lib v0.7.0
+```
+
+The exact versions depend on the XGo and LLGo installations. The compiler annotation identifies LLGo and its version while the `go` directive continues to identify the Go language version.
+
+## Generate and run the Go package
+
+Install LLGo and complete the toolchain check. [LLGo first compilation](/docs/llgo)
+
+In the XGo package directory, generate Go source, then invoke LLGo directly.
+
+```sh
+xgo go .
+llgo run .
+```
+
+On LLGo v1.0.10, the `XGO_GOCMD=llgo xgo run .` command shown in the upstream C demo fails with `unsupported LLGo linker options`. The two-step command keeps XGo's linker flags out of the LLGo invocation.
+
+## Calling C
+
+Import the `c` package and use a C string literal when an API expects a null-terminated C string.
+
+```xgo
+import "c"
+
+c.printf c"Hello world\n"
+```
+
+The `c"Hello world\n"` form is an XGo literal for a C-style string. The complete source is available in the [C standard streams demo](/docs/llgo/examples#c-standard-streams).
+
+## Calling C++ libraries
+
+LLGo exposes C++ packages through import paths such as `cpp/std`.
+
+```xgo
+import "cpp/std"
+
+println std.str("Hello world").str
+```
+
+See the [C++ demo](/docs/llgo/examples#read-a-c-string) for the build prerequisites.
+
+## Calling Python
+
+Import `py/std` and use a Python string literal for Python APIs.
+
+```xgo
+import "py/std"
+
+std.print py"Hello world"
+```
+
+The complete source is available in the [Python demo](/docs/llgo/examples#call-python-print).
+
+## Working with Python data
+
+The `py` package represents Python values and `py/torch` exposes PyTorch bindings.
+
+```xgo
+import (
+    "py"
+    "py/std"
+    "py/torch"
+)
+
+data := py.list(
+    py.list(1.0, 2.0),
+    py.list(3.0, 4.0),
+)
+x := torch.tensor(data)
+std.print(x)
+```
+
+Install PyTorch in the Python environment that LLGo uses. [PyTorch demo](/docs/llgo/examples#build-a-pytorch-tensor)
+
+## Larger examples
+
+The repository includes complete programs that exercise the same interop layer.
+
+- Open a program window and draw through `c/raylib`. [Raylib demo](/docs/llgo/examples#open-a-native-raylib-window)
+- Use `c/sqlite` for database operations. [SQLite demo](/docs/llgo/examples#run-an-sqlite-query)
+- Calculate the arithmetic mean through Python. [Statistics demo](/docs/llgo/examples#call-python-statistics)
+
+Before running an LLGo example, install the toolchain and the native or Python libraries required by that example. The [LLGo project documentation](/docs/llgo) describes its supported platforms and setup.
+

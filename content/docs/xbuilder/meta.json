@@ -1,0 +1,9 @@
+{
+  "title": "XBuilder",
+  "description": "Build and preview SPX games in the browser.",
+  "root": true,
+  "icon": "PanelsTopLeft",
+  "pages": [
+    "index"
+  ]
+}

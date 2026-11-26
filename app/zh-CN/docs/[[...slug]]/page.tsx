@@ -1,5 +1,5 @@
 import { DocumentationPage, documentationMetadata } from '@/components/docs-page';
-import { resolveChineseDocs, source } from '@/lib/source';
+import { getDocsPages, resolveChineseDocs } from '@/lib/source';
 import { notFound, redirect } from 'next/navigation';
 
 function translatedPage(slug?: string[]) {
@@ -18,7 +18,7 @@ export default async function Page(props: PageProps<'/zh-CN/docs/[[...slug]]'>) 
 }
 
 export function generateStaticParams() {
-  const paths = new Map(source.getPages().map((page) => [page.slugs.join('/'), page.slugs]));
+  const paths = new Map(getDocsPages().map((page) => [page.slugs.join('/'), page.slugs]));
   return Array.from(paths.values(), (slug) => ({ slug }));
 }
 

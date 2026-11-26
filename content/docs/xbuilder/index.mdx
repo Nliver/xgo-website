@@ -1,0 +1,43 @@
+---
+title: XBuilder first game preview
+description: Create a browser-based SPX project, add a sprite script, and inspect the runtime output in XBuilder.
+---
+
+Create a project, add a sprite, and make it speak when the game starts. XBuilder is a browser editor for games built with SPX.
+
+## Create and run a project
+
+1. Open [XBuilder](https://xbuilder.com) and sign in. Use the **New project…** action to create an SPX project.
+2. In the sprite panel, add a sprite from the asset library. Select the sprite and open its script in the code editor.
+3. Add the following start handler to the sprite script. If a start handler already exists, add the `say` line inside it.
+
+```xgo
+onStart => {
+    say "Hello from XBuilder", 2
+}
+```
+
+Select **Run** in the preview. The sprite displays a speech bubble with `Hello from XBuilder` for two seconds. Use **Stop** to return to editing. If the preview fails to start, check the console for the runtime error or the markers in the code editor for the affected script.
+
+## Find the right editor panel
+
+A project has one stage. Stage code runs logic shared by sprites, and the stage settings hold backdrops and other stage-level settings. Each sprite has its own code and costumes. You can use the same sound from a sprite or from the stage.
+
+Use the preview to test current edits. Use the project save action to save changes to the cloud. If you need a local copy of the game content, use export. Importing a game file into an existing project replaces its game content. Export that content first if you need to keep both versions.
+
+## Set the camera position and zoom
+
+Use the first project above and keep its sprite near the center of the stage. In the editor toolbar, switch to **Map edit mode** and set **Map size** to 1000 wide by 1000 high. Switch back to **Default mode**, select the stage, and open **Code**. Add the following stage script. If the stage already has an `onStart` handler, add the two camera calls inside it.
+
+```xgo
+onStart => {
+    Camera.setXYpos 0, 0
+    Camera.setZoom 2
+}
+```
+
+Select **Run**. The camera centers on the stage position `(0, 0)` and magnifies the view. At zoom 2, a 480 × 360 viewport shows the central 240 × 180 area of the stage. The sprite's stage coordinates stay the same. Select **Stop**, change the zoom to `1`, and run again to compare the wider view.
+
+Use **Map edit mode** to place sprites in stage coordinates. Widgets such as on-screen controls use viewport coordinates, so they stay in the same place on screen as the camera moves. The `mouseX` and `mouseY` values already use stage coordinates and can be passed to a sprite's `setXYpos` method.
+
+For game scripts and local project structure, continue with [SPX](/docs/spx).

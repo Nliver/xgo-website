@@ -1,0 +1,54 @@
+---
+title: SPX first game
+description: Set up the SPX 2D engine, run a sprite demo, and use events to make sprites interact.
+---
+
+Run the SPX Hello demo locally and change the message shown by its sprite. SPX is a Scratch-compatible 2D game engine. A game project contains `.spx` classfiles and an asset directory.
+
+## Set up the runtime
+
+Install Git, Make, Go, and the XGo CLI. On Windows, use Git Bash and install MinGW-w64. The commands below use the SPX `v4.0.2` release and its matching runtime. Keep the Go executable directory on `PATH`. SPX setup uses Go 1.26.5 and XGo 1.7.5 as its locked build versions.
+
+```sh
+git clone --branch v4.0.2 --depth 1 https://github.com/goplus/spx.git
+cd spx
+make setup
+make doctor
+```
+
+`make setup` downloads the runtime for your host and installs the `spx` command. `make doctor` reports the toolchain and runtime it finds.
+
+## Run Hello and edit its script
+
+From the checkout, open `tutorial/00-Hello` and run the game.
+
+```sh
+cd tutorial/00-Hello
+xgo run .
+```
+
+The game opens a window showing the Calf sprite with the message `Hello XGo`. The `assets/index.json` file lists `Calf` in `zorder`, the stage's drawing order. `Calf.spx` contains the sprite's start event.
+
+```xgo
+onStart => {
+    say "Hello XGo"
+}
+```
+
+Close the window, change the message in `Calf.spx`, and rerun the command to see your edit. For a browser editor and preview, follow the [XBuilder guide](/docs/xbuilder).
+
+## Run the event and state tutorials
+
+Each tutorial has its own project directory. Run `xgo run .` inside the tutorial you choose.
+
+| Directory | Task | What you see |
+| --- | --- | --- |
+| `tutorial/01-Weather` | Follow `broadcast` and `onMsg`. | Kai and Jaime carry on a conversation by sending messages to one another. |
+| `tutorial/02-Dragon` | Find the stage monitor for the sprite's `score` variable. | The score changes when Dragon touches Shark. |
+| `tutorial/03-Clone` | Compare the clones' own `id` with the shared `gid`. | Clicking Calf creates a clone. Clicking the arrow removes the most recent clone. |
+| `tutorial/04-Bullet` | Follow a clone from creation to cleanup. | Playing the demo spawns bullets as temporary sprites. |
+| `tutorial/05-Animation` | Inspect the costume sequences in the assets. | The sprite changes costumes as it animates. |
+
+In Weather, the start handler in `Kai.spx` broadcasts message `1`. The handler `onMsg "1"` in `Jaime.spx` responds and broadcasts `2`. The handler `onMsg "2"` in `Kai.spx` continues the conversation. For the language-level behavior behind sprite files, see the [classfile specification](/docs/toolchain/classfile-specification).
+
+To start a project of your own, follow the [SPX command-line workflow](/docs/spx/cli). To add sound to a sprite animation, use the [animation audio guide](/docs/spx/animation-audio).

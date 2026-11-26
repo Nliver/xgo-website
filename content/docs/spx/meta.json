@@ -1,0 +1,12 @@
+{
+  "title": "SPX",
+  "description": "Create and run sprite-based games.",
+  "root": true,
+  "icon": "Gamepad2",
+  "pages": [
+    "index",
+    "cli",
+    "animation-audio",
+    "examples"
+  ]
+}
