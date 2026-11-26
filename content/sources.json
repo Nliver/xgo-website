@@ -3,6 +3,108 @@
   "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
   "sourceCheckedAt": "2026-11-25",
   "pages": {
+    "content/docs/(xgo)/toolchain/command-reference.zh-CN.mdx": {
+      "sourcePath": "cmd/xgo/main_app.gox",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cmd/internal/build/build.go",
+        "cmd/internal/run/run.go",
+        "cmd/internal/install/install.go",
+        "cmd/internal/test/test.go",
+        "cmd/internal/gopfmt/fmt.go",
+        "cmd/internal/gengo/go.go",
+        "cmd/internal/watch/watch.go",
+        "cmd/internal/clean/clean.go",
+        "cmd/internal/mod/init.go",
+        "cmd/internal/mod/tidy.go",
+        "cmd/internal/mod/download.go",
+        "cmd/internal/gopget/get.go",
+        "cmd/internal/env/env.go",
+        "cmd/internal/doc/doc.go",
+        "cmd/internal/serve/serve.go",
+        "cmd/internal/bug/bug.go",
+        "cmd/xgo/version_cmd.gox",
+        "cmd/xgo/pack_cmd.gox",
+        "cmd/xgo/xgo_autogen.go",
+        "cmd/xgo/mod_download_cmd.gox",
+        "cmd/internal/base/pass.go",
+        "cmd/internal/test/testflag.go",
+        "tool/build_install_run.go",
+        "tool/gengo.go",
+        "tool/tidy.go",
+        "x/gocmd/gocmd.go",
+        "x/xgoprojs/proj.go"
+      ],
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/(xgo)/toolchain/command-reference.mdx",
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/pack-project-configuration.zh-CN.mdx": {
+      "sourcePath": "cmd/xgo/pack_cmd.gox",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cmd/xgo/xgo_autogen.go",
+        "tool/pack.go",
+        "tool/pack_test.go"
+      ],
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/(xgo)/toolchain/pack-project-configuration.mdx"
+    },
+    "content/docs/(xgo)/toolchain/command-reference.mdx": {
+      "sourcePath": "cmd/xgo/main_app.gox",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cmd/internal/build/build.go",
+        "cmd/internal/run/run.go",
+        "cmd/internal/install/install.go",
+        "cmd/internal/test/test.go",
+        "cmd/internal/gopfmt/fmt.go",
+        "cmd/internal/gengo/go.go",
+        "cmd/internal/watch/watch.go",
+        "cmd/internal/clean/clean.go",
+        "cmd/internal/mod/init.go",
+        "cmd/internal/mod/tidy.go",
+        "cmd/internal/mod/download.go",
+        "cmd/internal/gopget/get.go",
+        "cmd/internal/env/env.go",
+        "cmd/internal/doc/doc.go",
+        "cmd/internal/serve/serve.go",
+        "cmd/internal/bug/bug.go",
+        "cmd/xgo/version_cmd.gox",
+        "cmd/xgo/pack_cmd.gox",
+        "cmd/xgo/xgo_autogen.go",
+        "cmd/xgo/mod_download_cmd.gox",
+        "cmd/internal/base/pass.go",
+        "cmd/internal/test/testflag.go",
+        "tool/build_install_run.go",
+        "tool/gengo.go",
+        "tool/tidy.go",
+        "x/gocmd/gocmd.go",
+        "x/xgoprojs/proj.go"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/pack-project-configuration.mdx": {
+      "sourcePath": "cmd/xgo/pack_cmd.gox",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cmd/xgo/xgo_autogen.go",
+        "tool/pack.go",
+        "tool/pack_test.go"
+      ]
+    },
     "content/docs/(xgo)/index.mdx": {
       "sourcePath": "README.md",
       "contentType": "guide",
@@ -22,8 +124,12 @@
         "cmd/go.mod",
         "all.bash",
         "all.bat",
-        "x/gocmd/gocmd.go"
-      ]
+        "x/gocmd/gocmd.go",
+        "Dockerfile",
+        ".goreleaser.yaml",
+        ".github/workflows/release-build.yml"
+      ],
+      "sourceCheckedAt": "2026-11-26"
     },
     "content/docs/(xgo)/getting-started/hello-world.mdx": {
       "sourcePath": "doc/docs.md",
@@ -251,11 +357,15 @@
         "cmd/go.mod",
         "all.bash",
         "all.bat",
-        "x/gocmd/gocmd.go"
+        "x/gocmd/gocmd.go",
+        "Dockerfile",
+        ".goreleaser.yaml",
+        ".github/workflows/release-build.yml"
       ],
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/getting-started/installation.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-26"
     },
     "content/docs/(xgo)/reference/language.zh-CN.mdx": {
       "sourcePath": "doc/spec-mini.md",
@@ -448,12 +558,351 @@
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot"
     },
+    "content/docs/(xgo)/toolchain/classfiles.mdx": {
+      "sourcePath": "doc/classfile.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/toolchain/classfile-specification.mdx": {
+      "sourcePath": "doc/classfile-spec.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/toolchain/modules.mdx": {
+      "sourcePath": "doc/go.mod.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/toolchain/gox-mod.mdx": {
+      "sourcePath": "doc/gox.mod.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/toolchain/tooling-conventions.mdx": {
+      "sourcePath": "doc/tooling-conventions.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/toolchain/code-coverage.mdx": {
+      "sourcePath": "doc/code-coverage.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "additionalSourcePaths": [
+        "cmd/internal/test/testflag.go",
+        "cmd/make.go",
+        "demo/unit-test/foo_test.gox",
+        "demo/unit-test/foo.xgo"
+      ]
+    },
     "content/docs/(xgo)/concepts/xgo-and-go.mdx": {
       "sourcePath": "doc/xgo-vs-go.md",
       "contentType": "guide",
       "sourceStatus": "upstream-synced",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot"
+    },
+    "content/docs/llgo/interoperability.mdx": {
+      "sourcePath": "README.md",
+      "additionalSourcePaths": [
+        "demo/_llgo/chello/hello.xgo",
+        "demo/_llgo/cpphello/cpphello.xgo",
+        "demo/_llgo/pyhello/hello.xgo",
+        "demo/_llgo/pytensor/tensor.xgo",
+        "demo/_llgo/tetris/tetris.xgo",
+        "demo/_llgo/sqlitedemo/sqlitedemo.xgo",
+        "demo/_llgo/hellollgo/README.md",
+        "demo/_llgo/statistics/statistics.xgo",
+        "x/gocmd/gocmd.go"
+      ],
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/examples/overview.mdx": {
+      "sourcePath": "README.md",
+      "additionalSourcePaths": [
+        "doc/classfile.md",
+        "demo/mixgo/README.md"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/examples/core-language.mdx": {
+      "sourcePath": "demo/clsinit/Rect.gox",
+      "additionalSourcePaths": [
+        "demo/kwargs/run.xgo",
+        "demo/lambda1/lambda.xgo",
+        "demo/mapliteral/mapliteral.xgo",
+        "demo/sliceliteral/sliceliteral.xgo",
+        "demo/stringtrans/transform.xgo",
+        "demo/tupletype/tuple.xgo",
+        "demo/unitliteral/unitlit.xgo",
+        "demo/xgo-calc/calc.xgo",
+        "demo/xgo-parser/parser.xgo",
+        "demo/xgo-sample/a.xgo",
+        "demo/xgo-sample/b.xgo",
+        "demo/xgo-sample/cpkag/b/ab.go",
+        "demo/xgo-scanner/scanner.xgo",
+        "demo/xgo-scanner/simplecalc/calc.xgo",
+        "demo/xgo-scanner/rpncalc/rpncalc.xgo",
+        "demo/xgo-typeof/typeof.xgo"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/examples/mixed-go-generics.mdx": {
+      "sourcePath": "demo/mixgo/README.md",
+      "additionalSourcePaths": [
+        "demo/mixgo/a.go",
+        "demo/mixgo/b.xgo",
+        "demo/mixgo/xgo_autogen.go",
+        "demo/fullspec/mixgo-complex/bar.go",
+        "demo/fullspec/mixgo-complex/foo.xgo",
+        "demo/fullspec/mixgo-complex/xgo_autogen.go",
+        "demo/fullspec/overloadfunc1/add.xgo",
+        "demo/fullspec/overloadfunc2/mul.xgo",
+        "demo/fullspec/overloadmethod/method.xgo",
+        "demo/fullspec/overloadop1/overloadop.xgo",
+        "demo/fullspec/overloadop2/overloadop.xgo",
+        "demo/typeasparamsfunc/col.go",
+        "demo/typeasparamsfunc/typeAsParamsFunc.xgo",
+        "demo/typeasparamsmethod/col.go",
+        "demo/typeasparamsmethod/typeAsParamsMethod.xgo",
+        "demo/typeparamscast/foo.go",
+        "demo/typeparamscast/typecast.xgo",
+        "demo/unit-test/foo.xgo",
+        "demo/unit-test/foo_test.gox"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/examples/data-and-text.mdx": {
+      "sourcePath": "demo/domaintext/domaintext.xgo",
+      "additionalSourcePaths": [
+        "demo/dql-fs/fsq.xgo",
+        "demo/dql-json/jq.xgo",
+        "demo/dql-links/links.xgo",
+        "demo/dql-xgo/xgoq.xgo",
+        "demo/dql-yaml/yq.xgo",
+        "demo/tpl-calc/calc.xgo",
+        "demo/tpl-calc-dump/calc_dump.xgo",
+        "demo/tpl-intlist/ints.xgo",
+        "demo/tpl-natural-lang/nlang.xgo",
+        "demo/tpl-parser-demo/demo.xgo",
+        "demo/tpl-pseudo/gauss.pseudo",
+        "demo/tpl-pseudo/pseudo.gox",
+        "demo/tpl-vcalc/variant_calc.xgo",
+        "demo/fullspec/tpl-gen-ast/gen_calc_ast.xgo"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/llgo/examples.mdx": {
+      "sourcePath": "demo/_llgo/hello/hello.xgo",
+      "additionalSourcePaths": [
+        "demo/_llgo/hellollgo/README.md",
+        "demo/_llgo/hellollgo/hello.xgo",
+        "demo/_llgo/chello/hello.xgo",
+        "demo/_llgo/cpphello/cpphello.xgo",
+        "demo/_llgo/pyhello/hello.xgo",
+        "demo/_llgo/pyprint/print.xgo",
+        "demo/_llgo/pymax/pymax.xgo",
+        "demo/_llgo/callpy/callpy.xgo",
+        "demo/_llgo/matrix/matrix.xgo",
+        "demo/_llgo/pytensor/tensor.xgo",
+        "demo/_llgo/statistics/statistics.xgo",
+        "demo/_llgo/defer/defer.xgo",
+        "demo/_llgo/errors/errors.xgo",
+        "demo/_llgo/goroutine/goroutine.xgo",
+        "demo/_llgo/qsort/qsort.xgo",
+        "demo/_llgo/reflect/reflect.xgo",
+        "demo/_llgo/sqlitedemo/sqlitedemo.xgo",
+        "demo/_llgo/tetris/tetris.xgo",
+        "demo/_llgo/go.mod",
+        "demo/_llgo/go.sum",
+        "x/gocmd/gocmd.go"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "externalSources": [
+        {
+          "repository": "goplus/lib",
+          "commit": "3011291e9632070aa8c8e7cdc890caa504c26e44",
+          "path": "c/raylib/raylib.go"
+        }
+      ]
+    },
+    "content/docs/(xgo)/examples/tinygo-demos.mdx": {
+      "sourcePath": "demo/_tinygo/sortdemo/sort.xgo",
+      "additionalSourcePaths": [
+        "demo/_tinygo/blink/blink.xgo",
+        "demo/_tinygo/go.mod",
+        "tool/imp.go"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "externalSources": [
+        {
+          "repository": "tinygo-org/tinygo",
+          "commit": "dd6fa89aa66a5113baa8883d4180ee090f35f784",
+          "path": "targets/arduino.json"
+        },
+        {
+          "repository": "tinygo-org/tinygo",
+          "commit": "dd6fa89aa66a5113baa8883d4180ee090f35f784",
+          "path": "src/machine/board_arduino.go"
+        }
+      ]
+    },
+    "content/docs/(xgo)/examples/gsh-and-classfiles.mdx": {
+      "sourcePath": "demo/gsh-exec/exec.gsh",
+      "additionalSourcePaths": [
+        "demo/gsh-exec/foo/foo.xgo",
+        "doc/classfile.md"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/blog/index.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourcePath": "README.md",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "additionalSourcePaths": [
+        "doc/classfile.md",
+        "doc/domian-text-lit.md",
+        "doc/docs.md"
+      ]
+    },
+    "content/docs/blog/goodbye-printf.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourcePath": "doc/goodbye-printf.md",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "additionalSourcePaths": [
+        "README.md"
+      ]
+    },
+    "content/docs/blog/xgo-design-philosophy.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourcePath": "README.md",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "additionalSourcePaths": [
+        "doc/classfile.md",
+        "doc/xgo-vs-go.md"
+      ]
+    },
+    "content/docs/blog/overloading-in-xgo.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourcePath": "doc/overload.md",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "additionalSourcePaths": [
+        "demo/fullspec/overloadfunc1/add.xgo",
+        "demo/fullspec/overloadfunc2/mul.xgo",
+        "demo/fullspec/overloadmethod/method.xgo"
+      ]
+    },
+    "content/docs/blog/what-is-xgo.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "README.md"
+    },
+    "content/docs/blog/xgo-and-go-design-goals.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "doc/xgo-vs-go.md"
+    },
+    "content/docs/blog/specific-domain-friendliness.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "doc/classfile.md"
+    },
+    "content/docs/blog/domain-text-literals-design.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "doc/domian-text-lit.md"
+    },
+    "content/docs/blog/template-receiver-methods.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "doc/template-recv-method.md"
+    },
+    "content/docs/blog/dql.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "dql/README.md"
+    },
+    "content/docs/blog/tpl.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "tpl/README.md"
+    },
+    "content/docs/blog/xgo-code-style.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "x/format/README.md"
     },
     "content/docs/(xgo)/reference/dql.mdx": {
       "sourcePath": "dql/README.md",
@@ -470,6 +919,18 @@
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/code-style.mdx": {
+      "sourcePath": "x/format/README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "additionalSourcePaths": [
+        "x/format/format.go",
+        "cmd/internal/gopfmt/fmt.go"
+      ]
     },
     "content/docs/(xgo)/tutorials/exact-arithmetic.mdx": {
       "sourcePath": "doc/docs.md",
@@ -575,6 +1036,1602 @@
       ],
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/tutorials/organize-projects.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/ecosystem/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/llgo/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "install.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "LICENSE"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/clang/clang.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "runtime/internal/clite/bdwgc/config_default.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/runtime/mixed/mixed.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/llgofiles_test.go"
+        }
+      ]
+    },
+    "content/docs/ixgo/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "context.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "cmd/ixgo/main.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directcall/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directfunc/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/xbuilder/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "docs/product/index.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "docs/product/code-editor.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/navbar/NavbarNewProjectItem.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/panels/sprite/SpritesPanel.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/preview/EditorPreview.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/project/ProjectCreateModal.vue"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/01-Weather/Kai.spx"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "docs/product/camera.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/navbar/EditorModeSwitch.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/map-editor/MapBasicConfig.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/stage/StageEditor.vue"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "camera.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "input.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "sprite_transform.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/00-Hello/assets/index.json"
+        }
+      ]
+    },
+    "content/docs/spx/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v4.0.2",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "Makefile"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "internal/release/runtime.lock.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/00-Hello/Calf.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/00-Hello/assets/index.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/01-Weather/Kai.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/01-Weather/Jaime.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/02-Dragon/Dragon.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/03-Clone/Calf.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/04-Bullet/Bullet.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/05-Animation/Bullet.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/mcp/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v0.9.8",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "demo/hello/main_mcp.gox"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "demo/hello/hello_tool.gox"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "demo/hello/hello_mtest.gox"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "gox.mod"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/yap/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "classfile_v2.go"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_hello/get.yap"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_hello/get_p_#id.yap"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_blog/get_p_#id.yap"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_blog/yap/article_yap.html"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_static/main.yap"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ytest/README.md"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ytest/demo/foo/foo_ytest.gox"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ytest/demo/foo/bar_ytest.gox"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ydb/demo/foo/articles_ydb.gox"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ydb/demo/foo/users_ydb.gox"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "gox.mod"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ydb/sqlite3/sqlite3.go"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ydb/query.go"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/cobra/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.10.8",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/cobra",
+          "commit": "8eb28b24b21808ca3ceef1f9b80a7e03fd5f5647",
+          "path": "xcmd/README.md"
+        },
+        {
+          "repository": "goplus/cobra",
+          "commit": "8eb28b24b21808ca3ceef1f9b80a7e03fd5f5647",
+          "path": "gox.mod"
+        },
+        {
+          "repository": "goplus/cobra",
+          "commit": "8eb28b24b21808ca3ceef1f9b80a7e03fd5f5647",
+          "path": "xcmd/demo/godemo/version_cmd.gox"
+        },
+        {
+          "repository": "goplus/cobra",
+          "commit": "8eb28b24b21808ca3ceef1f9b80a7e03fd5f5647",
+          "path": "LICENSE.txt"
+        }
+      ]
+    },
+    "content/docs/(xgo)/ecosystem/gsh.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "qiniu/x",
+          "commit": "17702ef7423bdc56344a0b925ff7e1bf5b8da133",
+          "path": "gsh/README.md"
+        },
+        {
+          "repository": "qiniu/x",
+          "commit": "17702ef7423bdc56344a0b925ff7e1bf5b8da133",
+          "path": "gsh/demo/hello/example.gsh"
+        },
+        {
+          "repository": "qiniu/x",
+          "commit": "17702ef7423bdc56344a0b925ff7e1bf5b8da133",
+          "path": "gsh/demo/example/example.gsh"
+        },
+        {
+          "repository": "qiniu/x",
+          "commit": "17702ef7423bdc56344a0b925ff7e1bf5b8da133",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/(xgo)/ecosystem/hdq.mdx": {
+      "sourcePath": "dql/README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/hdq",
+          "commit": "5541652ee36a76ba3244fbed412a38cb5153ea17",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/hdq",
+          "commit": "5541652ee36a76ba3244fbed412a38cb5153ea17",
+          "path": "LICENSE"
+        }
+      ],
+      "additionalSourcePaths": [
+        "demo/dql-links/links.xgo"
+      ]
+    },
+    "content/docs/spx/examples/aircraft-war.mdx": {
+      "sourcePath": "README.md",
+      "sourceCheckedAt": "2026-11-26",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "SPX v1.0.0",
+      "externalSources": [
+        {
+          "repository": "goplus/AircraftWar",
+          "commit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/AircraftWar",
+          "commit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/AircraftWar",
+          "commit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+          "path": "main.spx"
+        },
+        {
+          "repository": "goplus/AircraftWar",
+          "commit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+          "path": "MyAircraft.spx"
+        }
+      ]
+    },
+    "content/docs/spx/examples/flappy-calf.mdx": {
+      "sourcePath": "README.md",
+      "sourceCheckedAt": "2026-11-26",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "SPX v1.1.0",
+      "externalSources": [
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "main.spx"
+        },
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "Pipe.spx"
+        },
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "Calf.spx"
+        }
+      ]
+    },
+    "content/docs/spx/examples/maze-play.mdx": {
+      "sourcePath": "README.md",
+      "sourceCheckedAt": "2026-11-26",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "SPX v1.1.0",
+      "externalSources": [
+        {
+          "repository": "goplus/MazePlay",
+          "commit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/MazePlay",
+          "commit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/MazePlay",
+          "commit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+          "path": "main.spx"
+        },
+        {
+          "repository": "goplus/MazePlay",
+          "commit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+          "path": "Calf.spx"
+        }
+      ]
+    },
+    "content/docs/(xgo)/toolchain/vscode.mdx": {
+      "sourcePath": "README.md",
+      "sourceCheckedAt": "2026-11-26",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "vscode-xgo 0.8.6 (source snapshot)",
+      "externalSources": [
+        {
+          "repository": "goplus/vscode-xgo",
+          "commit": "9efaf15e8da3893410e9f39c13e78b6686f8d7fa",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/vscode-xgo",
+          "commit": "9efaf15e8da3893410e9f39c13e78b6686f8d7fa",
+          "path": "package.json"
+        }
+      ]
+    },
+    "content/docs/(xgo)/toolchain/inspect-source.mdx": {
+      "sourcePath": "parser/parser_xgo.go",
+      "additionalSourcePaths": [
+        "parser/interface.go",
+        "ast/walk.go",
+        "token/types.go",
+        "format/format.go",
+        "go.mod",
+        "x/build/build.go",
+        "x/build/build_test.go",
+        "ast/fromgo/gopast.go",
+        "ast/togo/goast.go",
+        "parser/fsx/memfs/memfs.go",
+        "ast/mod/deps.go"
+      ],
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/inspect-source.zh-CN.mdx": {
+      "sourcePath": "parser/parser_xgo.go",
+      "additionalSourcePaths": [
+        "parser/interface.go",
+        "ast/walk.go",
+        "token/types.go",
+        "format/format.go",
+        "go.mod",
+        "x/build/build.go",
+        "x/build/build_test.go",
+        "ast/fromgo/gopast.go",
+        "ast/togo/goast.go",
+        "parser/fsx/memfs/memfs.go",
+        "ast/mod/deps.go"
+      ],
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "translationOf": "content/docs/(xgo)/toolchain/inspect-source.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/toolchain/environment.mdx": {
+      "sourcePath": "cmd/internal/env/env.go",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "env/path.go",
+        "env/version.go",
+        "cmd/xgo/version_cmd.gox",
+        "x/gocmd/gocmd.go"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/html-query-cli.mdx": {
+      "sourcePath": "cmd/hdq/main_app.gox",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cmd/hdq/fetch_cmd.gox",
+        "cmd/hdq/list_cmd.gox",
+        "cmd/go.mod",
+        ".goreleaser.yaml",
+        "dql/fetcher/fetch.go",
+        "dql/fetcher/hrefs/hrefs.xgo",
+        "dql/html/html.go",
+        "dql/html/text.go",
+        "go.mod"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/environment.zh-CN.mdx": {
+      "sourcePath": "cmd/internal/env/env.go",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "translationOf": "content/docs/(xgo)/toolchain/environment.mdx",
+      "translationReviewStatus": "pending",
+      "additionalSourcePaths": [
+        "env/path.go",
+        "env/version.go",
+        "cmd/xgo/version_cmd.gox",
+        "x/gocmd/gocmd.go"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/html-query-cli.zh-CN.mdx": {
+      "sourcePath": "cmd/hdq/main_app.gox",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "translationOf": "content/docs/(xgo)/toolchain/html-query-cli.mdx",
+      "translationReviewStatus": "pending",
+      "additionalSourcePaths": [
+        "cmd/hdq/fetch_cmd.gox",
+        "cmd/hdq/list_cmd.gox",
+        "cmd/go.mod",
+        ".goreleaser.yaml",
+        "dql/fetcher/fetch.go",
+        "dql/fetcher/hrefs/hrefs.xgo",
+        "dql/html/html.go",
+        "dql/html/text.go",
+        "go.mod"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/embed-tpl.mdx": {
+      "sourcePath": "tpl/tpl.go",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "tpl/types/types.go",
+        "tpl/scanner/scanner.go",
+        "tpl/matcher/match.go",
+        "go.mod",
+        "tpl/token/token.go"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/embed-tpl.zh-CN.mdx": {
+      "sourcePath": "tpl/tpl.go",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "translationOf": "content/docs/(xgo)/toolchain/embed-tpl.mdx",
+      "translationReviewStatus": "pending",
+      "additionalSourcePaths": [
+        "tpl/types/types.go",
+        "tpl/scanner/scanner.go",
+        "tpl/matcher/match.go",
+        "go.mod",
+        "tpl/token/token.go"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/load-and-check-packages.mdx": {
+      "sourcePath": "tool/load.go",
+      "additionalSourcePaths": [
+        "tool/load_test.go",
+        "env/path.go",
+        "x/typesutil/check.go",
+        "x/typesutil/check_test.go",
+        "x/typesutil/gopinfo.go",
+        "parser/interface.go",
+        "token/types.go",
+        "doc/z_transform.go",
+        "doc/z_gop.go",
+        "doc/z_test.go",
+        "doc/_testdata/xgoOverloadFn/in.go",
+        "doc/_testdata/xgoOverloadFn/out.expect",
+        "x/build/build.go",
+        "go.mod"
+      ],
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/toolchain/load-and-check-packages.zh-CN.mdx": {
+      "sourcePath": "tool/load.go",
+      "additionalSourcePaths": [
+        "tool/load_test.go",
+        "env/path.go",
+        "x/typesutil/check.go",
+        "x/typesutil/check_test.go",
+        "x/typesutil/gopinfo.go",
+        "parser/interface.go",
+        "token/types.go",
+        "doc/z_transform.go",
+        "doc/z_gop.go",
+        "doc/z_test.go",
+        "doc/_testdata/xgoOverloadFn/in.go",
+        "doc/_testdata/xgoOverloadFn/out.expect",
+        "x/build/build.go",
+        "go.mod"
+      ],
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "translationOf": "content/docs/(xgo)/toolchain/load-and-check-packages.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/ixgo/embedding.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "context.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "interp.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directcall/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directcall/strings/go126_directcall.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directcall/strings/go127_directcall.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "pkg/strings/go126_export.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "pkg/strings/go127_export.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "direct_call.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directfunc/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directfunc/directfunc.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "direct_func.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "direct_func_test.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directfunc/directfunc_test.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/memo.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/check.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "interp_memo.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/memo_test.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "interp_memo_test.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "cmd/ixgo/exec/main.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/ixgo/embedding.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "context.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "interp.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directcall/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directcall/strings/go126_directcall.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directcall/strings/go127_directcall.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "pkg/strings/go126_export.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "pkg/strings/go127_export.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "direct_call.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directfunc/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directfunc/directfunc.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "direct_func.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "direct_func_test.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directfunc/directfunc_test.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/memo.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/check.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "interp_memo.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/memo_test.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "interp_memo_test.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "cmd/ixgo/exec/main.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "LICENSE"
+        }
+      ],
+      "translationOf": "content/docs/ixgo/embedding.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/ecosystem/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "translationOf": "content/docs/(xgo)/ecosystem/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/llgo/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "install.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "LICENSE"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/clang/clang.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "runtime/internal/clite/bdwgc/config_default.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/runtime/mixed/mixed.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/llgofiles_test.go"
+        }
+      ],
+      "translationOf": "content/docs/llgo/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/ixgo/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "context.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "cmd/ixgo/main.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directcall/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "directfunc/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "memo/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "path": "LICENSE"
+        }
+      ],
+      "translationOf": "content/docs/ixgo/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/xbuilder/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "docs/product/index.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "docs/product/code-editor.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/navbar/NavbarNewProjectItem.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/panels/sprite/SpritesPanel.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/preview/EditorPreview.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/project/ProjectCreateModal.vue"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/01-Weather/Kai.spx"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "docs/product/camera.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/navbar/EditorModeSwitch.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/map-editor/MapBasicConfig.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "gui/src/components/editor/stage/StageEditor.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "docs/product/camera.zh.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "path": "docs/product/index.zh.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "camera.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "input.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "sprite_transform.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/00-Hello/assets/index.json"
+        }
+      ],
+      "translationOf": "content/docs/xbuilder/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/spx/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v4.0.2",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "Makefile"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "internal/release/runtime.lock.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/00-Hello/Calf.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/00-Hello/assets/index.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/01-Weather/Kai.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/01-Weather/Jaime.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/02-Dragon/Dragon.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/03-Clone/Calf.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/04-Bullet/Bullet.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "tutorial/05-Animation/Bullet.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "LICENSE"
+        }
+      ],
+      "translationOf": "content/docs/spx/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/spx/cli.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v4.0.2",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/en/dev/game/cmd_spx.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/en/dev/engine/cmd_make.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/en/dev/index.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "cmd/spx/internal/command/args.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "cmd/spx/internal/command/init.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "cmd/spx/internal/command/dispatch.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "cmd/spx/internal/command/run.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "internal/release/runtime.lock.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "Makefile"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/spx/cli.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v4.0.2",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/zh/dev/game/cmd_spx.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/zh/dev/engine/cmd_make.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/zh/dev/index.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "cmd/spx/internal/command/args.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "cmd/spx/internal/command/init.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "cmd/spx/internal/command/dispatch.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "cmd/spx/internal/command/run.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "internal/release/runtime.lock.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "Makefile"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "LICENSE"
+        }
+      ],
+      "translationOf": "content/docs/spx/cli.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/spx/animation-audio.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v4.0.2",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/en/dev/game/animation_audio.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "sprite_animation.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "sprite_animation_data.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "internal/core/project/config.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/README.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/Monkey.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/assets/sprites/Monkey/index.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/assets/sounds/chomp/index.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/assets/sounds/clap/index.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/spx/animation-audio.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v4.0.2",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/zh/dev/game/animation_audio.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "sprite_animation.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "sprite_animation_data.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "internal/core/project/config.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/README.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/Monkey.spx"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/assets/sprites/Monkey/index.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/assets/sounds/chomp/index.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "test/AnimationOnStartOnPlayAudio/assets/sounds/clap/index.json"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "LICENSE"
+        }
+      ],
+      "translationOf": "content/docs/spx/animation-audio.mdx",
       "translationReviewStatus": "pending"
     }
   },

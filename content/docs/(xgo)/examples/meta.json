@@ -1,0 +1,11 @@
+{
+  "title": "Examples",
+  "pages": [
+    "overview",
+    "core-language",
+    "mixed-go-generics",
+    "data-and-text",
+    "tinygo-demos",
+    "gsh-and-classfiles"
+  ]
+}

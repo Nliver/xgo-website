@@ -1,1 +1,14 @@
-{"title":"工具链","pages":["playground","repl"]}
+{
+  "title": "工具链",
+  "pages": [
+    "command-reference",
+    "environment",
+    "playground",
+    "repl",
+    "pack-project-configuration",
+    "inspect-source",
+    "load-and-check-packages",
+    "embed-tpl",
+    "html-query-cli"
+  ]
+}

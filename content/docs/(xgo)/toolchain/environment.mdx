@@ -1,0 +1,40 @@
+---
+title: Inspect the XGo toolchain environment
+description: Check the XGo version, source root, and compiler executable when builds differ between shells.
+---
+
+Run these commands in the terminal where your build fails. If an editor starts the build, run them in its integrated terminal too.
+
+```sh
+xgo version
+xgo env -json XGOVERSION BUILDDATE XGOROOT XGO_GOCMD GOOS GOARCH
+```
+
+`xgo version` reports the operating system and architecture of the XGo executable. `GOOS` and `GOARCH` in the environment report the target settings from `go env`.
+
+## Check the source root
+
+`XGOROOT` points to the XGo source tree, which must contain a `go.mod` file and a `cmd/xgo` directory. XGo first checks an explicitly set `XGOROOT`. With no override, it checks the directory above the executable's containing directory, the root embedded when it was built, and finally the `xgo` directory in the user's home directory.
+
+If XGo reports `XGOROOT not found` after you move its binary outside the installation tree, keep the distribution directory together or set the source root for the current shell. On macOS and Linux, use your own installation path in this command.
+
+```sh
+export XGOROOT=/path/to/xgo
+xgo env XGOROOT
+```
+
+## Check the compiler executable
+
+`XGO_GOCMD` selects the executable that XGo invokes for backend build commands. It defaults to `go`. Even with a backend override, `xgo env` starts by running `go env -json`, so the Go executable must be available on `PATH` for this diagnostic.
+
+To check a backend override without saving it in your shell configuration, inspect it for one invocation on macOS or Linux.
+
+```sh
+XGO_GOCMD=llgo xgo env XGO_GOCMD
+```
+
+This diagnostic prints `llgo`. For a build that uses C or Python packages, follow the [LLGo interoperability guide](/docs/llgo/interoperability) to generate Go source and run LLGo with the documented flags.
+
+## Check module paths
+
+Use `xgo env GOMOD GOMODCACHE` to print the active Go module file and the module cache path. The `GOXMOD` value reports the `gox.mod` path if that file is present beside the current module's `go.mod`. Otherwise it returns the legacy `gop.mod` path in that directory, which may be absent. See [Class framework configuration](/docs/toolchain/gox-mod) for framework discovery.

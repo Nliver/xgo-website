@@ -1,0 +1,63 @@
+---
+title: XGo command-line reference
+description: Find commands for running, building, testing, formatting, and inspecting XGo projects.
+---
+
+Run `xgo help` to list commands available in your installation, or `xgo help mod` to list a group's subcommands. Forms such as `xgo help build` show command usage. Some commands handle their own flags. At this revision, `xgo build --help` prints its flag list and exits with an error. Start in the module directory unless the command takes a source file or directory explicitly. See the [installation guide](/docs/getting-started/installation) for toolchain setup.
+
+## Run, build, and test
+
+| Command | What it does |
+| --- | --- |
+| `xgo run hello.xgo` | Compile and run a single file. |
+| `xgo run -quiet . Ada` | Run the current package and pass `Ada` to the program, with compiler stage logs disabled. |
+| `xgo build -o hello .` | Build the current main package into a named executable. |
+| `xgo install .` | Build and install the current main package. The default Go backend installs to `GOBIN`, or the first `GOPATH` entry's `bin` directory when `GOBIN` is unset. |
+| `xgo test .` | Generate Go code for the XGo package and tests, then run the tests. |
+
+See [Run and build a multi-file project](/docs/tutorials/organize-projects) for a complete program, [test classfiles](/docs/examples/mixed-go-generics#run-a-test-classfile) for named subtests, and [test coverage](/docs/toolchain/code-coverage) for coverage profiles.
+
+Put build flags before the package or source file arguments. With the default Go backend, `xgo build -tags debug .` includes the `debug` build tag, and `xgo test -run TestGreeting .` selects tests by regular expression. With an import path, `xgo run` runs in the package directory by default. Use `-nc` to keep the current directory. The legacy `-prof` flag is present in the help output and remains unimplemented.
+
+## Format source and generate Go
+
+| Command | What it does |
+| --- | --- |
+| `xgo fmt hello.xgo` | Format a source file in place. |
+| `xgo fmt -t hello.xgo` | Check formatting without rewriting the file. |
+| `xgo fmt -n ./...` | List files the formatter would process, including files in subdirectories. |
+| `xgo fmt -smart hello.xgo` | Apply smart XGo syntax transformations to a source file in place. |
+| `xgo go .` | Generate Go source for the current package, normally in `xgo_autogen.go`. |
+| `xgo go -t .` | Check XGo source without writing generated Go files. |
+| `xgo watch .` | Regenerate Go output when source changes. Add `-gentest` to also generate test code. |
+| `xgo clean -t .` | Preview which generated files would be removed. |
+
+Use a package directory or an import path with `xgo go -t`. At this revision, an explicit source file argument such as `xgo go -t hello.xgo` still writes generated Go. During package generation, `-s` generates output separately for each `.xgo` or `.gop` file, and `-tags` supplies additional build tags. The `-ignore-notated-error` flag applies only with `-t` and skips errors marked as expected.
+
+Review the preview before running `xgo clean .`. The command scans subdirectories and matches files by name, including files ending in `_autogen.go`. For generated filenames and source mappings, see [Tooling conventions](/docs/toolchain/tooling-conventions#generated-go). For conversion examples, see [Convert Go code to XGo style](/docs/toolchain/code-style).
+
+## Manage modules and project configuration
+
+| Command | What it does |
+| --- | --- |
+| `xgo mod init example.com/hello` | Initialize a module in the current directory. |
+| `xgo mod init -llgo example.com/native` | Create a module with an LLGo compiler annotation and a `github.com/goplus/lib` requirement. Use `-tinygo` to write a TinyGo annotation. |
+| `xgo mod tidy` | Generate Go code, tidy the current module with Go, and retain dependencies annotated as class frameworks. |
+| `xgo mod download github.com/goplus/cobra` | Fetch a named package. At this revision this shares the dependency-adding implementation of `xgo get` and can update `go.mod`. |
+| `xgo get <package>` | Fetch a named package and add its module requirement to the current module. |
+| `xgo pack .` | Combine index configuration files. See [Pack project configuration](/docs/toolchain/pack-project-configuration). |
+
+Running `xgo mod download` without arguments prints help. With the default Go toolchain, use `go mod download` to download the current module's dependencies to the local cache. See [module compiler annotations](/docs/toolchain/modules) for the format that `xgo mod init` writes.
+
+## Inspect the toolchain
+
+| Command | What it does |
+| --- | --- |
+| `xgo version` | Print the XGo version and target operating system and architecture of the executable. |
+| `xgo env -json XGOVERSION XGO_GOCMD` | Print the requested environment values as JSON. |
+| `xgo doc -all .` | Print the current package outline and declaration comments. Add `-u` to include unexported declarations. The command also accepts a package import path. |
+| `xgo completion zsh` | Print a Zsh completion script. The command also has `bash`, `fish`, and `powershell` subcommands. |
+| `xgo serve` | Run the XGo language server over standard input and output for a compatible client. |
+| `xgo bug` | Open an upstream issue form with a prefilled report template. Review it before submitting. |
+
+See [Toolchain environment](/docs/toolchain/environment) for settings to check when builds behave differently between shells, and the [VS Code setup guide](/docs/toolchain/vscode) for the editor workflow. The source repository also includes a standalone [HTML query command](/docs/toolchain/html-query-cli).

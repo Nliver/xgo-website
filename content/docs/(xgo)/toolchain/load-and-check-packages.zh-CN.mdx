@@ -1,0 +1,210 @@
+---
+title: 在 Go 中加载和检查 XGo 包
+description: 解析跨语言引用，从模块加载包，并在文档数据中显示 XGo 重载。
+---
+
+用 Go 编写一个小工具，查询 Go 引用对应的 XGo 声明，从磁盘读取包，并在文档中显示重载签名。使用 Go 1.26 或更新版本。在空目录中初始化模块，选择本页使用的 XGo 版本。
+
+```sh
+go mod init example.com/xgotool
+go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
+```
+
+单个文件的语法树和源码位置见[在 Go 中分析和格式化 XGo 源码](/zh-CN/docs/toolchain/inspect-source)。
+
+## 解析 Go 和 XGo 文件之间的标识符引用
+
+将下面的程序保存为 `main.go`。两个解析器共用同一个文件集，检查器接收同一个包的两棵语法树。为每类需要查询的类型信息分配一个映射。本例收集 XGo 定义和 Go 引用。
+
+```go
+package main
+
+import (
+	"fmt"
+	goast "go/ast"
+	goparser "go/parser"
+	"go/token"
+	"go/types"
+	"log"
+
+	"github.com/goplus/xgo/ast"
+	"github.com/goplus/xgo/parser"
+	"github.com/goplus/xgo/x/typesutil"
+)
+
+func main() {
+	files := token.NewFileSet()
+	goFile, err := goparser.ParseFile(files, "base.go", "package sample\nfunc Base() int { return Double(21) }", 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	xgoFile, err := parser.ParseFile(files, "double.xgo", "package sample\nfunc Double(n int) int { return n * 2 }", 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var diagnostics []error
+	config := &types.Config{
+		Error: func(err error) { diagnostics = append(diagnostics, err) },
+	}
+	options := &typesutil.Config{
+		Types: types.NewPackage("example.com/sample", "sample"),
+		Fset:  files,
+	}
+	goInfo := &types.Info{Uses: make(map[*goast.Ident]types.Object)}
+	xgoInfo := &typesutil.Info{Defs: make(map[*ast.Ident]types.Object)}
+	checker := typesutil.NewChecker(config, options, goInfo, xgoInfo)
+	err = checker.Files([]*goast.File{goFile}, []*ast.File{xgoFile})
+	if len(diagnostics) > 0 {
+		log.Fatal(diagnostics)
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	definition := xgoFile.Decls[0].(*ast.FuncDecl).Name
+	for use, object := range goInfo.Uses {
+		if object == xgoInfo.Defs[definition] {
+			fmt.Printf("%s resolves to %s\n", files.Position(use.Pos()), definition.Name)
+		}
+	}
+}
+```
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+base.go:2:26 resolves to Double
+```
+
+Go 调用中的引用与 XGo 声明指向同一个类型对象。检查返回值的同时，通过 `types.Config.Error` 收集诊断。混合输入时，最后的 Go 检查可能覆盖 `Files` 先前得到的 XGo 错误。其他字段和重载记录见[类型信息（英文）](/docs/toolchain/tooling-conventions#type-information)。
+
+## 从模块目录加载包
+
+将 `XGOROOT` 设为本页指定版本的源码树，然后从模块根目录运行本例。查找和设置源码树的方法见[工具链环境](/zh-CN/docs/toolchain/environment)。创建 `sample` 目录，将下面的内容保存为 `sample/answer.xgo`。
+
+```xgo
+package sample
+
+func Answer() int {
+	return 42
+}
+```
+
+用下面的加载程序替换 `main.go`。
+
+```go
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/goplus/xgo/tool"
+)
+
+func main() {
+	const dir = "sample"
+	flags := tool.ConfFlagDontUpdateGoMod | tool.ConfFlagNoCacheFile
+	conf, err := tool.NewDefaultConf(dir, flags)
+	if err != nil {
+		log.Fatal(err)
+	}
+	pkg, _, err := tool.LoadDir(dir, conf, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := pkg.WriteTo(os.Stdout); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+```sh
+go mod tidy
+go run .
+```
+
+程序将生成的 Go 源码写到标准输出。行号指令指回原始 XGo 源文件。
+
+```go
+package sample
+
+const _ = true
+//line sample/answer.xgo:3:1
+func Answer() int {
+//line sample/answer.xgo:4:1
+	return 42
+}
+```
+
+`NewDefaultConf` 从包所在的目录查找模块和工作区元数据。`ConfFlagDontUpdateGoMod` 禁止加载器更新所属模块的 `go.mod`，`ConfFlagNoCacheFile` 让导入器的缓存文件路径保持未设置。`LoadDir` 的第三个参数决定是否编译独立的外部测试包。若还需要从输入中排除测试文件，请使用 `ConfFlagNoTestFiles`。
+
+## 在 Go 文档数据中显示重载名称
+
+用下面的程序替换 `main.go`。它先编译一个 XGo 重载声明，再解析生成的 Go 源码，并使用 Go 标准库构建 `go/doc.Package`。
+
+```go
+package main
+
+import (
+	"fmt"
+	"go/ast"
+	"go/doc"
+	"go/parser"
+	"go/token"
+	"log"
+
+	xgodoc "github.com/goplus/xgo/doc"
+	"github.com/goplus/xgo/x/build"
+)
+
+func main() {
+	const source = `package sample
+func Format = (
+	func(value int) string { return "int" }
+	func(value string) string { return value }
+)
+`
+	generated, err := build.Default().BuildFile("format.xgo", source)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	files := token.NewFileSet()
+	file, err := parser.ParseFile(files, "generated.go", generated, parser.ParseComments)
+	if err != nil {
+		log.Fatal(err)
+	}
+	pkg, err := doc.NewFromFiles(files, []*ast.File{file}, "example.com/sample")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, fn := range pkg.Funcs {
+		fmt.Println(fn.Name)
+	}
+
+	pkg = xgodoc.Transform(pkg)
+	for _, fn := range pkg.Funcs {
+		param := fn.Decl.Type.Params.List[0].Type.(*ast.Ident)
+		fmt.Printf("%s(%s)\n", fn.Name, param.Name)
+	}
+}
+```
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+Format__0
+Format__1
+Format(int)
+Format(string)
+```
+
+文档模型包含 `XGoPackage` 或旧版 `GopPackage` 标记时，`doc.Transform` 会原地修改模型。输出的后两行展示了文档工具可使用的重载名称。有关生成代码的命名约定，参阅[重载参考（英文）](/docs/reference/overloads#under-the-hood-how-xgo-encodes-overloading-in-go)。

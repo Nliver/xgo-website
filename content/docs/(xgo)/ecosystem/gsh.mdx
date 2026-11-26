@@ -1,0 +1,32 @@
+---
+title: GSH shell scripting
+description: Run a shell command from an XGo GSH file, check failures, and capture output.
+---
+
+Create a directory and read its name back into XGo. GSH uses the built-in `.gsh` classfile extension, so this script runs with XGo from a new directory without a module file. The example uses the Unix utilities `mkdir` and `ls`.
+
+## Run a script
+
+In a new empty directory, save this as `example.gsh`.
+
+```xgo
+mkdir! "testgsh"
+capout => { ls "-d", "testgsh" }
+echo output.fields
+```
+
+```sh
+xgo run ./example.gsh
+```
+
+```text
+[testgsh]
+```
+
+The script creates the `testgsh` directory. The `!` suffix makes a command failure stop the script. Run in another empty directory when you repeat the example. The `capout` block exposes the captured standard output as `output`. Its `fields` property splits the result on whitespace.
+
+## Call programs and inspect errors
+
+Use `exec "go", "version"` for a program whose name is an XGo keyword, and `exec "./tool.sh"` for a path. Alternatively, call a command without `!` and read `lastErr` to handle the failure in your script. Use ``${HOME}`` or `$HOME` to get the value of an environment variable.
+
+See [GSH and classfile examples](/docs/examples/gsh-and-classfiles) for more examples from the XGo repository.

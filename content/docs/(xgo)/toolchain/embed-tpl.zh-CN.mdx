@@ -1,0 +1,116 @@
+---
+title: 在 Go 中使用 TPL 文法
+description: 编译一条文法规则，读取标识符列表，并报告多余输入所在的位置。
+---
+
+编写一个 Go 程序，读取以逗号分隔的名称，并在名称后面出现多余数字时报告位置。使用 Go 1.26 或更高版本，在空目录初始化模块。
+
+```sh
+go mod init example.com/names
+go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
+```
+
+将以下程序保存为 `main.go`。`tpl.New` 编译一次文法，随后两次解析都使用这份文法。`IDENT % ","` 匹配一个或多个以逗号分隔的标识符。`tpl.List` 把匹配树展开为列表，以便逐个读取标识符的原文。
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/goplus/xgo/tpl"
+)
+
+func main() {
+	grammar, err := tpl.New("names = IDENT % \",\"")
+	if err != nil {
+		log.Fatal(err)
+	}
+	result, err := grammar.ParseExprFrom("names.txt", "north, south", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, item := range tpl.List(result.([]any)) {
+		fmt.Println(item.(*tpl.Token).Lit)
+	}
+
+	_, err = grammar.ParseExprFrom("names.txt", "north 7", nil)
+	fmt.Println(err)
+}
+```
+
+运行程序，查看第一次解析得到的两个名称，以及第二次解析产生的诊断。
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+north
+south
+names.txt:1:7: unexpected token: 7
+```
+
+`ParseExprFrom` 接受以分号或输入末尾结束的表达式。第二份输入在这两个边界之前出现了数字 `7`，诊断因此指向 `names.txt` 的第 1 行第 7 列。整份文件可以使用 `Parse`，它要求文法消耗全部词法单元，包括扫描器在行末自动插入的分号。若只需匹配开头的一段，可以调用 `Match`，从返回的 `MatchState` 读取词法单元列表和已消耗的数量。
+
+列表运算、分支规则与结果改写见 [TPL 文法与匹配结果](/docs/reference/tpl)。
+
+## 解析跨行的名称列表
+
+默认扫描器会在行末的标识符后插入分号。这个列表格式要把名称与逗号之间的换行视为空白。用下面的程序替换同一模块中的 `main.go`。
+
+`listScanner` 嵌入 `scanner.Scanner`，复用它的 `Init` 方法和词法单元位置信息。`Scan` 跳过字面文本为 `"\n"` 的分号。这类分号由默认扫描器在换行处和输入结束时插入。源码中显式写出的分号仍会交给文法处理，因此仍会导致语法错误。
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/goplus/xgo/tpl"
+	"github.com/goplus/xgo/tpl/scanner"
+	"github.com/goplus/xgo/tpl/token"
+)
+
+type listScanner struct {
+	scanner.Scanner
+}
+
+func (s *listScanner) Scan() tpl.Token {
+	for {
+		tok := s.Scanner.Scan()
+		if tok.Tok == token.SEMICOLON && tok.Lit == "\n" {
+			continue
+		}
+		return tok
+	}
+}
+
+func main() {
+	grammar, err := tpl.New("names = IDENT % \",\"")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	config := &tpl.Config{Scanner: &listScanner{}}
+	result, err := grammar.Parse("names.txt", "north\n, south\n", config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, item := range tpl.List(result.([]any)) {
+		fmt.Println(item.(*tpl.Token).Lit)
+	}
+}
+```
+
+执行 `go run .`，得到以下输出。
+
+```text
+north
+south
+```
+
+`tpl.Config.Scanner` 为 `Parse` 要处理的输入指定扫描器。传给 `tpl.New` 的文法文本仍由默认文法解析器读取。`Parse` 会检查规则是否消耗了 EOF 之前的所有词法单元。可以通过 `tpl.Config.ScanErrorHandler` 收集词法诊断，并与文法匹配错误分开处理。

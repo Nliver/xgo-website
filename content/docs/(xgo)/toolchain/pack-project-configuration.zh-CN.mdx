@@ -1,0 +1,52 @@
+---
+title: 打包项目配置
+description: 用 xgo pack 合并嵌套的 JSON 或 YAML 索引文件，并检查生成的文件是否需要更新。
+---
+
+用 `xgo pack` 将目录中的多个索引配置文件合并成一个文档，让应用只需读取一次即可加载配置。开始前请[安装 XGo 命令行工具](/zh-CN/docs/getting-started/installation)。
+
+## 创建并打包两个索引文件
+
+在空白项目目录中创建以下文件。
+
+```files
+assets/
+├── index.json
+└── player/
+    └── index.json
+```
+
+```json title="assets/index.json"
+{"title": "Demo"}
+```
+
+```json title="assets/player/index.json"
+{"speed": 3}
+```
+
+在项目目录中运行以下命令。
+
+```sh
+xgo pack .
+```
+
+打开生成的文件。子目录名 `player` 会成为子对象的键。
+
+```json title="assets/index_pack.json"
+{
+  "player": {
+    "speed": 3
+  },
+  "title": "Demo"
+}
+```
+
+命令也支持 `index.yml` 和 `index.yaml`，生成的 `index_pack` 文件沿用原扩展名。在同一个打包根目录下，子目录中的索引文件名应与根目录里的文件一致。如果子目录名与配置中现有的键重复，命令会报键冲突。
+
+## 检查打包结果是否过期
+
+```sh
+xgo pack -t .
+```
+
+打包文件存在且内容与重新生成的结果完全一致时，检查通过。将玩家速度改为 `4` 后再次检查，会看到 `pack -t: out of date: assets/index_pack.json`。重新运行 `xgo pack .` 更新文件。项目采用打包文件后，也可以在持续集成中运行这一检查。

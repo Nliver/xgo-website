@@ -1,0 +1,40 @@
+---
+title: 查看 XGo 工具链环境
+description: 构建结果随终端变化时，检查 XGo 版本、源码根目录和编译器程序。
+---
+
+在构建失败的终端中运行下列命令。如果构建由编辑器启动，也在编辑器的集成终端中运行一次。
+
+```sh
+xgo version
+xgo env -json XGOVERSION BUILDDATE XGOROOT XGO_GOCMD GOOS GOARCH
+```
+
+`xgo version` 显示 XGo 可执行文件对应的操作系统和架构。环境输出中的 `GOOS` 和 `GOARCH` 来自 `go env`，表示目标平台设置。
+
+## 检查源码根目录
+
+`XGOROOT` 指向 XGo 源码树，其中需要包含 `go.mod` 文件和 `cmd/xgo` 目录。XGo 先检查显式设置的 `XGOROOT`。未设置时，依次检查可执行文件所在目录的上一级、构建时嵌入的源码根目录，以及用户主目录下的 `xgo` 目录。
+
+如果在单独移动可执行文件后看到 `XGOROOT not found`，可以保留完整的发行目录，也可以在当前终端中指定源码根目录。在 macOS 和 Linux 上使用下列命令，将示例路径替换成实际安装路径。
+
+```sh
+export XGOROOT=/path/to/xgo
+xgo env XGOROOT
+```
+
+## 检查编译器程序
+
+`XGO_GOCMD` 指定 XGo 执行后端构建命令时调用的程序，默认值为 `go`。即使指定了其他后端，`xgo env` 也会先运行 `go env -json`，因此诊断时仍需确保能从 `PATH` 找到 Go。
+
+在 macOS 或 Linux 上，可以仅为一次调用设置后端，检查该设置的值。
+
+```sh
+XGO_GOCMD=llgo xgo env XGO_GOCMD
+```
+
+这条命令输出 `llgo`。如果要构建使用 C 或 Python 包的项目，按 [LLGo 互操作指南（英文）](/docs/llgo/interoperability)生成 Go 源码并运行 LLGo。
+
+## 检查模块路径
+
+运行 `xgo env GOMOD GOMODCACHE` 查看当前 Go 模块文件和模块缓存路径。若当前模块的 `go.mod` 旁有 `gox.mod`，`GOXMOD` 会输出它的路径，否则会输出旧版的 `gop.mod` 路径，该文件可能不存在。类框架的查找流程见[类框架配置（英文）](/docs/toolchain/gox-mod)。

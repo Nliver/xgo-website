@@ -1,0 +1,63 @@
+---
+title: XGo 命令行参考
+description: 查找运行、构建、测试、格式化和检查 XGo 项目的命令。
+---
+
+运行 `xgo help` 查看当前安装支持的命令，用 `xgo help mod` 查看一组子命令，用 `xgo help build` 查看用法。有些命令会自行解析选项。当前源码版本的 `xgo build --help` 会打印选项列表并以错误状态退出。通常在模块目录中执行命令，部分命令也接受文件或目录参数。安装步骤见 [安装 XGo](/zh-CN/docs/getting-started/installation)。
+
+## 运行、构建和测试
+
+| 命令 | 用途 |
+| --- | --- |
+| `xgo run hello.xgo` | 编译并运行单个文件。 |
+| `xgo run -quiet . Ada` | 运行当前包，将 `Ada` 传给程序，并关闭编译阶段日志。 |
+| `xgo build -o hello .` | 将当前主包构建为指定名称的可执行文件。 |
+| `xgo install .` | 构建并安装当前主包。默认的 Go 后端会装到 `GOBIN` 指定的目录。未设置时使用 `GOPATH` 第一项下的 `bin` 目录。 |
+| `xgo test .` | 为 XGo 包和测试生成 Go 代码，然后运行测试。 |
+
+[多文件项目教程](/zh-CN/docs/tutorials/organize-projects)提供完整的运行和构建示例。[测试类文件示例（英文）](/docs/examples/mixed-go-generics#run-a-test-classfile)演示如何运行命名子测试，[测试覆盖率（英文）](/docs/toolchain/code-coverage)讲解如何生成覆盖率报告。
+
+构建选项放在包或源文件参数之前。使用默认的 Go 后端时，`xgo build -tags debug .` 启用 `debug` 构建标签，`xgo test -run TestGreeting .` 用正则表达式筛选测试。按导入路径运行包时，`xgo run` 默认在包目录中执行，可用 `-nc` 保持当前工作目录。帮助中列出的旧选项 `-prof` 仍未实现。
+
+## 格式化源码和生成 Go 代码
+
+| 命令 | 用途 |
+| --- | --- |
+| `xgo fmt hello.xgo` | 就地格式化源文件。 |
+| `xgo fmt -t hello.xgo` | 检查格式，保留文件内容。 |
+| `xgo fmt -n ./...` | 列出格式化命令会处理的文件，包括子目录中的文件。 |
+| `xgo fmt -smart hello.xgo` | 就地应用 XGo 语法转换。 |
+| `xgo go .` | 为当前包生成 Go 源码，通常写入 `xgo_autogen.go`。 |
+| `xgo go -t .` | 检查 XGo 源码，跳过生成文件的写入。 |
+| `xgo watch .` | 源码变更时重新生成 Go 代码。添加 `-gentest` 可同时生成测试代码。 |
+| `xgo clean -t .` | 预览命令将清理的文件。 |
+
+`xgo go -t` 应接收包目录或导入路径。在当前源码版本中，传入具体文件的 `xgo go -t hello.xgo` 仍会写出 Go 源码。按包生成时，`-s` 为各个 `.xgo` 或 `.gop` 文件单独生成 Go 文件，`-tags` 指定额外构建标签。`-ignore-notated-error` 仅在 `-t` 模式生效，用于跳过标记为预期错误的结果。
+
+确认预览后再运行 `xgo clean .`。命令会扫描子目录并按文件名匹配，其中包括以 `_autogen.go` 结尾的文件。生成文件的名称和源码映射见 [工具链约定（英文）](/docs/toolchain/tooling-conventions#generated-go)。格式化与语法转换的示例见 [XGo 源码格式化（英文）](/docs/toolchain/code-style)。
+
+## 管理模块和项目配置
+
+| 命令 | 用途 |
+| --- | --- |
+| `xgo mod init example.com/hello` | 在当前目录初始化模块。 |
+| `xgo mod init -llgo example.com/native` | 初始化模块，写入 LLGo 编译器注释和 `github.com/goplus/lib` 依赖。可用 `-tinygo` 写入 TinyGo 注释。 |
+| `xgo mod tidy` | 生成 Go 源码，调用 Go 整理当前模块，并保留标记为类框架的依赖。 |
+| `xgo mod download github.com/goplus/cobra` | 获取指定的包。在当前源码版本中，这条命令复用 `xgo get` 添加依赖的实现，可能更新 `go.mod`。 |
+| `xgo get <package>` | 获取指定的包，并在当前模块中添加对应的模块依赖。 |
+| `xgo pack .` | 合并索引配置文件。操作步骤见 [打包项目配置](/zh-CN/docs/toolchain/pack-project-configuration)。 |
+
+直接运行不带参数的 `xgo mod download` 会显示帮助。使用默认的 Go 工具链时，可以用 `go mod download` 将当前模块的依赖下载到本地缓存。`xgo mod init` 写入的注释格式见[模块编译器注释（英文）](/docs/toolchain/modules)。
+
+## 查看工具链信息
+
+| 命令 | 用途 |
+| --- | --- |
+| `xgo version` | 输出 XGo 版本以及可执行文件的目标操作系统和架构。 |
+| `xgo env -json XGOVERSION XGO_GOCMD` | 以 JSON 格式输出所选环境项。 |
+| `xgo doc -all .` | 输出当前包的声明列表和声明注释。添加 `-u` 可包含未导出的声明，也可传入包的导入路径。 |
+| `xgo completion zsh` | 输出 Zsh 补全脚本。还支持 `bash`、`fish` 和 `powershell` 子命令。 |
+| `xgo serve` | 通过标准输入和标准输出为兼容客户端运行 XGo 语言服务器。 |
+| `xgo bug` | 打开填写了报告模板的上游问题表单。提交前请检查模板内容。 |
+
+如果在不同终端得到不同的构建结果，参阅[工具链环境](/zh-CN/docs/toolchain/environment)。编辑器操作见 [Visual Studio Code 配置（英文）](/docs/toolchain/vscode)。源码仓库还提供独立的 [HTML 查询命令](/zh-CN/docs/toolchain/html-query-cli)。

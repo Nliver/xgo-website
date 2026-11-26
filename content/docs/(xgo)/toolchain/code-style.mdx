@@ -1,0 +1,134 @@
+---
+title: XGo source formatting
+description: Compare input and output for command calls, built-in functions, entry points, and lambdas.
+---
+
+Use `xgo fmt -smart example.xgo` to apply these source transformations to an XGo file. Plain `xgo fmt` formats the code without applying the smart conversions.
+
+
+## Specification
+
+### No package main
+
+```xgo
+package main
+
+func f() {
+}
+```
+
+will be converted into:
+
+```xgo
+func f() {
+}
+```
+
+
+### No func main
+
+```xgo
+package main
+
+func main() {
+    a := 0
+}
+```
+
+will be converted into:
+
+```xgo
+a := 0
+```
+
+
+### Replace fmt.Print to builtin
+
+```xgo
+import "fmt"
+
+n, err := fmt.Println("Hello world")
+```
+
+will be converted into:
+
+```xgo
+n, err := echo("Hello world")
+```
+
+Note:
+
+* Convert `fmt.Errorf => errorf`
+* Convert `fmt.Fprint => fprint`
+* Convert `fmt.Fprintf => fprintf`
+* Convert `fmt.Fprintln => fprintln`
+* Convert `fmt.Print` => `print`
+* Convert `fmt.Printf` => `printf`
+* Convert `fmt.Println` => `echo`
+* Convert `fmt.Sprint => sprint`
+* Convert `fmt.Sprintf => sprintf`
+* Convert `fmt.Sprintln => sprintln`
+
+### Command style first
+
+```xgo
+import "fmt"
+
+fmt.Println()
+fmt.Println(fmt.Println("Hello world"))
+```
+
+will be converted into:
+
+```xgo
+echo
+echo echo("Hello world")
+```
+
+Note:
+
+* Only the outermost function call statement is converted into command style. So `fmt.Println(fmt.Println("Hello world"))` is converted into `echo echo("Hello world")`, not `echo echo "Hello world"`.
+
+
+### pkg.Fncall starting with lowercase
+
+```xgo
+import "math"
+
+echo math.Sin(math.Pi/3)
+```
+
+will be converted into:
+
+```xgo
+echo math.sin(math.Pi/3)
+```
+
+### Funclit of params convert to lambda in fncall (skip named results)
+
+```xgo
+echo(demo(func(n int) int {
+	return n+100
+}))
+
+echo(demo(func(n int) (v int) {
+	return n+100
+}))
+
+onStart(func() {
+	echo("start")
+})
+```
+
+will be converted into:
+```xgo
+echo demo(n => n + 100)
+
+echo demo(func(n int) (v int) {
+	return n + 100
+})
+
+onStart => {
+	echo "start"
+}
+```

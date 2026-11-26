@@ -1,0 +1,891 @@
+---
+title: "Data, queries, and text templates"
+description: "Run DQL and template demos from the XGo source checkout."
+---
+
+Run each command from its listed directory in the XGo checkout. Use the XGo revision listed under Sources for this page. See the [installation guide](/docs/getting-started/installation) to build the corresponding toolchain. See the [domain text literals reference](/docs/reference/domain-text-literals).
+
+## JSON configuration
+
+Run from `demo/domaintext`.
+
+Read the `port` property from an inline JSON document.
+
+### domaintext.xgo
+
+```xgo title="domaintext.xgo"
+config := json`{
+	"server": "localhost",
+	"port": 8080,
+	"features": ["auth", "logging"]
+}`!
+
+echo config.port
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+8080
+```
+
+## Filesystem query
+
+Run from `demo/dql-fs`.
+
+Search the current directory and its descendants for `.xgo` files. This result assumes the upstream demo directory contains its original source file only.
+
+### fsq.xgo
+
+```xgo
+for e in fs`.`.**.file.match("*.xgo") {
+	echo e.path
+}
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+fsq.xgo <nil>
+```
+
+## Filter a JSON array
+
+Run from `demo/dql-json`.
+
+Select the objects whose `class` field equals `zebra`, then print their `at` fields.
+
+### jq.xgo
+
+```xgo title="jq.xgo"
+doc := json`{
+	"animals": [
+		{"class": "gopher", "at": "Line 1"},
+		{"class": "armadillo", "at": "Line 2"},
+		{"class": "zebra", "at": "Line 3"},
+		{"class": "unknown", "at": "Line 4"},
+		{"class": "gopher", "at": "Line 5"},
+		{"class": "bee", "at": "Line 6"},
+		{"class": "gopher", "at": "Line 7"},
+		{"class": "zebra", "at": "Line 8"}
+	]
+}
+`!
+
+for animal in doc.animals.*@($class == "zebra") {
+	echo animal.$at
+}
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+Line 3
+Line 8
+```
+
+## Extract links from HTML
+
+Run from `demo/dql-links`.
+
+Pass a local HTML file as the program argument. The query prints the nonempty `href` attributes of anchor elements.
+
+### links.xgo
+
+```xgo
+import "os"
+import "github.com/goplus/xgo/dql/html"
+
+doc := html.source(os.Args[1])
+
+for a in doc.**.a {
+	if url := a.$href; url != "" {
+		echo url
+	}
+}
+```
+
+```sh
+printf '%s\n' '<a href="/docs">Docs</a><a>Plain</a><a href="/notes">Notes</a>' > fixture.html
+xgo run . fixture.html
+```
+
+The program prints the following output.
+
+```text
+/docs
+/notes
+```
+
+## Query XGo syntax
+
+Run from `demo/dql-xgo`.
+
+Select expression statements from a parsed script and extract the identifier used as the callee in each call.
+
+### xgoq.xgo
+
+```xgo title="xgoq.xgo"
+doc := xgo`
+x, y := "Hi", 123
+echo x
+print y
+`!
+
+stmts := doc.shadowEntry.body.list.*@(self.class == "ExprStmt")
+for fn in stmts.x@(self.class == "CallExpr").fun@(self.class == "Ident") {
+	echo fn.$name
+}
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+echo
+print
+```
+
+## Read YAML settings
+
+Run from `demo/dql-yaml`.
+
+Print the port and then each entry in the feature list.
+
+### yq.xgo
+
+```xgo title="yq.xgo"
+config := yaml`server: localhost
+port: 8080
+features:
+  - auth
+  - logging
+`!
+
+echo config.port
+
+for feature in config.features.* {
+	echo feature._value
+}
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+8080
+auth
+logging
+```
+
+## Evaluate a calculator grammar
+
+Run from `demo/tpl-calc`.
+
+Parse an arithmetic expression with a grammar defined in a template literal.
+
+### calc.xgo
+
+```xgo
+import (
+	"os"
+	"xgo/tpl"
+)
+
+cl := tpl`
+
+expr = operand % ("*" | "/") % ("+" | "-") => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		switch op.Tok {
+		case '+': return x.(float64) + y.(float64)
+		case '-': return x.(float64) - y.(float64)
+		case '*': return x.(float64) * y.(float64)
+		case '/': return x.(float64) / y.(float64)
+		}
+		panic("unexpected")
+	})
+}
+
+operand = basicLit | unaryExpr
+
+unaryExpr = "-" operand => {
+	return -(self[1].(float64))
+}
+
+basicLit = INT | FLOAT => {
+	return self.(*tpl.Token).Lit.float!
+}
+`!
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print err, "\n> "
+	} else {
+		print e, "\n> "
+	}
+}
+```
+
+```sh
+printf '2+3*4\n' | xgo run .
+```
+
+The program prints the following output.
+
+```text
+> 14
+>
+```
+
+## Inspect parsed calculator input
+
+Run from `demo/tpl-calc-dump`.
+
+Dump the parser result for an arithmetic expression.
+
+### calc_dump.xgo
+
+```xgo
+import (
+	"os"
+	"xgo/tpl"
+)
+
+cl := tpl`
+expr = termExpr % ("+" | "-")
+
+termExpr = unaryExpr % ("*" | "/")
+
+unaryExpr = operand | "-" unaryExpr
+
+operand = INT | FLOAT | "(" expr ")"
+`!
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print "${err}\n> "
+	} else {
+		tpl.dump e
+		print "> "
+	}
+}
+```
+
+```sh
+printf '2+3\n' | xgo run .
+```
+
+The program prints the following output.
+
+```text
+> [
+  2
+  [
+    [+ 3]
+  ]
+]
+>
+```
+
+## Convert matched tokens to integers
+
+Run from `demo/tpl-intlist`.
+
+Read a comma-separated list of integers with a template action.
+
+### ints.xgo
+
+```xgo title="ints.xgo"
+import "xgo/tpl"
+
+cl := tpl`
+expr = INT % "," => {
+	return tpl.ListOp[int](self, v => {
+		return v.(*tpl.Token).Lit.int!
+	})
+}
+`!
+
+echo cl.parseExpr("1, 2, 3", nil)!
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+[1 2 3]
+```
+
+## Match a simple sentence
+
+Run from `demo/tpl-natural-lang`.
+
+Parse a sentence containing one subject, verb, and object from the grammar’s vocabulary.
+
+### nlang.xgo
+
+```xgo
+import "os"
+
+cl := tpl`
+expr = subject verb object
+subject = "I" | "You" | "He" | "She" | "It" | "Dog" | "Cat"
+object = "me" | "you" | "him" | "her" | "it" | "fish" | "apple" | "banana" | "dog" | "cat"
+verb = "attack" | "love" | "eat" | "hate"
+`!
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print "${err}\n> "
+	} else {
+		print e, "\n > "
+	}
+}
+```
+
+```sh
+printf 'I love you\n' | xgo run .
+```
+
+The program prints the following output.
+
+```text
+> [I love you]
+ >
+```
+
+## Compare template repetition patterns
+
+Run from `demo/tpl-parser-demo`.
+
+Compare repeated tokens with lists that use comma or arithmetic operator separators.
+
+### demo.xgo
+
+```xgo title="demo.xgo"
+cl := tpl`expr = *INT`!
+echo cl.parseExpr("1 2 3", nil)!
+
+cl = tpl`expr = INT % ","`!
+echo cl.parseExpr("1, 2, 3", nil)!
+
+cl = tpl`expr = INT % ("+" | "-")`!
+echo cl.parseExpr("1 + 2 - 3", nil)!
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+[1 2 3]
+[1 [[, 2] [, 3]]]
+[1 [[+ 2] [- 3]]]
+```
+
+## Run a pseudocode program
+
+Run from `demo/tpl-pseudo`.
+
+Pass the adjacent `gauss.pseudo` file to the interpreter. The program reads a number and prints the sum from one through that number.
+
+### gauss.pseudo
+
+```text
+DECLARE n, i, sum : INTEGER
+OUTPUT "please input n:"
+INPUT n
+i <- 1
+sum <- 0
+WHILE i <= n DO
+    sum <- sum + i
+    i <- i + 1
+ENDWHILE
+OUTPUT sum
+```
+
+### pseudo.gox
+
+```xgo
+import (
+	"fmt"
+	"os"
+	"reflect"
+	"xgo/tpl"
+	"xgo/tpl/token"
+	"xgo/tpl/variant/delay"
+
+	_ "xgo/tpl/variant/builtin"
+	_ "xgo/tpl/variant/math"
+	_ "xgo/tpl/variant/time"
+)
+
+var (
+	vars   map[string]any
+	consts map[string]any
+)
+
+func exists(name string) bool {
+	_, ok := vars[name]
+	if !ok {
+		_, ok = consts[name]
+	}
+	return ok
+}
+
+func value(name string) (v any, ok bool) {
+	v, ok = vars[name]
+	if !ok {
+		v, ok = consts[name]
+	}
+	return
+}
+
+func setValue(name string, v any) {
+	oldv, ok := vars[name]
+	if !ok {
+		panic "variable ${name} is undefined"
+	}
+	if reflect.typeOf(oldv) != reflect.typeOf(v) {
+		panic "assignment of ${name}: type mismatch"
+	}
+	vars[name] = v
+}
+
+func chgValue(name string, chg func(oldv any) any) {
+	oldv, ok := vars[name]
+	if !ok {
+		panic "variable ${name} is undefined"
+	}
+	vars[name] = chg(oldv)
+}
+
+if len(os.Args) < 2 {
+	echo "Usage: tpl-pseudo <file>"
+	return
+}
+
+vars = {}
+consts = {}
+
+cl := tpl`
+
+stmts = *stmtEOS => {
+	return delay.stmtList(self)
+}
+
+stmtEOS = stmt ";" => {
+	return self[0]
+}
+
+stmt = varStmt | constStmt | outputStmt | inputStmt | ifStmt | whileStmt | untilStmt | assignStmt
+
+varStmt = "DECLARE" (IDENT % ",") ":" typeExpr => {
+	namelist := self[1].([]any)
+	typeVal := self[3]
+	return delay.rangeOp(namelist, v => {
+		t := v.(*tpl.Token)
+		name := t.Lit
+		if exists(name) {
+			tpl.panic t.Pos, "${name} exists"
+		}
+		vars[name] = typeVal
+	})
+}
+
+constStmt = "CONSTANT" IDENT "<-" expr => {
+	t := self[1].(*tpl.Token)
+	return delay.evalOp(self[3], v => {
+		name := t.Lit
+		if exists(name) {
+			tpl.panic t.Pos, "${name} exists"
+		}
+		consts[name] = v
+	})
+}
+
+assignStmt = IDENT "<-" expr => {
+	t := self[0].(*tpl.Token)
+	return delay.setValue(t.Lit, setValue, self[2])
+}
+
+inputStmt = "INPUT" IDENT => {
+	t := self[1].(*tpl.Token)
+	return delay.chgValue(t.Lit, chgValue, oldv => {
+		v := reflect.new(type(oldv))
+		fmt.scanln(v.Interface())!
+		return v.elem.Interface()
+	})
+}
+
+outputStmt = "OUTPUT" (expr % ",") => {
+	exprlist := self[1].([]any)
+	return delay.list(exprlist, vals => {
+		echo vals...
+	})
+}
+
+ifStmt = "IF" expr "THEN" ";" stmts ?("ELSE" ";" stmts) "ENDIF" => {
+	return delay.ifElse(self[1], self[4], self[5], 2)
+}
+
+whileStmt = "WHILE" expr "DO" ";" stmts "ENDWHILE" => {
+	return delay.while(self[1], self[4])
+}
+
+untilStmt = "REPEAT" ";" stmts "UNTIL" expr => {
+	return delay.repeatUntil(self[2], self[4])
+}
+
+typeExpr = integer | real | string | boolean
+
+integer = "INTEGER" => {
+	return 0
+}
+
+real = "REAL" => {
+	return 0.0
+}
+
+string = "STRING" => {
+	return ""
+}
+
+boolean = "BOOLEAN" => {
+	return false
+}
+
+expr = cmpExpr % and % or => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return delay.logicOp(op.Tok, x, y)
+	})
+}
+
+and = "AND" => {
+	return &tpl.Token{Tok: token.LAND}
+}
+
+or = "OR" => {
+	return &tpl.Token{Tok: token.LOR}
+}
+
+cmpExpr = mathExpr % ("<" | "<=" | ">" | ">=" | "=" | "<>") => {
+	return tpl.binaryOp(false, self, (op, x, y) => {
+		return delay.compare(op.Tok, x, y)
+	})
+}
+
+mathExpr = operand % ("*" | "/" | "%") % ("+" | "-") => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return delay.mathOp(op.Tok, x, y)
+	})
+}
+
+operand = basicLit | parenExpr | unaryExpr | identOrCall
+
+identOrCall = IDENT ?("(" ?(expr % ",") ")") => {
+	t := self[0].(*tpl.Token)
+	if params := self[1]; params != nil {
+		return delay.call(true, t.Lit, params.([]any)[1])
+	}
+	return delay.valueOf(t.Lit, value)
+}
+
+parenExpr = "(" expr ")" => {
+	return self[1]
+}
+
+unaryExpr = ("-" | "+" | "!") operand => {
+	op := self[0].(*tpl.Token)
+	return delay.unaryOp(op.Tok, self[1])
+}
+
+basicLit = intVal | floatVal | stringVal | true | false
+
+true = "true" => {
+	return true
+}
+
+false = "false" => {
+	return false
+}
+
+stringVal = STRING => {
+	return self.(*tpl.Token).Lit.unquote!
+}
+
+floatVal = FLOAT => {
+	return self.(*tpl.Token).Lit.float!
+}
+
+intVal = INT => {
+	return self.(*tpl.Token).Lit.int!
+}
+`!
+
+delay.initUniverse "builtin", "math", "time"
+
+e, err := cl.parse(os.Args[1], nil, nil)
+if err != nil {
+	fprintln os.Stderr, err
+} else {
+	delay.eval e
+}
+```
+
+```sh
+printf '5\n' | xgo run . gauss.pseudo
+```
+
+The program prints the following output.
+
+```text
+please input n:
+15
+```
+
+## Evaluate variant expressions
+
+Run from `demo/tpl-vcalc`.
+
+Evaluate arithmetic through a template grammar and the variant expression helpers.
+
+### variant_calc.xgo
+
+```xgo
+import (
+	"os"
+	"xgo/tpl"
+	"xgo/tpl/token"
+	"xgo/tpl/variant"
+
+	_ "xgo/tpl/variant/builtin"
+	_ "xgo/tpl/variant/math"
+	_ "xgo/tpl/variant/time"
+)
+
+cl := tpl`
+
+expr = cmpExpr % and % or => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return variant.logicOp(op.Tok, x, y)
+	})
+}
+
+and = "and" | "AND" | "&&" => {
+	return &tpl.Token{Tok: token.LAND}
+}
+
+or = "or" | "OR" | "||" => {
+	return &tpl.Token{Tok: token.LOR}
+}
+
+cmpExpr = mathExpr % ("==" | "=" | "!=" | "<>" | "<" | "<=" | ">" | ">=") => {
+	return tpl.binaryOp(false, self, (op, x, y) => {
+		return variant.compare(op.Tok, x, y)
+	})
+}
+
+mathExpr = operand % ("*" | "/" | "%") % ("+" | "-") => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return variant.mathOp(op.Tok, x, y)
+	})
+}
+
+operand = basicLit | parenExpr | unaryExpr | callExpr
+
+parenExpr = "(" expr ")" => {
+	return self[1]
+}
+
+unaryExpr = ("-" | "+" | "!") operand => {
+	op := self[0].(*tpl.Token)
+	return variant.unaryOp(op.Tok, self[1])
+}
+
+callExpr = IDENT "(" ?(expr % ",") ")" => {
+	fn := self[0].(*tpl.Token).Lit
+	return variant.call(true, fn, self[2])
+}
+
+basicLit = intVal | floatVal | stringVal | true | false
+
+true = "true" => {
+	return true
+}
+
+false = "false" => {
+	return false
+}
+
+stringVal = STRING => {
+	return self.(*tpl.Token).Lit.unquote!
+}
+
+floatVal = FLOAT => {
+	return self.(*tpl.Token).Lit.float!
+}
+
+intVal = INT => {
+	return self.(*tpl.Token).Lit.int!
+}
+`!
+
+variant.initUniverse "builtin", "math", "time"
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print err, "\n> "
+	} else {
+		print e, "\n> "
+	}
+}
+```
+
+```sh
+printf '2+3*4\n' | xgo run .
+```
+
+The program prints the following output.
+
+```text
+> 14
+>
+```
+
+## Generate a JSON syntax tree
+
+Run from `demo/fullspec/tpl-gen-ast`.
+
+Parse addition and print the abstract syntax tree as JSON. The operator and literal kinds use their numeric token values.
+
+### gen_calc_ast.xgo
+
+```xgo
+import (
+	"encoding/json"
+	"os"
+	"xgo/tpl"
+	"xgo/tpl/token"
+)
+
+type Expr any
+
+type UnaryExpr struct {
+	OpPos token.Pos
+	Op    token.Token
+	X     Expr
+}
+
+type BinaryExpr struct {
+	X     Expr
+	OpPos token.Pos
+	Op    token.Token
+	Y     Expr
+}
+
+type BasicLit struct {
+	ValuePos token.Pos
+	Kind     token.Token
+	Value    string
+}
+
+cl := tpl`
+
+expr = operand % ("*" | "/") % ("+" | "-") => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return &BinaryExpr{
+			X:     x,
+			OpPos: op.Pos,
+			Op:    op.Tok,
+			Y:     y,
+		}
+	})
+}
+
+operand = basicLit | unaryExpr
+
+unaryExpr = "-" operand => {
+	op := self[0].(*tpl.Token)
+	return &UnaryExpr{
+		OpPos: op.Pos,
+		Op:    op.Tok,
+		X:     self[1],
+	}
+}
+
+basicLit = INT | FLOAT => {
+	op := self.(*tpl.Token)
+	return &BasicLit{
+		ValuePos: op.Pos,
+		Kind:     op.Tok,
+		Value:    op.Lit,
+	}
+}
+`!
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print err, "\n> "
+	} else {
+		print string(json.marshalIndent(e, "", "  ")!), "\n> "
+	}
+}
+```
+
+```sh
+printf '1+2\n' | xgo run .
+```
+
+The program prints the following output.
+
+```text
+> {
+  "X": {
+    "ValuePos": 1,
+    "Kind": 5,
+    "Value": "1"
+  },
+  "OpPos": 2,
+  "Op": 43,
+  "Y": {
+    "ValuePos": 3,
+    "Kind": 5,
+    "Value": "2"
+  }
+}
+>
+```

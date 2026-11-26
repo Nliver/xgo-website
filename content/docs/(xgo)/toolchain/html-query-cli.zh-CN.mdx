@@ -1,0 +1,109 @@
+---
+title: 用 hdq 查询 HTML
+description: 从 XGo 源码构建基于 DQL 的 hdq 命令，并用 JSON 获取网页链接。
+---
+
+使用 Go 1.27 或更新版本，从本页记录的 XGo 源码版本构建独立的 `hdq` 命令。它使用 DQL。如果要迁移旧版 HDQ 库，参阅 [HDQ 迁移指南（英文）](/docs/ecosystem/hdq)。
+
+```sh
+cd cmd
+go build -o hdq-tool ./hdq
+./hdq-tool list
+```
+
+在 Windows 上，运行 `go build -o hdq-tool.exe ./hdq`，再在 PowerShell 中运行 `.\hdq-tool.exe list`。
+
+命令列出此版本支持的抓取类型。
+
+```text
+github.com/issueTask
+github.com/repoList
+hrefs
+pkg.go.dev/importedBy
+pytorch.org/fndoc
+```
+
+## 提取链接地址
+
+用 `hrefs` 抓取类型处理 HTTP 或 HTTPS URL。把示例 URL 换成要检查的页面。
+
+```sh
+./hdq-tool fetch hrefs https://example.com/
+```
+
+标准输出是 JSON 数组，每个 URL 对应一个对象。对象包含输入的 `url`，以及找到的非空 `hrefs` 列表。相对链接保留在 HTML 中的原始写法。抓取进度写到标准错误。
+
+如果抓取类型后面只有一个 `-`，命令会从标准输入读取以空白字符分隔的多个输入。
+
+```sh
+printf '%s\n' https://example.com/ | ./hdq-tool fetch hrefs -
+```
+
+## 在 Go 中转换已保存的 HTML
+
+使用 Go 1.26 或更新版本，从 HTML 快照中提取页面标题。在新目录中初始化独立模块，并选择本页使用的 XGo 版本。
+
+```sh
+go mod init example.com/html
+go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
+```
+
+将以下程序保存为 `main.go`。转换函数接收字符串输入和解析后的 `html.NodeSet`。`Text__1` 读取第一个匹配标题的文本，并报告解析或筛选错误。
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/goplus/xgo/dql/fetcher"
+	"github.com/goplus/xgo/dql/html"
+)
+
+type titleResult struct {
+	text string
+	err  error
+}
+
+func pageTitle(_ string, doc html.NodeSet) titleResult {
+	text, err := doc.XGo_Any("title").Text__1()
+	return titleResult{text: text, err: err}
+}
+
+func main() {
+	fetcher.Register("page-title", pageTitle, func(input any) string {
+		return input.(string)
+	})
+
+	const url = "https://example.com/docs"
+	snapshot := []byte("<html><head><title>Example documentation</title></head></html>")
+	value, err := fetcher.From("page-title", url, snapshot)
+	if err != nil {
+		log.Fatal(err)
+	}
+	title := value.(titleResult)
+	if title.err != nil {
+		log.Fatal(title.err)
+	}
+
+	fmt.Println(title.text)
+}
+```
+
+运行程序。
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+Example documentation
+```
+
+`fetcher.From` 将输入值传给转换函数，并从来源参数解析 HTML。已保存的 HTML 可以用字节切片或 `io.Reader` 传入。字符串来源会被当作地址打开。`From` 会跳过传给 `Register` 的 URL 函数，因此这个示例在运行时不会请求输入 URL 对应的页面。
+
+转换函数接收输入和一个 `html.NodeSet`，并返回一个值。示例用一个结构体返回标题及其错误。读取该结果前，先检查 `From` 返回的错误。在本页使用的版本中，查询未注册的名称会得到 `fetcher.ErrUnknownFetchType`。请在注册转换器的同一 Go 进程中调用它。
+
+选择器语法和更多 HTML 示例见 [DQL 参考（英文）](/docs/reference/dql#html)。
