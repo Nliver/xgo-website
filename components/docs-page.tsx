@@ -24,10 +24,18 @@ export function DocumentationPage({ slug, locale }: { slug?: string[]; locale: '
   const chinese = locale === 'zh-CN';
   const MDX = page.data.body;
   const markdownUrl = `${page.url}.md`;
+  const editUrl = getPageEditUrl(page.path);
   return (
     <DocsPage
       toc={page.data.toc}
       full={page.data.full}
+      tableOfContent={page.data.toc.length > 0 ? {
+        footer: (
+          <div className="mt-2 shrink-0 border-t pt-2">
+            <EditOnGitHub href={editUrl} />
+          </div>
+        ),
+      } : undefined}
       tabIndex={-1}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
@@ -42,6 +50,9 @@ export function DocumentationPage({ slug, locale }: { slug?: string[]; locale: '
         <MDX components={getMDXComponents({ a: createRelativeLink(source, page) })} />
       </DocsBody>
       <ContentPageSources path={page.path} locale={locale} />
+      <footer className="pb-2">
+        <EditOnGitHub href={editUrl} />
+      </footer>
     </DocsPage>
   );
 }
@@ -50,7 +61,6 @@ export function ContentPageActions({ path, markdownUrl, locale }: { path: string
   return (
     <div className="flex flex-wrap items-center gap-2 border-b pb-6">
       <MarkdownCopyButton markdownUrl={markdownUrl} />
-      <EditOnGitHub href={getPageEditUrl(path)} />
       <PageActions markdownUrl={markdownUrl} githubUrl={getPageGitHubUrl(path)} locale={locale} />
     </div>
   );

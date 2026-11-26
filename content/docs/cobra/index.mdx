@@ -1,0 +1,46 @@
+---
+title: Cobra xcmd command-line tools
+description: Define a version subcommand and a Boolean flag with Cobra xcmd classfiles.
+---
+
+Create a command-line program with a `version` command. Cobra xcmd registers a command for each `_cmd.gox` classfile.
+
+## Create the command
+
+Install XGo and run these commands in an empty directory.
+
+```sh
+xgo mod init hellocli
+go get github.com/goplus/cobra@v1.10.8
+```
+
+In `go.mod`, set the comment on the Cobra dependency to `//xgo:class` so XGo loads its class framework.
+
+Save this as `version_cmd.gox`. The `flag` field tag defines `--verbose` with `-v` as its short form. The `short` directive sets the help text.
+
+```xgo
+var Verbose bool `flag:"verbose, short: v, usage: print verbose information"`
+
+short "print the example version"
+
+run => {
+    echo "version 1.0", "verbose:", Verbose
+}
+```
+
+Run the command.
+
+```sh
+xgo mod tidy
+xgo run . version -v
+```
+
+```text
+version 1.0 verbose: true
+```
+
+Use `xgo run . --help` to see the registered command. Use `xgo install .` to install the module's executable and run `hellocli version` from another directory. Keep the Go executable directory on `PATH`.
+
+## Add arguments and subcommands
+
+Write `run args => { ... }` when the handler needs positional arguments. To make `mod init` a nested command, define the parent in `mod_cmd.gox` and its child in `mod_init_cmd.gox`.

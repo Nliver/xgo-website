@@ -1,0 +1,10 @@
+{
+  "title": "iXGo",
+  "description": "Run scripts, use the REPL, and embed the interpreter.",
+  "root": true,
+  "icon": "Terminal",
+  "pages": [
+    "index",
+    "embedding"
+  ]
+}

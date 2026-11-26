@@ -1,0 +1,110 @@
+---
+title: YAP routes, HTTP tests, and YDB
+description: Serve HTML and JSON with YAP, test a route with yaptest, and query an in-memory SQLite database with YDB.
+---
+
+Create a YAP server with an HTML home page and a JSON endpoint. Each handler's filename determines its method and path.
+
+## Create a YAP project
+
+Install XGo. Run this in a new directory.
+
+```sh
+xgo mod init example.com/yaphello
+go get github.com/goplus/yap@1caa1d123c9ab24ffec95d0d8cbb472d6c87862d
+```
+
+In `go.mod`, replace the comment on the YAP dependency with `//xgo:class` so XGo loads its class framework.
+
+Save the home page handler as `get.yap`, which maps to `GET /`.
+
+```xgo
+html `<html><body>Hello, YAP!</body></html>`
+```
+
+Save the parameterized handler as `get_p_#id.yap`, which maps to `GET /p/:id`. YAP makes the route parameter available as `${id}`.
+
+```xgo
+json {
+    "id": ${id},
+}
+```
+
+Start the server.
+
+```sh
+xgo mod tidy
+xgo run .
+```
+
+From another terminal, check both responses.
+
+```sh
+curl -fsS http://localhost:8080/
+curl -fsS http://localhost:8080/p/123
+```
+
+The first response contains `Hello, YAP!` and the second contains `{"id":"123"}`. Press Ctrl+C in the server terminal to stop it.
+
+## Check the route with yaptest
+
+Add a file named `routes_ytest.gox` in the same project.
+
+```xgo
+mock "foo.com", new(AppV2)
+
+get "http://foo.com/p/123"
+ret 200
+json {
+    "id": "123",
+}
+```
+
+Run `xgo test -v .`. The test checks the status code and JSON response through a mock HTTP server. For a test that reaches a real HTTP listener on a random local port, replace the `mock` directive with `testServer "foo.com", new(AppV2)`.
+
+## Templates and static assets
+
+A handler can call `yap "article", {"id": ${id}}` to render `yap/article_yap.html` using Go template syntax. Inside the template, `{{.id}}` accesses the supplied value. Define static routes in `main.yap`, for example `static "/foo", FS("public")` serves the files under `yap/public` at `/foo`.
+
+## Insert and query a row with YDB
+
+YDB classfiles use the `_ydb.gox` suffix. Create this example in a separate directory. It requires Go with cgo enabled and a C compiler for the SQLite driver.
+
+```sh
+xgo mod init example.com/ydbbooks
+go get github.com/goplus/yap@1caa1d123c9ab24ffec95d0d8cbb472d6c87862d
+```
+
+In `go.mod`, mark the YAP dependency as `//xgo:class`. Save the following as `books_ydb.gox`.
+
+```xgo
+import _ "github.com/goplus/yap/ydb/sqlite3"
+
+type Book struct {
+    Id    string `CHAR(32) UNIQUE`
+    Title string
+}
+
+engine "sqlite3"
+table Book, "book v0.1.0"
+use "book"
+
+insert &Book{Id: "b1", Title: "A Field Guide"}
+
+var found Book
+query "id=?", "b1"
+ret &found
+
+echo found.Title
+```
+
+```sh
+xgo mod tidy
+xgo run .
+```
+
+```text
+A Field Guide
+```
+
+The blank import registers the SQLite engine, whose default YDB data source is in memory. `table` creates the schema from the `Book` fields, and `use` chooses the active table. The `query` call binds `"b1"` to the `?` placeholder, and `ret &found` reads the resulting row into the struct.

@@ -1,0 +1,11 @@
+{
+  "title": "LLGo",
+  "description": "Compile Go with LLVM and call native libraries.",
+  "root": true,
+  "icon": "Cpu",
+  "pages": [
+    "index",
+    "interoperability",
+    "examples"
+  ]
+}

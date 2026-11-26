@@ -1,0 +1,58 @@
+---
+title: 用命令行创建并运行 SPX 项目
+description: 初始化 SPX 项目，在无窗口模式下运行舞台脚本，并为桌面、Web 或导出任务选择合适的命令。
+---
+
+创建一个 SPX `v4.0.2` 项目，并确认舞台脚本可以运行。先安装对应版本的 `spx` 命令和运行时。见 [SPX 第一个游戏](/zh-CN/docs/spx)。
+
+## 初始化项目
+
+在存放项目的目录中，使用 `--path` 指定一个新的子目录。
+
+```sh
+spx init --path ./stage-demo
+```
+
+```files
+stage-demo/
+├── assets/
+│   └── index.json
+├── go.mod
+└── main.spx
+```
+
+生成的项目包含舞台脚本 `main.spx`、定义 480 × 360 舞台的 `assets/index.json`，以及包含 `github.com/goplus/spx/v4` 依赖的 `go.mod`。该依赖带有 `//xgo:class` 注解。4.0.2 通过 `--path` 读取目标目录。如果只把目录作为位置参数传入，它会在当前目录写入项目文件。可检查目标目录中是否有 `go.mod` 来确认写入位置。
+
+## 检查舞台脚本
+
+使用无窗口模式运行刚建立的项目。
+
+```sh
+spx run --path ./stage-demo --headless
+```
+
+舞台的 `onStart` 处理函数会在终端打印两行文字。
+
+```text
+Hello, SPX!
+Project started successfully!
+```
+
+按 Ctrl+C 结束运行。修改 `stage-demo/main.spx` 中任意一条消息，再运行一次即可看到改动。省略 `--headless` 会打开游戏窗口。
+
+## 按任务选择命令
+
+| 命令 | 用途 |
+| --- | --- |
+| `spx run --path ./stage-demo` | 用匹配的运行时解释执行项目。 |
+| `spx build --path ./stage-demo` | 构建宿主平台的动态库。 |
+| `spx runnative --path ./stage-demo` | 构建原生项目并使用桌面运行时启动。 |
+| `spx rune --path ./stage-demo` | 用编辑器运行时启动项目，并在需要时导入资源。 |
+| `spx runweb --path ./stage-demo` | 用标准 Web 运行时打包项目并启动服务。 |
+| `spx runwebworker --path ./stage-demo` | 用 Web Worker 运行时打包项目并启动服务。 |
+| `spx stopweb --path ./stage-demo` | 停止项目的 Web 服务。 |
+| `spx export --path ./stage-demo` | 用匹配的导出模板打包桌面项目。 |
+
+在 SPX 仓库中，运行 `make setup-web MODE=normal` 为 `runweb` 准备 Web 资源，或运行 `make setup-web MODE=worker` 为 `runwebworker` 准备资源。使用 `spx exportweb` 或 `spx exportwebworker` 导出时，也要选择与准备资源时对应的模式。
+
+运行 `spx help` 查看完整命令和参数列表。这个版本中，保留的 `runm` 和 `exportbot` 命令会报错退出。对 SPX 仓库自带的教程，可用 `make list-demos` 查看编号，再用 `make run DEMO_INDEX=2` 以解释模式运行 Hello。

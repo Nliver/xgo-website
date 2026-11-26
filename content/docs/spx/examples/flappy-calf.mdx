@@ -1,0 +1,20 @@
+---
+title: Follow a scrolling obstacle in FlappyCalf
+description: Trace the event handlers in FlappyCalf, a game written with SPX v1.1.0.
+---
+
+## Inspect the project
+
+```sh
+git clone https://github.com/goplus/FlappyCalf.git
+cd FlappyCalf
+git checkout --detach 4ee62694ef952b51f03938ccbd969c1083c40256
+```
+
+Read `main.spx` for the shared game state, then open `Pipe.spx` for the sprite's event handlers. Keep the `assets/` directory alongside the scripts. The project's historical launch command is `gop run .` with a compatible Go+ toolchain and a graphical desktop. This project uses SPX v1.1.0. For the current engine and launcher, see the [SPX guide](/docs/spx).
+
+## Trace the events
+
+The tap message starts a timer. After 1.5 seconds the pipe starts spawning clones at 2.8-second intervals while the calf is alive. One clone handler moves the pipe left from x = 250. Another waits for x to fall below −80 during play, increments the score once and breaks out of its loop.
+
+Open Calf.spx and find the tap handlers. Space or a mouse press lifts the calf. Contact with a pipe or the top edge, or a y coordinate below −123.9, sets the death flag and broadcasts the game-over message.

@@ -1,0 +1,35 @@
+---
+title: Attach sounds to SPX animations
+description: Configure one-shot and animation-bound sounds in sprite metadata and compare their playback across animation cycles.
+---
+
+Use the animation audio demo from the SPX `v4.0.2` checkout to hear how a one-shot sound differs from a sound tied to an animation cycle. Use the runtime from the [SPX first game guide](/docs/spx) and run this command from the repository root.
+
+```sh
+spx run --path test/AnimationOnStartOnPlayAudio
+```
+
+The Monkey sprite starts the animation `clapTruncate`. Press **F** to restart the short cycle, **G** to switch to the longer cycle, or **S** to stop the animation. The short cycle restarts the clap before the previous playback finishes. The longer cycle lets the sound finish and repeat within a cycle.
+
+## Read the sprite configuration
+
+Open `test/AnimationOnStartOnPlayAudio/assets/sprites/Monkey/index.json`. The `clapTruncate` entry in `fAnimations` describes the frames, frame rate, and sound bindings.
+
+```json
+{
+  "frameFps": 20,
+  "frameFrom": 42,
+  "frameTo": 51,
+  "onStart": { "play": "chomp" },
+  "onPlay": { "play": "clap" }
+}
+```
+
+Both `play` values are sound names. The demo declares them in the project assets at `sounds/chomp/index.json` and `sounds/clap/index.json`. Keep the named sound and its audio file in the asset tree when using a binding in your own project.
+
+- `onStart.play` starts a one-shot sound when playback begins and once at the start of each loop cycle.
+- `onPlay.play` starts a repeating sound owned by that playback. A new animation cycle restarts the sound from the beginning. Stopping or replacing the animation stops this bound playback.
+
+## Compare two timings
+
+The short animation uses ten frames at 20 frames per second, for a half-second cycle. In `clapComplete` the end frame is 67, for a 1.3-second cycle at the same frame rate. Try changing only `frameTo` on `clapTruncate` in a copy of the demo. Rerun it and compare the clap against the original short cycle. The bindings stay the same while the restart interval changes.

@@ -5,6 +5,10 @@ import { PathnameContext, PathParamsContext, SearchParamsContext } from 'next/di
 import EnglishRootLayout, { metadata as rootMetadata } from '@/app/(english)/layout';
 import EnglishHomeLayout from '@/app/(english)/(home)/layout';
 import EnglishDocsLayout from '@/app/(english)/docs/layout';
+import BlogPage, {
+  generateMetadata as generateBlogMetadata,
+  generateStaticParams as generateBlogStaticParams,
+} from '@/app/(english)/(home)/blog/[[...slug]]/page';
 import ChineseRootLayout from '@/app/zh-CN/layout';
 import ChineseHomeLayout from '@/app/zh-CN/(home)/layout';
 import ChineseHomePage, { metadata as chineseHomeMetadata } from '@/app/zh-CN/(home)/page';
@@ -31,13 +35,15 @@ import { GET as getChineseImage, generateStaticParams as chineseImageParams } fr
 import robots from '@/app/robots';
 import sitemap from '@/app/sitemap';
 import proxy from '@/proxy';
-import { source } from '@/lib/source';
-import { getPageSources, siteRepositoryUrl, upstreamUrl } from '@/lib/upstream';
+import { getDocsPageTree, source } from '@/lib/source';
+import { getPageEditUrl, getPageSources, siteRepositoryUrl, upstreamUrl } from '@/lib/upstream';
 import { appName, getPageImageUrl, siteOrigin } from '@/lib/shared';
 import { cn } from '@/lib/cn';
 import { getMDXComponents, useMDXComponents } from '@/components/mdx';
 import manifest from '@/content/sources.json';
 import { baseOptions } from '@/lib/layout.shared';
+import { getLayoutTabs } from 'fumadocs-ui/layouts/shared';
+import { flattenTree } from 'fumadocs-core/page-tree';
 
 const pageProps = (slug?: string[]) => ({ params: Promise.resolve({ slug }), searchParams: Promise.resolve({}) });
 
@@ -93,6 +99,41 @@ function expectDesktopSidebar(html: string, locale: 'en' | 'zh-CN') {
 }
 
 describe('site navigation and metadata', () => {
+  it('lists every article at /blog and keeps Blog out of the documentation sidebars', async () => {
+    const html = renderSite(
+      <EnglishRootLayout params={Promise.resolve({})}>
+        <EnglishHomeLayout params={Promise.resolve({})}>{await BlogPage(pageProps())}</EnglishHomeLayout>
+      </EnglishRootLayout>,
+      '/blog',
+    );
+    expect(html).toContain('<h1');
+    expect(html).toContain('id="main-content"');
+    expect(html).not.toContain('aria-label="Collapse Sidebar"');
+    const posts = source.getPages('en').filter((page) => page.slugs[0] === 'blog' && page.slugs.length > 1);
+    expect(posts.length).toBeGreaterThan(0);
+    for (const post of posts) {
+      expect(post.url).toMatch(/^\/blog\//);
+      expect(html).toContain(`href="${post.url}"`);
+    }
+    for (const locale of ['en', 'zh-CN']) {
+      expect(getDocsPageTree(locale).children.some((node) => node.type === 'folder' && node.$ref?.folder === 'blog')).toBe(false);
+    }
+  });
+  it.each(['en', 'zh-CN'])('gives each project a sidebar rooted at its own guide in %s', (locale) => {
+    const tabs = getLayoutTabs(getDocsPageTree(locale));
+    const docs = locale === 'en' ? '/docs' : '/zh-CN/docs';
+    expect(tabs[0]?.url).toBe(docs);
+    for (const slug of ['llgo', 'ixgo', 'xbuilder', 'spx']) {
+      const root = tabs.find((tab) => tab.url === `${docs}/${slug}`)?.$folder;
+      expect(root, slug).toBeDefined();
+      const pages = flattenTree(root!.children);
+      expect(pages.every((page) => page.url === `${docs}/${slug}` || page.url.startsWith(`${docs}/${slug}/`))).toBe(true);
+    }
+    const main = flattenTree(tabs[0].$folder!.children);
+    expect(main.some((page) => page.url === `${docs}/getting-started/installation`)).toBe(true);
+    expect(main.some((page) => page.url.startsWith(`${docs}/spx`))).toBe(false);
+  });
+
   it('renders the actual home page with a visible program and working documentation links', () => {
     const html = renderToStaticMarkup(<HomePage />);
     expect(html).toContain('Programming with');
@@ -190,14 +231,20 @@ describe('actual documentation content and provenance', () => {
     const chineseSlugs = source.getPages('zh-CN').map((page) => page.slugs.join('/')).sort();
     expect(englishSlugs).toEqual(expect.arrayContaining(chineseSlugs));
     expect(chineseSlugs).toContain('tutorials/process-collections');
-    expect(generateEnglishStaticParams()).toEqual(source.getPages('en').map((page) => ({ slug: page.slugs })));
-    expect(generateChineseStaticParams()).toEqual(source.getPages('en').map((page) => ({ slug: page.slugs })));
+    const englishDocs = source.getPages('en').filter((page) => page.slugs[0] !== 'blog').map((page) => ({ slug: page.slugs }));
+    expect(generateEnglishStaticParams()).toEqual(englishDocs);
+    expect(generateChineseStaticParams()).toEqual(englishDocs);
+    expect(generateBlogStaticParams().map(({ slug }) => ['blog', ...slug].join('/')).sort()).toEqual(
+      englishSlugs.filter((slug) => slug === 'blog' || slug.startsWith('blog/')),
+    );
     for (const page of source.getPages()) {
       expect(typeof page.data.body).toBe('function');
       expect((await page.data.getText('processed')).trim().length).toBeGreaterThan(0);
       const localized = page.locale === 'zh-CN';
-      expect(await (localized ? ChinesePage : EnglishPage)(pageProps(page.slugs))).toBeTruthy();
-      const metadata = await (localized ? generateChineseMetadata : generateEnglishMetadata)(pageProps(page.slugs));
+      const blog = page.slugs[0] === 'blog';
+      const props = pageProps(blog ? page.slugs.slice(1) : page.slugs);
+      expect(await (blog ? BlogPage : localized ? ChinesePage : EnglishPage)(props)).toBeTruthy();
+      const metadata = await (blog ? generateBlogMetadata : localized ? generateChineseMetadata : generateEnglishMetadata)(props);
       expect(metadata.description).toBe(page.data.description);
       expect(metadata.alternates?.canonical).toBe(page.url);
       expect(metadata.openGraph).toMatchObject({ type: 'article', url: page.url, images: [getPageImageUrl(page).url] });
@@ -226,6 +273,40 @@ describe('actual documentation content and provenance', () => {
     expect(html).toContain('Hello world');
     expect(html).toContain(getPageSources(page.path).files[0].url);
     expect(html).toContain('Apache-2.0');
+  });
+
+  it.each(['en', 'zh-CN'] as const)('places the edit action below the article and its desktop contents in %s', async (locale) => {
+    const page = source.getPage(['getting-started', 'installation'], locale)!;
+    const RootLayout = locale === 'en' ? EnglishRootLayout : ChineseRootLayout;
+    const DocsLayout = locale === 'en' ? EnglishDocsLayout : ChineseDocsLayout;
+    const Page = locale === 'en' ? EnglishPage : ChinesePage;
+    const html = renderSite(
+      <RootLayout params={Promise.resolve({})}>
+        <DocsLayout params={Promise.resolve({})}>{await Page(pageProps(page.slugs))}</DocsLayout>
+      </RootLayout>,
+      page.url,
+    );
+    const editHref = 'href="' + getPageEditUrl(page.path) + '"';
+    const articleStart = html.indexOf('id="nd-page"');
+    const article = html.slice(articleStart, html.indexOf('</article>', articleStart));
+    const toc = html.slice(html.indexOf('id="nd-toc"'));
+    expect(article.indexOf(editHref)).toBeGreaterThan(article.indexOf('class="doc-sources"'));
+    expect(toc.indexOf(editHref)).toBeGreaterThan(toc.indexOf('id="toc-title"'));
+    expect(html.split(editHref)).toHaveLength(3);
+  });
+
+  it('puts the blog edit action after the article content', async () => {
+    const slug = 'goodbye-printf';
+    const page = source.getPage(['blog', slug], 'en')!;
+    const html = renderSite(
+      <EnglishRootLayout params={Promise.resolve({})}>
+        <EnglishHomeLayout params={Promise.resolve({})}>{await BlogPage(pageProps([slug]))}</EnglishHomeLayout>
+      </EnglishRootLayout>,
+      page.url,
+    );
+    const editHref = 'href="' + getPageEditUrl(page.path) + '"';
+    expect(html.indexOf(editHref)).toBeGreaterThan(html.indexOf('class="doc-sources"'));
+    expect(html.split(editHref)).toHaveLength(2);
   });
 
   it('redirects a missing Chinese translation to the English original', async () => {
@@ -285,6 +366,10 @@ describe('actual documentation content and provenance', () => {
       expect(sources.licenseUrl).toBe(`${upstreamUrl}/blob/${commit}/${licensePath}`);
       expect(sources.license).toBe('Apache-2.0');
     }
+    expect(getPageSources('llgo/index.mdx').externalFiles).toContainEqual({
+      label: 'xgo-dev/llgo/README.md',
+      url: 'https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/README.md',
+    });
     expect(() => getPageSources('missing.mdx')).toThrow('Missing source record');
   });
 
@@ -323,6 +408,20 @@ describe('actual route responses', () => {
     expect((await getMarkdown(new Request('http://localhost'), { params: Promise.resolve({ path: ['zh-CN', 'docs', 'absent.md'] }) })).status).toBe(404);
   });
 
+  it.each(['en', 'zh-CN'])('exports all install commands and directory entries as Markdown in %s', async (locale) => {
+    const installation = source.getPage(['getting-started', 'installation'], locale)!;
+    const installText = await installation.data.getText('processed');
+    for (const command of ['winget install goplus.xgo', 'sudo apt install xgo', 'sudo yum install xgo', 'brew install xgo', './all.bash', 'all.bat']) {
+      expect(installText).toContain(command);
+    }
+    expect(installText).not.toMatch(/<Tabs|<PlatformLogo/);
+
+    const pack = source.getPage(['toolchain', 'pack-project-configuration'], locale)!;
+    const packText = await pack.data.getText('processed');
+    expect(packText).toContain('assets/\n├── index.json\n└── player/\n    └── index.json');
+    expect(packText).not.toContain('<Files');
+  });
+
   it('pre-renders the English Markdown redirect when a translation is missing', async () => {
     // The route snapshots its redirects at import time.
     vi.resetModules();
@@ -346,7 +445,9 @@ describe('actual route responses', () => {
     const englishResults = await english.json();
     expect(englishResults.length).toBeGreaterThan(0);
     expect(englishResults).toContainEqual(expect.objectContaining({ url: '/docs/tutorials/control-flow' }));
-    expect(englishResults.every((result: { url: string }) => /^\/docs(?:\/|#|$)/.test(result.url))).toBe(true);
+    expect(englishResults.every((result: { url: string }) => /^\/(?:docs|blog)(?:\/|#|$)/.test(result.url))).toBe(true);
+    const blog = await getSearch(new Request('http://localhost/api/search?query=Goodbye+printf'));
+    expect(await blog.json()).toContainEqual(expect.objectContaining({ url: '/blog/goodbye-printf' }));
 
     const chinese = await getSearch(new Request('http://localhost/api/search?query=%E7%AC%AC%E4%B8%80%E4%B8%AA&locale=zh-CN'));
     expect(chinese.status).toBe(200);
@@ -354,6 +455,8 @@ describe('actual route responses', () => {
     expect(chineseResults.length).toBeGreaterThan(0);
     expect(chineseResults.every((result: { url: string }) => /^\/zh-CN\/docs(?:\/|#|$)/.test(result.url))).toBe(true);
 
+    const projects = await getSearch(new Request('http://localhost/api/search?query=LLGo'));
+    expect(await projects.json()).toContainEqual(expect.objectContaining({ url: '/docs/llgo' }));
     const unmatched = await getSearch(new Request('http://localhost/api/search?query=zzzxgononexistent987654321'));
     expect(await unmatched.json()).toEqual([]);
   }, 30_000);
@@ -375,6 +478,10 @@ describe('request negotiation', () => {
     const chinese = proxy(new NextRequest('http://localhost/zh-CN/docs/getting-started/hello-world', { headers: { Accept: 'text/markdown' } }));
     expect(chinese.headers.get('x-middleware-rewrite')).toBe('http://localhost/llms.mdx/zh-CN/docs/getting-started/hello-world.md');
     expect(chinese.headers.get('Vary')).toBe('Accept');
+
+    const blog = proxy(new NextRequest('http://localhost/blog/goodbye-printf', { headers: { Accept: 'text/markdown' } }));
+    expect(blog.headers.get('x-middleware-rewrite')).toBe('http://localhost/llms.mdx/blog/goodbye-printf.md');
+    expect(blog.headers.get('Vary')).toBe('Accept');
   });
 
   it.each([

@@ -63,6 +63,7 @@ export const translations = i18n
 export const appName = 'XGo Documentation';
 export const homePaths = { en: '/', 'zh-CN': '/zh-CN' } as const;
 export const docsRoute = '/docs';
+export const blogRoute = '/blog';
 export const docsImageRoute = '/og/docs';
 export const siteOrigin = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').origin;
 

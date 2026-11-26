@@ -1,0 +1,9 @@
+{
+  "title": "LLGo",
+  "description": "使用 LLVM 编译 Go 并调用原生库。",
+  "root": true,
+  "icon": "Cpu",
+  "pages": [
+    "index"
+  ]
+}

@@ -1,7 +1,8 @@
+import { XGoLogo } from '@/components/xgo-logo';
 import { notFound } from 'next/navigation';
 import { generateOGImage } from 'fumadocs-ui/og';
 import { source } from './source';
-import { appName, getPageImageUrl } from './shared';
+import { getPageImageUrl } from './shared';
 
 export function documentImage(locale: string, slug: string[]) {
   const page = source.getPage(slug.slice(0, -1), locale);
@@ -10,7 +11,8 @@ export function documentImage(locale: string, slug: string[]) {
   return generateOGImage({
     title: page.data.title,
     description: page.data.description,
-    site: locale === 'zh-CN' ? 'XGo 文档' : appName,
+    icon: <XGoLogo width={128} height={64} color="white" />,
+    site: locale === 'zh-CN' ? '文档' : 'Documentation',
   });
 }
 

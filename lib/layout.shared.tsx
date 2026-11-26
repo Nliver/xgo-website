@@ -1,4 +1,6 @@
+import { XGoLogo } from '@/components/xgo-logo';
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import { blogRoute } from './shared';
 import { siteRepositoryUrl } from './upstream';
 
 export function baseOptions(locale: 'en' | 'zh-CN' = 'en'): BaseLayoutProps {
@@ -7,14 +9,16 @@ export function baseOptions(locale: 'en' | 'zh-CN' = 'en'): BaseLayoutProps {
     nav: {
       title: (
         <span className="brand-mark">
-          <span className="brand-mark__glyph" aria-hidden="true">X</span>
-          <span>XGo<span className="brand-mark__suffix">{chinese ? ' 文档' : ' Documentation'}</span></span>
+          <XGoLogo className="shrink-0" />
+          <span className="sr-only">XGo</span>
+          <span className="brand-mark__suffix">{chinese ? '文档' : 'Documentation'}</span>
         </span>
       ),
       url: chinese ? '/zh-CN' : '/',
     },
     links: [
       { text: chinese ? '文档' : 'Docs', url: chinese ? '/zh-CN/docs' : '/docs', active: 'nested-url' },
+      { text: chinese ? '博客' : 'Blog', url: chinese ? `/zh-CN${blogRoute}` : blogRoute, active: 'nested-url' },
       { text: chinese ? '在线试用' : 'Playground', url: 'https://play.xgo.dev/', external: true },
       { text: 'REPL', url: 'https://repl.xgo.dev/', external: true },
       {

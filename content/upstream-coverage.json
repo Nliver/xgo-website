@@ -1,0 +1,2632 @@
+{
+  "checkedAt": "2026-11-26",
+  "projects": {
+    "goplus/xgo": {
+      "defaultBranchCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "guideSourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "applicableVersion": "source-snapshot",
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "status": "excluded",
+          "reason": "Instructions for repository contributors using agents."
+        },
+        {
+          "path": "CODE_OF_CONDUCT.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/contributing"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "README.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "siteUrls": [
+            "/docs",
+            "/docs/getting-started/installation",
+            "/docs/interoperability/go",
+            "/docs/toolchain/repl",
+            "/docs/llgo/interoperability",
+            "/docs/examples/overview",
+            "/docs/blog",
+            "/docs/blog/goodbye-printf",
+            "/docs/blog/xgo-design-philosophy",
+            "/docs/blog/what-is-xgo",
+            "/docs/ecosystem",
+            "/docs/llgo",
+            "/docs/ixgo",
+            "/docs/xbuilder",
+            "/docs/spx",
+            "/docs/mcp",
+            "/docs/yap",
+            "/docs/cobra",
+            "/docs/ecosystem/gsh",
+            "/docs/spx/examples/aircraft-war",
+            "/docs/spx/examples/flappy-calf",
+            "/docs/spx/examples/maze-play",
+            "/docs/toolchain/vscode"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "demo/_llgo/hellollgo/README.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "siteUrls": [
+            "/docs/llgo/interoperability",
+            "/docs/llgo/examples"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "demo/mixgo/README.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "siteUrls": [
+            "/docs/interoperability/go",
+            "/docs/examples/overview",
+            "/docs/examples/mixed-go-generics"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/builtin.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/builtins"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/classfile-spec.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/toolchain/classfile-specification"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/classfile.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/toolchain/classfiles",
+            "/docs/examples/overview",
+            "/docs/examples/gsh-and-classfiles",
+            "/docs/blog",
+            "/docs/blog/xgo-design-philosophy",
+            "/docs/blog/specific-domain-friendliness"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/code-coverage.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/toolchain/code-coverage"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/contributing.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/contributing"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/docs.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "siteUrls": [
+            "/docs/getting-started/installation",
+            "/docs/getting-started/hello-world",
+            "/docs/tutorials/first-program",
+            "/docs/tutorials/control-flow",
+            "/docs/tutorials/error-handling",
+            "/docs/reference/types",
+            "/docs/interoperability/go",
+            "/docs/toolchain/playground",
+            "/docs/blog",
+            "/docs/tutorials/exact-arithmetic",
+            "/docs/tutorials/process-collections",
+            "/docs/tutorials/structs-and-methods",
+            "/docs/tutorials/organize-projects"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/domian-text-lit.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/domain-text-literals",
+            "/docs/blog",
+            "/docs/blog/domain-text-literals-design"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/enum.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/enums"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/fncall.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/language",
+            "/docs/reference/function-calls"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/for.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/for-loops",
+            "/docs/tutorials/structs-and-methods"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/func-closure.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/tutorials/functions",
+            "/docs/reference/language",
+            "/docs/reference/functions-and-closures"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/go.mod.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/toolchain/modules"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/goodbye-printf.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "siteUrls": [
+            "/docs/tutorials/first-program",
+            "/docs/tutorials/control-flow",
+            "/docs/blog/goodbye-printf"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/gox.mod.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/toolchain/gox-mod"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/map.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/types",
+            "/docs/reference/maps",
+            "/docs/tutorials/process-collections"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/overload.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/overloads",
+            "/docs/blog/overloading-in-xgo"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/slice.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/types",
+            "/docs/reference/slices",
+            "/docs/tutorials/process-collections"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/spec-mini.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/tutorials/control-flow",
+            "/docs/reference/language",
+            "/docs/reference/mini-specification",
+            "/docs/reference/strings",
+            "/docs/tutorials/exact-arithmetic"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/spec.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/language",
+            "/docs/reference/types",
+            "/docs/reference/full-specification",
+            "/docs/tutorials/structs-and-methods"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/string.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/types",
+            "/docs/reference/strings"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/struct-vs-tuple.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/structs-and-tuples"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/template-recv-method.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/reference/template-receiver-method",
+            "/docs/blog/template-receiver-methods"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/tooling-conventions.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/toolchain/tooling-conventions"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/xgo-vs-go.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "siteUrls": [
+            "/docs/concepts/xgo-and-go",
+            "/docs/blog/xgo-design-philosophy",
+            "/docs/blog/xgo-and-go-design-goals"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "dql/README.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/blog/dql",
+            "/docs/reference/dql",
+            "/docs/ecosystem/hdq"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "parser/_testdata/functype/dummy/dummy.md",
+          "status": "excluded",
+          "reason": "Parser test fixture."
+        },
+        {
+          "path": "tpl/README.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/blog/tpl",
+            "/docs/reference/tpl"
+          ],
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "x/format/README.md",
+          "type": "user-documentation",
+          "status": "migrated-with-edits",
+          "siteUrls": [
+            "/docs/blog/xgo-code-style",
+            "/docs/toolchain/code-style"
+          ],
+          "reviewStatus": "technical-review"
+        }
+      ],
+      "sourceAudit": {
+        "auditedCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+        "auditedAt": "2026-11-26",
+        "trackedPaths": 975,
+        "markdownFiles": 33,
+        "demoPaths": 78,
+        "mappedDemoPaths": 78,
+        "goUnitTestFiles": 51,
+        "goExampleFunctions": 0,
+        "generatedGoPaths": 9,
+        "notes": "Path patterns match repository-relative paths at the audited commit. An asterisk can span directory separators. Groups can overlap when a file supports more than one workflow.",
+        "sourceGroups": [
+          {
+            "topic": "Distribution formats and container image",
+            "pathPatterns": [
+              "Dockerfile",
+              ".goreleaser.yaml",
+              ".github/workflows/release-build.yml"
+            ],
+            "matchedPaths": 3,
+            "status": "topic-adaptation",
+            "reason": "The installation guide gives the versioned GHCR image and mount point. Image manifests were checked for linux/386, linux/amd64 and linux/arm64. A container runtime was unavailable for execution.",
+            "siteUrls": [
+              "/docs/getting-started/installation"
+            ],
+            "paths": [
+              ".github/workflows/release-build.yml",
+              ".goreleaser.yaml",
+              "Dockerfile"
+            ]
+          },
+          {
+            "topic": "Source builds, releases, and contribution automation",
+            "pathPatterns": [
+              "Makefile",
+              "all.bash",
+              "all.bat",
+              "make.bash",
+              "make.bat",
+              "cmd/make.go",
+              "go.mod",
+              "cmd/go.mod",
+              ".github/ISSUE_TEMPLATE/*",
+              ".github/workflows/*",
+              ".github/codecov.yml",
+              ".github/dependabot.yml"
+            ],
+            "matchedPaths": 17,
+            "status": "partially-covered",
+            "reason": "Install, contribute, and coverage guides cover the reader workflows. Build recipes, workflow internals, and issue form schemas are upstream maintenance configuration.",
+            "siteUrls": [
+              "/docs/getting-started/installation",
+              "/docs/contributing",
+              "/docs/toolchain/code-coverage"
+            ]
+          },
+          {
+            "topic": "XGo CLI and shell-facing command help",
+            "pathPatterns": [
+              "cmd/xgo/*.gox",
+              "cmd/internal/*/*.go",
+              "env/*.go",
+              "x/gocmd/*.go",
+              "x/xgoenv/*.go",
+              "x/xgoprojs/*.go"
+            ],
+            "matchedPaths": 60,
+            "status": "partially-covered",
+            "reason": "The command and environment guides cover command flags, package versus file mode, root and compiler selection, and module settings. Backend internals are implementation evidence.",
+            "siteUrls": [
+              "/docs/toolchain/command-reference",
+              "/docs/toolchain/pack-project-configuration",
+              "/docs/toolchain/environment"
+            ]
+          },
+          {
+            "topic": "Pack configuration implementation and fixtures",
+            "pathPatterns": [
+              "tool/pack.go",
+              "tool/pack_test.go",
+              "cmd/xgo/pack_cmd.gox"
+            ],
+            "matchedPaths": 3,
+            "status": "topic-adaptation",
+            "reason": "The guide demonstrates file layout, generated output, check mode, and collisions using a reader-owned project.",
+            "siteUrls": [
+              "/docs/toolchain/pack-project-configuration"
+            ],
+            "paths": [
+              "cmd/xgo/pack_cmd.gox",
+              "tool/pack.go",
+              "tool/pack_test.go"
+            ]
+          },
+          {
+            "topic": "HDQ executable and registered data fetchers",
+            "pathPatterns": [
+              "cmd/hdq/*.gox",
+              "dql/fetcher/fetch.go",
+              "dql/fetcher/*/*.xgo",
+              "dql/fetcher/*/*/*.xgo"
+            ],
+            "matchedPaths": 9,
+            "status": "topic-adaptation",
+            "reason": "The toolchain guide demonstrates building the standalone command, listing fetch types and extracting links from URLs or standard input. A Go example registers a converter and applies it to saved HTML through fetcher.From. The deprecated library has a migration guide.",
+            "siteUrls": [
+              "/docs/ecosystem/hdq",
+              "/docs/toolchain/html-query-cli",
+              "/docs/toolchain/html-query-cli#convert-saved-html-in-go"
+            ],
+            "paths": [
+              "cmd/hdq/fetch_cmd.gox",
+              "cmd/hdq/list_cmd.gox",
+              "cmd/hdq/main_app.gox",
+              "dql/fetcher/fetch.go",
+              "dql/fetcher/github.com/issueTask/issueTask.xgo",
+              "dql/fetcher/github.com/repoList/repoList.xgo",
+              "dql/fetcher/hrefs/hrefs.xgo",
+              "dql/fetcher/pkg.go.dev/importedBy/importedBy.xgo",
+              "dql/fetcher/pytorch.org/fndoc/fndoc.xgo"
+            ]
+          },
+          {
+            "topic": "Source inspection and formatting",
+            "pathPatterns": [
+              "ast/*.go",
+              "parser/interface.go",
+              "parser/parser.go",
+              "parser/parser_xgo.go",
+              "token/*.go",
+              "scanner/*.go",
+              "format/*.go",
+              "printer/*.go",
+              "format/formatutil/format_xgo.go",
+              "x/format/*.go"
+            ],
+            "matchedPaths": 50,
+            "status": "partially-covered",
+            "reason": "The source inspection guide demonstrates parsing an in-memory file, walking identifiers, reporting original positions and formatting the syntax tree.",
+            "siteUrls": [
+              "/docs/toolchain/inspect-source",
+              "/docs/toolchain/tooling-conventions#ast-and-positions",
+              "/docs/examples/core-language",
+              "/docs/toolchain/code-style"
+            ]
+          },
+          {
+            "topic": "Converting Go and XGo syntax trees and querying compatibility nodes",
+            "pathPatterns": [
+              "ast/fromgo/*.go",
+              "ast/togo/*.go",
+              "ast/gopq/*.go",
+              "ast/goptest/*.go",
+              "ast/mod/*.go",
+              "parser/fsx/*.go",
+              "parser/fsx/memfs/*.go"
+            ],
+            "matchedPaths": 15,
+            "status": "partially-covered",
+            "reason": "The inspection guide covers declaration conversion limits, an in-memory mixed package, direct imports and XGo standard-library path normalization. The compatibility query API remains an advanced topic.",
+            "siteUrls": [
+              "/docs/reference/dql#xgo-ast",
+              "/docs/toolchain/tooling-conventions#source-analysis",
+              "/docs/toolchain/inspect-source",
+              "/docs/toolchain/inspect-source#list-imports-from-in-memory-files"
+            ],
+            "paths": [
+              "ast/fromgo/gopast.go",
+              "ast/fromgo/gopast_test.go",
+              "ast/fromgo/typeparams/typeparams_go117.go",
+              "ast/fromgo/typeparams/typeparams_go118.go",
+              "ast/fromgo/typeparams_test.go",
+              "ast/gopq/dom.go",
+              "ast/gopq/gopq.go",
+              "ast/gopq/helper.go",
+              "ast/goptest/gopq.go",
+              "ast/mod/deps.go",
+              "ast/togo/goast.go",
+              "ast/togo/goast_test.go",
+              "parser/fsx/fsys.go",
+              "parser/fsx/memfs/fs.go",
+              "parser/fsx/memfs/memfs.go"
+            ]
+          },
+          {
+            "topic": "Mixed Go and XGo type checking",
+            "pathPatterns": [
+              "x/typesutil/*.go",
+              "x/typesutil/typeparams/*.go",
+              "cl/recorder.go"
+            ],
+            "matchedPaths": 15,
+            "status": "topic-adaptation",
+            "reason": "Tooling conventions cover configuration and the information model. The package loading guide demonstrates resolving a Go call to an XGo declaration and collecting diagnostics.",
+            "siteUrls": [
+              "/docs/toolchain/tooling-conventions#type-information",
+              "/docs/toolchain/load-and-check-packages#resolve-identifiers-across-go-and-xgo-files"
+            ],
+            "paths": [
+              "cl/recorder.go",
+              "x/typesutil/api.go",
+              "x/typesutil/builtin_test.go",
+              "x/typesutil/check.go",
+              "x/typesutil/check_test.go",
+              "x/typesutil/code_string.go",
+              "x/typesutil/codes.go",
+              "x/typesutil/eval.go",
+              "x/typesutil/exprstring.go",
+              "x/typesutil/exprstring_test.go",
+              "x/typesutil/gopinfo.go",
+              "x/typesutil/info_nil_test.go",
+              "x/typesutil/info_test.go",
+              "x/typesutil/internal/typesutil/types.go",
+              "x/typesutil/typeparams/typeparams.go"
+            ]
+          },
+          {
+            "topic": "Programmatic compilation, package loading, and documentation outlines",
+            "pathPatterns": [
+              "cl/*.go",
+              "cl/outline/*.go",
+              "x/build/*.go",
+              "tool/build_install_run.go",
+              "tool/gengo.go",
+              "tool/imp.go",
+              "tool/load.go",
+              "tool/modedit.go",
+              "tool/outline.go",
+              "tool/tidy.go",
+              "doc/z_gop.go",
+              "doc/z_transform.go"
+            ],
+            "matchedPaths": 165,
+            "status": "topic-adaptation",
+            "reason": "The source inspection guide demonstrates in-memory compilation. The package loading guide demonstrates loading a package from its module directory and restoring XGo overload names in Go documentation data.",
+            "siteUrls": [
+              "/docs/toolchain/tooling-conventions#generated-go",
+              "/docs/toolchain/command-reference",
+              "/docs/toolchain/inspect-source",
+              "/docs/toolchain/inspect-source#generate-go-source-in-memory",
+              "/docs/toolchain/load-and-check-packages#load-a-package-from-a-module-directory",
+              "/docs/toolchain/load-and-check-packages#display-overloaded-names-in-go-documentation-data"
+            ]
+          },
+          {
+            "topic": "Editor transport and file watchers",
+            "pathPatterns": [
+              "x/watcher/*.go",
+              "x/langserver/*.go",
+              "x/fsnotify/*.go",
+              "x/fakenet/*.go",
+              "x/jsonrpc2/*.go",
+              "x/jsonrpc2/stdio/*.go",
+              "cmd/internal/watch/*.go",
+              "cmd/internal/serve/*.go"
+            ],
+            "matchedPaths": 25,
+            "status": "partially-covered",
+            "reason": "CLI watch and server launch plus VS Code setup describe the user workflow. The watcher, JSON-RPC, and stdio packages provide integration code.",
+            "siteUrls": [
+              "/docs/toolchain/command-reference",
+              "/docs/toolchain/vscode",
+              "/docs/tutorials/organize-projects"
+            ]
+          },
+          {
+            "topic": "DQL adapters and domain text encodings",
+            "pathPatterns": [
+              "dql/dql.go",
+              "dql/fs/*.go",
+              "dql/golang/*.go",
+              "dql/html/*.go",
+              "dql/json/*.go",
+              "dql/maps/*.go",
+              "dql/reflects/*.go",
+              "dql/xgo/*.go",
+              "dql/xml/*.go",
+              "dql/yaml/*.go",
+              "encoding/*/*.go"
+            ],
+            "matchedPaths": 29,
+            "status": "topic-adaptation",
+            "reason": "Reference and demo pages cover the query model, built-in adapters, domain literals, and the custom NodeSet contract. The package implementations are source evidence.",
+            "siteUrls": [
+              "/docs/reference/dql",
+              "/docs/reference/domain-text-literals",
+              "/docs/examples/data-and-text"
+            ]
+          },
+          {
+            "topic": "Template parser and matching helpers",
+            "pathPatterns": [
+              "tpl/tpl.go",
+              "tpl/ast/*.go",
+              "tpl/cl/*.go",
+              "tpl/matcher/*.go",
+              "tpl/parser/*.go",
+              "tpl/scanner/*.go",
+              "tpl/token/*.go",
+              "tpl/types/*.go",
+              "tpl/variant/*.go",
+              "tpl/variant/*/*.go"
+            ],
+            "matchedPaths": 22,
+            "status": "partially-covered",
+            "reason": "The Go embedding guide demonstrates grammar compilation, list flattening, error positions, expression, file and prefix matching, and a custom scanner that filters inserted semicolons. Position relocation and AST construction helpers remain available in the source.",
+            "siteUrls": [
+              "/docs/reference/tpl",
+              "/docs/examples/data-and-text",
+              "/docs/toolchain/embed-tpl",
+              "/docs/toolchain/embed-tpl#parse-a-list-split-across-lines"
+            ]
+          },
+          {
+            "topic": "Builtin signatures",
+            "pathPatterns": [
+              "builtin/doc.xgo",
+              "cl/builtin.go"
+            ],
+            "matchedPaths": 2,
+            "status": "topic-adaptation",
+            "reason": "The generated builtin declaration file provides signatures and comments for the existing builtins, strings, and collections references. The compiler registration file governs availability.",
+            "siteUrls": [
+              "/docs/reference/builtins",
+              "/docs/reference/strings",
+              "/docs/reference/slices"
+            ],
+            "paths": [
+              "builtin/doc.xgo",
+              "cl/builtin.go"
+            ]
+          },
+          {
+            "topic": "Machine-readable Mini Specification",
+            "pathPatterns": [
+              "doc/spec/mini/mini.xgo",
+              "cmd/chore/xgominispec/minispec.xgo"
+            ],
+            "matchedPaths": 2,
+            "status": "topic-adaptation",
+            "reason": "The reference shows how to run the grammar checker and explains its syntax-only scope with accepted and rejected inputs.",
+            "siteUrls": [
+              "/docs/reference/mini-specification",
+              "/docs/reference/mini-specification#run-the-mini-specification-grammar"
+            ],
+            "paths": [
+              "cmd/chore/xgominispec/minispec.xgo",
+              "doc/spec/mini/mini.xgo"
+            ]
+          },
+          {
+            "topic": "Built-in test class framework",
+            "pathPatterns": [
+              "test/classfile.go",
+              "demo/unit-test/*"
+            ],
+            "matchedPaths": 3,
+            "status": "topic-adaptation",
+            "reason": "The classfile guide explains the test framework. The demo and coverage pages show how to run tests and measure coverage.",
+            "siteUrls": [
+              "/docs/toolchain/classfiles#built-in-unit-test-framework",
+              "/docs/examples/mixed-go-generics#run-a-test-classfile",
+              "/docs/toolchain/code-coverage"
+            ],
+            "paths": [
+              "demo/unit-test/foo.xgo",
+              "demo/unit-test/foo_test.gox",
+              "test/classfile.go"
+            ]
+          },
+          {
+            "topic": "Public demos",
+            "pathPatterns": [
+              "demo/*"
+            ],
+            "matchedPaths": 78,
+            "status": "topic-adaptation",
+            "reason": "All tracked demo paths have site source records. Runtime coverage varies by toolchain and platform, as noted on demo pages.",
+            "siteUrls": [
+              "/docs/examples/overview"
+            ]
+          },
+          {
+            "topic": "Compiler fixtures, goldens, and Go unit tests",
+            "pathPatterns": [
+              "cl/_*/*",
+              "cl/internal/*",
+              "cl/cltest/*",
+              "doc/_testdata/*",
+              "format/formatutil/_testdata/*",
+              "parser/_*/*",
+              "printer/_testdata/*",
+              "tpl/parser/_*/*",
+              "tpl/scanner/_*/*",
+              "x/build/_testdata/*",
+              "x/format/_testdata/*",
+              "*/*_test.go"
+            ],
+            "matchedPaths": 621,
+            "status": "partially-covered",
+            "reason": "Reader-facing semantics such as decorators, automatic closures, type arguments and initialized allocation have runnable examples. Other fixtures and expected compiler output support regression testing.",
+            "siteUrls": [
+              "/docs/reference/functions-and-closures",
+              "/docs/reference/function-calls",
+              "/docs/reference/builtins"
+            ]
+          },
+          {
+            "topic": "Documentation generators and parser-checking tools",
+            "pathPatterns": [
+              "cmd/chore/*/*",
+              "parser/parsertest/*.go",
+              "tpl/parser/parsertest/*.go",
+              "tpl/scanner/scannertest/*.go",
+              "x/jsonrpc2/internal/*",
+              "x/jsonrpc2/jsonrpc2test/*",
+              "token/internal/*"
+            ],
+            "matchedPaths": 22,
+            "status": "partially-covered",
+            "reason": "The Mini Specification guide covers running the checker. Other generators and test helpers maintain upstream artifacts.",
+            "siteUrls": [
+              "/docs/reference/mini-specification#run-the-mini-specification-grammar"
+            ]
+          },
+          {
+            "topic": "Generated Go",
+            "pathPatterns": [
+              "*_autogen.go"
+            ],
+            "matchedPaths": 9,
+            "status": "excluded",
+            "reason": "The generated artifacts follow their authored XGo sources. Demo pages can show generated Go where needed to explain interoperability.",
+            "paths": [
+              "cmd/hdq/xgo_autogen.go",
+              "cmd/xgo/xgo_autogen.go",
+              "demo/fullspec/mixgo-complex/xgo_autogen.go",
+              "demo/mixgo/xgo_autogen.go",
+              "dql/fetcher/github.com/issueTask/xgo_autogen.go",
+              "dql/fetcher/github.com/repoList/xgo_autogen.go",
+              "dql/fetcher/hrefs/xgo_autogen.go",
+              "dql/fetcher/pkg.go.dev/importedBy/xgo_autogen.go",
+              "dql/fetcher/pytorch.org/fndoc/xgo_autogen.go"
+            ]
+          },
+          {
+            "topic": "Historical design illustrations",
+            "pathPatterns": [
+              "doc/images/dtl/*.png"
+            ],
+            "matchedPaths": 2,
+            "status": "excluded",
+            "reason": "The current upstream Markdown has no references to these images. The domain literal reference and design article cover this topic in text.",
+            "siteUrls": [
+              "/docs/reference/domain-text-literals",
+              "/docs/blog/domain-text-literals-design"
+            ],
+            "paths": [
+              "doc/images/dtl/image-1.png",
+              "doc/images/dtl/image-2.png"
+            ]
+          },
+          {
+            "topic": "Repository metadata and dependency lock files",
+            "pathPatterns": [
+              ".gitattributes",
+              ".gitignore",
+              "LICENSE",
+              "*go.sum",
+              "*/.gitignore",
+              "*/.keep"
+            ],
+            "matchedPaths": 9,
+            "status": "excluded",
+            "reason": "License information is cited through the source disclosure. Git settings and dependency lock files are build inputs.",
+            "paths": [
+              ".gitattributes",
+              ".gitignore",
+              "LICENSE",
+              "cl/_testnext/.keep",
+              "cl/_testxgo/domaintext-md/go.sum",
+              "cl/internal/.gitignore",
+              "cmd/go.sum",
+              "demo/_llgo/go.sum",
+              "go.sum"
+            ]
+          }
+        ]
+      }
+    },
+    "xgo-dev/llgo": {
+      "defaultBranchCommit": "5f6775869880f891c79eec2b94c46100ad7dc52f",
+      "applicableVersion": "v1.0.10",
+      "guideSourceCommit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+      "files": [
+        {
+          "path": ".github/CI.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": ".github/CI_PLACEMENT.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": ".github/unix/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": ".github/windows/WINGET.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": ".github/windows/X86_TOOLCHAINS.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "CLAUDE.md",
+          "type": "repository-policy",
+          "status": "excluded",
+          "reason": "Repository governance or license material stays with the upstream project."
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "type": "repository-policy",
+          "status": "excluded",
+          "reason": "Repository governance or license material stays with the upstream project."
+        },
+        {
+          "path": "README.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "applicableVersion": "v1.0.10",
+          "sourceCommit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "reviewStatus": "technical-review",
+          "siteUrls": [
+            "/docs/llgo",
+            "/zh-CN/docs/llgo"
+          ]
+        },
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "type": "repository-policy",
+          "status": "excluded",
+          "reason": "Repository governance or license material stays with the upstream project."
+        },
+        {
+          "path": "WINDOWS.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "_demo/c/llama2-c/README.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "benchmark/baseline/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "benchmark/binary_size/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "benchmark/escape/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "benchmark/runtime_funcinfo/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "benchmark/wasm/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "dev/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "dev/browser-debugging.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "dev/simd/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "dev/tests/windows-cpuprof/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "dev/wasm-eh-comparison.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "dev/wasm-wasi-validation.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "dev/wasmstdlib/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "doc/Embedded_Cmd.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "doc/Inlining.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/LLAR-Hub.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "doc/LLGo-Bindings.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "doc/LLGo-Link.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "doc/LLGoFiles.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "reason": "The guide builds a local C source and calls it from Go. External compiler flags and platform-specific build variants remain in the upstream proposal.",
+          "siteUrls": [
+            "/docs/llgo#compile-a-local-c-source-file",
+            "/zh-CN/docs/llgo#编译本地-c-源文件"
+          ],
+          "sourceCommit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "applicableVersion": "v1.0.10",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/Type-Mapping-between-C-and-Go.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "doc/closure.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "doc/command-line/compatibility.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "siteUrl": "/docs/llgo",
+          "applicableVersion": "v1.0.10",
+          "sourceCommit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "doc/debugging.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "doc/defer-tls-gc.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/design/pclntab-linkphase.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/design/pclntab-packaging.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/design/stage5-handoff.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/escape-analysis-comparison.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/escape-analysis.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/native-gc-pacing.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/runtime-source-reuse.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/size-report.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/syscall-intrinsics-proposal.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/test-coverage.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/type-layout-testing.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/wasm-browser-filesystem.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "doc/wasm-proposal.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/wasm-size.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/wasm-threaded-gc.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "doc/wasm-wasi-threads.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "internal/crc16/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "internal/debugabi/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "internal/gohex/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "ltoplugin/README.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "runtime/NATIVE_CALLS.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "runtime/SYNCTEST.md",
+          "type": "compiler-internals",
+          "status": "deferred",
+          "reason": "Compiler internals and design references need a separate technical review."
+        },
+        {
+          "path": "runtime/internal/clite/ffi/wasm32/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "runtime/internal/clite/ffi/wasm64/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "runtime/internal/clite/zlib/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "targets/device/nrf/README.markdown",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "test/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/_manualtest/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/_stress/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/debug/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/debug/embedded/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/debug/hardware/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/debug/native/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/debug/runtime/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/debug/runtime/gdb.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/debug/wasi/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/debug/wasi/host/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/debug/wasm/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/goroot/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/simd/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/sizebuild/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/std/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/std/TODO.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/std/simd/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        }
+      ]
+    },
+    "goplus/ixgo": {
+      "defaultBranchCommit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+      "applicableVersion": "source-snapshot",
+      "guideSourceCommit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+      "files": [
+        {
+          "path": "README.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "applicableVersion": "source-snapshot",
+          "sourceCommit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "reviewStatus": "technical-review",
+          "siteUrls": [
+            "/docs/ixgo",
+            "/docs/ixgo/embedding",
+            "/zh-CN/docs/ixgo"
+          ],
+          "reason": "The interpreter and host guides cover CLI and REPL startup, basic XGo embedding, and optional adapters. Package export, advanced CLI flags, and the patched Go runtime workflow remain separate candidate topics."
+        },
+        {
+          "path": "directcall/README.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "applicableVersion": "source-snapshot",
+          "sourceCommit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "reviewStatus": "technical-review",
+          "siteUrls": [
+            "/docs/ixgo/embedding#call-a-standard-library-function-and-return-a-closure"
+          ],
+          "reason": "The host guide demonstrates package export registration and use of a bundled direct-call adapter, plus the aggregate import and logging exception. The regeneration workflow concerns maintenance of the upstream bundles."
+        },
+        {
+          "path": "directfunc/README.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "applicableVersion": "source-snapshot",
+          "sourceCommit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "reviewStatus": "technical-review",
+          "siteUrls": [
+            "/docs/ixgo/embedding#call-a-standard-library-function-and-return-a-closure"
+          ],
+          "reason": "The Go host calls a stateful interpreted closure by registering its exact signature. The guide also covers built-in signatures, reflection fallback, and the registration lifetime."
+        },
+        {
+          "path": "memo/README.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "applicableVersion": "source-snapshot",
+          "sourceCommit": "61dfa28e05d30b5e60b3cfa83b3c79e870cd629e",
+          "reviewStatus": "technical-review",
+          "siteUrls": [
+            "/docs/ixgo/embedding#control-memoization-per-interpreter-context"
+          ],
+          "reason": "The Go host runs identical recursion in separate contexts with the memoization plugin enabled and disabled. The guide covers eligibility and floating-point behavior. Upstream benchmark figures and contributor tests describe the upstream test environment."
+        }
+      ]
+    },
+    "goplus/builder": {
+      "defaultBranchCommit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+      "applicableVersion": "source-snapshot",
+      "guideSourceCommit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+      "files": [
+        {
+          "path": ".github/agents/spx-upgrader.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "AGENTS.md",
+          "type": "repository-policy",
+          "status": "excluded",
+          "reason": "Repository governance or license material stays with the upstream project."
+        },
+        {
+          "path": "README.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "applicableVersion": "source-snapshot",
+          "sourceCommit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "reviewStatus": "technical-review",
+          "siteUrls": [
+            "/docs/xbuilder",
+            "/zh-CN/docs/xbuilder"
+          ]
+        },
+        {
+          "path": "docs/develop/account-app-integration.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/account-app-integration.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/develop/account-local-debugging.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/code-editor/index.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/database-migration/index.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/generalization/code-editor.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/generalization/project.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/gui-apps.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/in-editor-router/index.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/index.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/issue-management.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/project-loading/index.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/release.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/tutorial-v2/course-storage.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/tutorial-v2/example-tutorial-course-run-groups/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/tutorial-v2/example-tutorial-course/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/tutorial-v2/index.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/tutorial-v2/runtime-line-highlighting.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/tutorial-v2/tutorial-lifecycle-implementation.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/develop/tutorial/index.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/product/account-app-integration.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/account-app-integration.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/account.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/account.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/ai-interaction.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/ai-interaction.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/animation.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/animation.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/assets-gen.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/assets-gen.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/authz.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/authz.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/camera.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "reason": "The browser editor guide covers map size, camera position and zoom, and the relationship between stage and viewport coordinates. The camera script and viewport geometry were verified locally with SPX v4.0.2 in headless mode. Browser preview, follow behavior and the remaining APIs await coverage.",
+          "siteUrls": [
+            "/docs/xbuilder#set-the-camera-position-and-zoom",
+            "/zh-CN/docs/xbuilder#设置摄像机位置和缩放"
+          ],
+          "applicableVersion": "source-snapshot",
+          "sourceCommit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/product/camera.zh.md",
+          "type": "localized-documentation",
+          "status": "partially-covered",
+          "reason": "The browser editor guide covers map size, camera position and zoom, and the relationship between stage and viewport coordinates. The camera script and viewport geometry were verified locally with SPX v4.0.2 in headless mode. Browser preview, follow behavior and the remaining APIs await coverage.",
+          "siteUrls": [
+            "/docs/xbuilder#set-the-camera-position-and-zoom",
+            "/zh-CN/docs/xbuilder#设置摄像机位置和缩放"
+          ],
+          "applicableVersion": "source-snapshot",
+          "sourceCommit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/product/code-editor.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "siteUrl": "/docs/xbuilder",
+          "applicableVersion": "source-snapshot",
+          "sourceCommit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/product/code-editor.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/community.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/community.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/feedback.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/feedback.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/font.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/font.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/in-product-notification.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/in-product-notification.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/index.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "siteUrl": "/docs/xbuilder",
+          "applicableVersion": "source-snapshot",
+          "sourceCommit": "d95a46c26870e526c51cc44b00e9463da9b259a3",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/product/index.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/physics.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/physics.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/project-type.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/project-type.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/tutorial-v2.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/tutorial-v2.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/tutorial.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/tutorial.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/product/widget.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/product/widget.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "gui/AGENTS.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/components/common/markdown-vue/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/components/ui/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/components/ui/form/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/components/xgo-code-editor/ui/completion/fuzzy/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/i18n/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/query/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/radar/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/readiness/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/snippet-parser/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/spx/skills/spx-project/SKILL.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/spx/skills/spx-project/references/ai-interaction.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/spx/skills/spx-project/references/apis.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/xgo/skills/xgo-language/SKILL.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/xgo/skills/xgo-language/references/syntax.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "gui/src/utils/xgoexec/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "skills/xbuilder-default-project/SKILL.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tools/ai/AGENTS.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tools/spxls/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tools/tutorial/AGENTS.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tools/tutorial/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tools/tutorial/skills/tutorial-course/SKILL.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tools/tutorial/skills/tutorial-course/references/course-format.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tools/tutorial/skills/tutorial-course/references/course-program.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tools/xgoexec/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tutorial/codeKiko/README.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter1.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter10.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter2.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter3.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter4.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter5.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter6.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter7.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter8.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/chapter9.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "tutorial/codeKiko/summary.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        }
+      ]
+    },
+    "goplus/spx": {
+      "defaultBranchCommit": "b5f29c1663fe2b304e74960b266d3354dfcf8ab2",
+      "applicableVersion": "v4.0.2",
+      "guideSourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+      "files": [
+        {
+          "path": ".agents/skills/spx-project/SKILL.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": ".claude/skills/spx-project/SKILL.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": ".github/scripts/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "type": "repository-policy",
+          "status": "excluded",
+          "reason": "Repository governance or license material stays with the upstream project."
+        },
+        {
+          "path": "README.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "applicableVersion": "v4.0.2",
+          "sourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "reviewStatus": "technical-review",
+          "siteUrls": [
+            "/docs/spx",
+            "/zh-CN/docs/spx"
+          ]
+        },
+        {
+          "path": "cmd/ispx/README.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/en/dev/engine/architecture.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/buildlauncher.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/cmd_make.md",
+          "type": "engineering",
+          "status": "partially-covered",
+          "reason": "The first-game and command-line guides cover runtime setup, demo selection, and the matching Web runtime modes. Engine builds and maintenance workflows remain to be documented.",
+          "siteUrls": [
+            "/docs/spx",
+            "/docs/spx/cli"
+          ],
+          "sourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "applicableVersion": "v4.0.2",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/en/dev/engine/code_generator.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/coordinate_system.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/input_replay.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/physic_api.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/release.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/scheduling.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/web.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/web_capture.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/web_minigame_go_wasm_adapter.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/web_minigame_go_wasm_panic.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/web_sync_batch.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/engine/web_worker_mode.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "docs/en/dev/game/animation_audio.md",
+          "type": "user-documentation",
+          "status": "topic-adaptation",
+          "reason": "The guide adapts animation sound configuration, loop timing, and cleanup using the Monkey demo and the runtime source.",
+          "siteUrls": [
+            "/docs/spx/animation-audio"
+          ],
+          "sourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "applicableVersion": "v4.0.2",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/en/dev/game/cmd_spx.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "reason": "The guide verifies project creation and headless execution and explains desktop and Web command selection. Mobile and minigame exports remain to be documented.",
+          "siteUrls": [
+            "/docs/spx/cli"
+          ],
+          "sourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "applicableVersion": "v4.0.2",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/en/dev/image_assets.md",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/en/dev/index.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "reason": "The SPX entry links the first game, command-line workflow, and animation audio. Other reader and engine topics remain in the inventory.",
+          "siteUrls": [
+            "/docs/spx",
+            "/docs/spx/cli",
+            "/docs/spx/animation-audio"
+          ],
+          "sourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "applicableVersion": "v4.0.2",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/en/dev/project_assets.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/en/dev/project_fonts.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/en/dev/wechat_minigame.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/en/dev/wechat_minigame_go_wasm_panic.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/en/dev/wxgame_go_wasm_adapter.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "docs/zh/dev/engine/architecture.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/buildlauncher.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/cmd_make.md",
+          "type": "localized-documentation",
+          "status": "partially-covered",
+          "reason": "The first-game and command-line guides cover runtime setup, demo selection, and the matching Web runtime modes. Engine builds and maintenance workflows remain to be documented.",
+          "siteUrls": [
+            "/zh-CN/docs/spx",
+            "/zh-CN/docs/spx/cli"
+          ],
+          "sourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "applicableVersion": "v4.0.2",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/zh/dev/engine/code_generator.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/coordinate_system.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/input_replay.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/physic_api.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/release.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/scheduling.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/web.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/web_capture.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/web_minigame_go_wasm_adapter.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/web_minigame_go_wasm_panic.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/web_sync_batch.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/engine/web_worker_mode.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/game/animation_audio.md",
+          "type": "localized-documentation",
+          "status": "topic-adaptation",
+          "reason": "The guide adapts animation sound configuration, loop timing, and cleanup using the Monkey demo and the runtime source.",
+          "siteUrls": [
+            "/zh-CN/docs/spx/animation-audio"
+          ],
+          "sourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "applicableVersion": "v4.0.2",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/zh/dev/game/cmd_spx.md",
+          "type": "localized-documentation",
+          "status": "partially-covered",
+          "reason": "The guide verifies project creation and headless execution and explains desktop and Web command selection. Mobile and minigame exports remain to be documented.",
+          "siteUrls": [
+            "/zh-CN/docs/spx/cli"
+          ],
+          "sourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "applicableVersion": "v4.0.2",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/zh/dev/image_assets.md",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/index.md",
+          "type": "localized-documentation",
+          "status": "partially-covered",
+          "reason": "The SPX entry links the first game, command-line workflow, and animation audio. Other reader and engine topics remain in the inventory.",
+          "siteUrls": [
+            "/zh-CN/docs/spx",
+            "/zh-CN/docs/spx/cli",
+            "/zh-CN/docs/spx/animation-audio"
+          ],
+          "sourceCommit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "applicableVersion": "v4.0.2",
+          "reviewStatus": "technical-review"
+        },
+        {
+          "path": "docs/zh/dev/project_assets.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/project_fonts.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/wechat_minigame.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/wechat_minigame_go_wasm_panic.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "docs/zh/dev/wxgame_go_wasm_adapter.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        },
+        {
+          "path": "godot_modules/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "godot_modules/spx/tests/data/audio/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "godot_modules/spx/tests/data/fonts/lunasvg_kerning.README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "godot_modules/spx/tests/data/fonts/noto_complex_scripts/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "godot_modules/spx/tests/data/fonts/twitter_color_emoji/LICENSE.md",
+          "type": "repository-policy",
+          "status": "excluded",
+          "reason": "Repository governance or license material stays with the upstream project."
+        },
+        {
+          "path": "godot_modules/spx/tests/data/tilemap/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "godot_modules/spx/tests/gpu/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "godot_modules/spx/web/benchmarks/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "skills/README.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "skills/spx-project/SKILL.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "skills/spx-project/references/apis.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "skills/spx-project/references/gameplay.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "skills/spx-project/references/project.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "skills/spx-project/references/scratch.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "skills/spx-project/references/xgo.md",
+          "type": "user-documentation",
+          "status": "deferred",
+          "reason": "Translate into a dedicated task guide and verify against the documented toolchain."
+        },
+        {
+          "path": "test/All/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/AnimationOnStartOnPlayAudio/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/CoordinateSystem/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/DragMode/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/PenStampSensing/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/ProjectFonts/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/ProjectFonts/assets/fonts/Arabic/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/ProjectFonts/assets/fonts/Color Emoji/LICENSE.md",
+          "type": "repository-policy",
+          "status": "excluded",
+          "reason": "Repository governance or license material stays with the upstream project."
+        },
+        {
+          "path": "test/ProjectFonts/assets/fonts/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/StageListMonitor/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "test/StageMonitorSlider/README.md",
+          "type": "engineering",
+          "status": "excluded",
+          "reason": "Internal build, benchmark, validation, or fixture documentation."
+        },
+        {
+          "path": "tools/godot/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tools/godot/addons/spx_tilemap_exporter/README.md",
+          "type": "engineering",
+          "status": "deferred",
+          "reason": "Contributor and tool-development guides follow the end-user guides."
+        },
+        {
+          "path": "tools/godot/addons/spx_tilemap_exporter/README.zh.md",
+          "type": "localized-documentation",
+          "status": "deferred",
+          "reason": "Review together with the corresponding English page in the translation batch."
+        }
+      ]
+    },
+    "goplus/AircraftWar": {
+      "defaultBranchCommit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+      "guideSourceCommit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+      "applicableVersion": "SPX v1.0.0",
+      "files": [
+        {
+          "path": "README.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "siteUrl": "/docs/spx/examples/aircraft-war",
+          "reviewStatus": "technical-review"
+        }
+      ]
+    },
+    "goplus/FlappyCalf": {
+      "defaultBranchCommit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+      "guideSourceCommit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+      "applicableVersion": "SPX v1.1.0",
+      "files": [
+        {
+          "path": "README.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "siteUrl": "/docs/spx/examples/flappy-calf",
+          "reviewStatus": "technical-review"
+        }
+      ]
+    },
+    "goplus/MazePlay": {
+      "defaultBranchCommit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+      "guideSourceCommit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+      "applicableVersion": "SPX v1.1.0",
+      "files": [
+        {
+          "path": "README.md",
+          "type": "user-documentation",
+          "status": "partially-covered",
+          "siteUrl": "/docs/spx/examples/maze-play",
+          "reviewStatus": "technical-review"
+        }
+      ]
+    }
+  }
+}

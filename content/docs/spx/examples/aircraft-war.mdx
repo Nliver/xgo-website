@@ -1,0 +1,20 @@
+---
+title: Follow the battle messages in AircraftWar
+description: Trace the event handlers in AircraftWar, a game written with SPX v1.0.0.
+---
+
+## Inspect the project
+
+```sh
+git clone https://github.com/goplus/AircraftWar.git
+cd AircraftWar
+git checkout --detach e92768138e5732d2264c9f42dbbedefac74fa960
+```
+
+Read `main.spx` for the shared game state, then open `MyAircraft.spx` for the sprite's event handlers. Keep the `assets/` directory alongside the scripts. The project's historical launch command is `gop run .` with a compatible Go+ toolchain and a graphical desktop. This project uses SPX v1.0.0. For the current engine and launcher, see the [SPX guide](/docs/spx).
+
+## Trace the events
+
+When the player sprite receives the battle message, one handler clones a bullet every 0.1 seconds while the sprite is alive. Another moves the aircraft toward the mouse and checks for contact with enemies or a bomb. Pressing Space consumes an available bomb and broadcasts the kill-all message.
+
+Find addScore in main.spx. The win message is sent when the score is greater than 500. A score of exactly 500 leaves the game running.

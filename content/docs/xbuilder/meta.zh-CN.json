@@ -1,0 +1,9 @@
+{
+  "title": "XBuilder",
+  "description": "在浏览器中制作和预览 SPX 游戏。",
+  "root": true,
+  "icon": "PanelsTopLeft",
+  "pages": [
+    "index"
+  ]
+}

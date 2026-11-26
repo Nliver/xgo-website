@@ -1,0 +1,9 @@
+{
+  "title": "YAP",
+  "description": "Route HTTP requests, test handlers, and query a database.",
+  "root": true,
+  "icon": "Server",
+  "pages": [
+    "index"
+  ]
+}

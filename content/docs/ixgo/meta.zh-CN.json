@@ -1,0 +1,10 @@
+{
+  "title": "iXGo",
+  "description": "运行脚本、使用交互式解释器并嵌入 Go 程序。",
+  "root": true,
+  "icon": "Terminal",
+  "pages": [
+    "index",
+    "embedding"
+  ]
+}

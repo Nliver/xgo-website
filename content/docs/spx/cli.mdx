@@ -1,0 +1,58 @@
+---
+title: Create and run an SPX project from the command line
+description: Scaffold an SPX project, run its stage script headlessly, and choose the right command for a desktop, Web, or export workflow.
+---
+
+Create an SPX `v4.0.2` project and check that its stage script runs. Set up the matching `spx` command and runtime using the [SPX first game guide](/docs/spx).
+
+## Scaffold a project
+
+From a directory where you keep your projects, choose a new subdirectory and pass it with `--path`.
+
+```sh
+spx init --path ./stage-demo
+```
+
+```files
+stage-demo/
+├── assets/
+│   └── index.json
+├── go.mod
+└── main.spx
+```
+
+The scaffold contains `main.spx` for stage code, `assets/index.json` with a 480 by 360 stage, and `go.mod` with a dependency on `github.com/goplus/spx/v4` marked `//xgo:class`. Version 4.0.2 reads the target directory from `--path`. If you supply only a positional directory, it writes the scaffold in the current directory. Look for a `go.mod` in the target directory to confirm where initialization wrote the project.
+
+## Check the stage script
+
+Run the scaffold without opening a window.
+
+```sh
+spx run --path ./stage-demo --headless
+```
+
+The stage's `onStart` handler prints these lines to the terminal.
+
+```text
+Hello, SPX!
+Project started successfully!
+```
+
+Press Ctrl+C to end the run. Edit either message in `stage-demo/main.spx` and rerun the command to see your change. Omit `--headless` to open the game window.
+
+## Choose a command for your target
+
+| Command | What it does |
+| --- | --- |
+| `spx run --path ./stage-demo` | Interprets the project using the matching runtime. |
+| `spx build --path ./stage-demo` | Builds the host dynamic library. |
+| `spx runnative --path ./stage-demo` | Builds the native project and launches it with the desktop runtime. |
+| `spx rune --path ./stage-demo` | Starts the project with the editor runtime and imports assets when needed. |
+| `spx runweb --path ./stage-demo` | Packages and serves the project with the standard Web runtime. |
+| `spx runwebworker --path ./stage-demo` | Packages and serves the project with the Web Worker runtime. |
+| `spx stopweb --path ./stage-demo` | Stops the project's Web server. |
+| `spx export --path ./stage-demo` | Exports a desktop package using a matching export template. |
+
+From the SPX checkout, prepare Web assets with `make setup-web MODE=normal` for `runweb` or `make setup-web MODE=worker` for `runwebworker`. Use the same mode when exporting with `spx exportweb` or `spx exportwebworker`.
+
+Run `spx help` for the full command and flag list. In this release, the reserved `runm` and `exportbot` commands exit with an error. For the examples in the SPX checkout, use `make list-demos` to see available tutorial indices and `make run DEMO_INDEX=2` to run Hello in interpreted mode.

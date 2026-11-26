@@ -1,0 +1,67 @@
+---
+title: 使用 iXGo 解释器运行 XGo
+description: 执行脚本、在交互式终端中求值，并在 Go 程序中嵌入解释器。
+---
+
+先用 iXGo 运行一个计算平方的脚本，再把解释器嵌进 Go 程序。本页所用的版本支持 Go 1.26 和 1.27。
+
+## 安装命令并运行脚本
+
+```sh
+go install github.com/goplus/ixgo/cmd/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
+ixgo version
+```
+
+若找不到命令，检查 `go env GOBIN`。它有值时，将该目录加入 `PATH`；它为空时，使用 `go env GOPATH` 返回目录下的 `bin`。
+
+在空目录创建 `squares.xgo`。
+
+```xgo
+values := [2, 3, 5]
+echo [n*n for n in values]
+```
+
+```sh
+ixgo run squares.xgo
+```
+
+```text
+[4 9 25]
+```
+
+要运行当前目录里的整个包，使用 `ixgo run .`。这个版本的 `ixgo test` 尚未实现模糊测试与覆盖率参数。
+
+## 在终端里求值
+
+运行 `ixgo repl` 并输入 `echo "hello from the REPL"`，终端将输出 `hello from the REPL`。要用 Go 语法输入表达式，运行 `ixgo repl -go`。也可使用[网页版 REPL](/zh-CN/docs/toolchain/repl)。
+
+## 在 Go 程序中嵌入解释器
+
+新建一个目录并初始化模块。
+
+```sh
+go mod init example.com/ixgoembed
+go get github.com/goplus/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
+```
+
+将程序保存为 `main.go`。空白导入 `xgobuild` 会注册处理 XGo 源码的构建器。
+
+```go
+package main
+
+import (
+    "github.com/goplus/ixgo"
+    _ "github.com/goplus/ixgo/xgobuild"
+)
+
+func main() {
+    _, err := ixgo.RunFile("main.xgo", `echo "Hello from embedded XGo"`, nil, 0)
+    if err != nil {
+        panic(err)
+    }
+}
+```
+
+执行 `go mod tidy` 和 `go run .`，预期输出为 `Hello from embedded XGo`。解释执行的 Go 源码如果用到了标准库，应注册相应导出。例如，导入 `fmt` 的被解释程序可以在宿主程序中使用空白导入 `github.com/goplus/ixgo/pkg/fmt`。
+
+要从宿主程序调用脚本返回的闭包，或调整递归函数的记忆化行为，可以继续阅读[适配器与记忆化](/zh-CN/docs/ixgo/embedding)。
