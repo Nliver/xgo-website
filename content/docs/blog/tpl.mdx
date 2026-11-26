@@ -1,0 +1,16 @@
+---
+title: "TPL: Text Processing Language for XGo"
+description: How XGo TPL expresses grammar-based text processing with readable rules and rewrite closures.
+---
+
+TPL is a grammar-based text processing language integrated with XGo. Rules use named productions, alternatives, repetition, lists, and adjacency.
+
+~~~text
+expr = INT % ","
+~~~
+
+A matching result can be rewritten with an XGo closure, allowing a grammar to return application values instead of a raw parse tree. The list and binary helpers make common parser transformations concise.
+
+TPL is the processing model used by domain text literals. See [Domain text literals](/docs/reference/domain-text-literals) for the XGo syntax boundary and [data and text examples](/docs/examples/data-and-text) for examples.
+
+[TPL grammar and match results](/docs/reference/tpl)

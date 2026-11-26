@@ -1,0 +1,10 @@
+---
+title: "Template Receiver Methods: Framework Callbacks Without Virtual Functions"
+description: Why XGo class frameworks need template receiver methods and how the mechanism is encoded for Go interoperability.
+---
+
+A framework base type sometimes needs to call a method implemented by the concrete type that embeds it. Go interfaces can express the callback, but a constructor must often register the concrete value explicitly.
+
+Template receiver methods make this relationship available through the receiver type. The compiler can expose a framework callback as an ordinary method call while the framework author keeps a Go-level generic encoding.
+
+The full mechanism and naming convention are documented in [Template receiver methods](/docs/reference/template-receiver-method). It is part of the class framework model described in [XGo class framework](/docs/toolchain/classfiles).

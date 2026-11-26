@@ -1,0 +1,17 @@
+{
+  "title": "Blog",
+  "pages": [
+    "index",
+    "xgo-design-philosophy",
+    "goodbye-printf",
+    "overloading-in-xgo",
+    "what-is-xgo",
+    "xgo-and-go-design-goals",
+    "specific-domain-friendliness",
+    "domain-text-literals-design",
+    "template-receiver-methods",
+    "dql",
+    "tpl",
+    "xgo-code-style"
+  ]
+}

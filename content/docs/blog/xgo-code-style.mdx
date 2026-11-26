@@ -1,0 +1,12 @@
+---
+title: XGo Code Style and Source Transformation
+description: How XGo formatting conventions turn common Go forms into concise, readable XGo source.
+---
+
+XGo source formatting follows a consistent preference for readable command-style expressions. The formatter can remove Go ceremony that XGo does not require, such as a top-level `main` wrapper in simple programs.
+
+It also recognizes common output forms and XGo built-ins, while preserving ordinary Go syntax where interoperability requires it. The result is a source representation that is concise without hiding the package and type model underneath.
+
+Use the [first program tutorial](/docs/tutorials/first-program) to see the style in a complete program. The [tooling conventions](/docs/toolchain/tooling-conventions) page records conventions that tools and editors should follow.
+
+[XGo source formatting](/docs/toolchain/code-style)

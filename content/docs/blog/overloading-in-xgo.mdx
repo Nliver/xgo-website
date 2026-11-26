@@ -1,0 +1,39 @@
+---
+title: What overloading means in XGo
+description: How XGo uses overloads for functions, methods, and operators while preserving Go interoperability.
+---
+
+Go deliberately keeps function names unique within a package. XGo adds overload declarations where selecting an implementation from argument types makes an expression clearer and more natural.
+
+## Function overloads
+
+An overload set can be declared with inline function literals.
+
+```xgo title="add.xgo"
+func add = (
+	func(a, b int) int {
+		return a + b
+	}
+	func(a, b string) string {
+		return a + b
+	}
+)
+
+echo add(100, 7)
+echo add("Hello", "World")
+```
+
+```text
+107
+HelloWorld
+```
+
+Run `xgo run add.xgo` to try both calls. The compiler checks the prototypes in declaration order and uses the first one that matches the argument types. XGo also supports identifier-style overload declarations and overloaded methods.
+
+## Operator overloads
+
+Operators can be overloaded for user-defined types. Unary and binary operators use the same overload resolution rules as functions, with the operand types supplying the candidates.
+
+Use overloads to express a domain operation when the operand types make the intent unambiguous. The compiler lowers the selected implementation to ordinary Go code, preserving interoperability with Go packages.
+
+For declarations, resolution rules, and generated names, see [Overloading](/docs/reference/overloads). The [mixed Go and generics examples](/docs/examples/mixed-go-generics) show overloads alongside ordinary Go and XGo files.
