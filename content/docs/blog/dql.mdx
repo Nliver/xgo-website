@@ -1,0 +1,20 @@
+---
+title: "DQL: A Universal Query Language for Tree-Shaped Data"
+description: How DQL provides one query model for JSON, HTML, XML, ASTs, and file systems.
+---
+
+DQL treats structured data as trees and exposes a chainable query model over a `NodeSet`. The same style can navigate JSON fields, HTML elements, syntax trees, and file systems.
+
+~~~xgo
+for a in doc.**.a {
+    if url := a.$href; url != "" {
+        echo url
+    }
+}
+~~~
+
+Queries can select children, descendants, attributes, and filtered nodes. Evaluation is lazy, so a query describes work that is performed as the result is consumed.
+
+The [DQL reference](/docs/reference/dql) documents the NodeSet contract and custom adapters. The [data and text examples](/docs/examples/data-and-text) provide a runnable entry point.
+
+[DQL query reference](/docs/reference/dql)

@@ -1,0 +1,12 @@
+---
+title: Specific Domain Friendliness and XGo Class Frameworks
+description: The design idea behind classfiles, class frameworks, and domain-friendly XGo applications.
+---
+
+A class framework is XGo’s way to package domain knowledge for reuse. The framework can define file suffixes, generated structure, conventions, and helper APIs that make a domain feel natural.
+
+> Don’t define a language for a specific domain. Abstract the domain knowledge for it.
+
+This approach is related to Go’s interfaces in importance, while serving a different role. An interface describes behavior shared by values. A class framework describes the vocabulary and application structure of a domain.
+
+Read [XGo class framework](/docs/toolchain/classfiles) for the implementation model and [Classfile specification](/docs/toolchain/classfile-specification) for the source-level rules. The [classfile examples](/docs/examples/gsh-and-classfiles) show how the idea appears in projects.

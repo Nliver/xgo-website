@@ -1,0 +1,22 @@
+---
+title: From DSLs to specific domain friendliness
+description: Why XGo abstracts domain knowledge with classfiles and class frameworks.
+---
+
+XGo is designed for engineering, STEM education, and data science. Its goal is to make domain work approachable while retaining the engineering foundation of Go.
+
+## Specific domain friendliness
+
+XGo does not recommend defining a separate domain-specific language for every problem. Instead, it abstracts domain knowledge into reusable classfiles and class frameworks.
+
+> Don't define a language for a specific domain. Abstract the domain knowledge for it.
+
+A class framework supplies the domain vocabulary, file conventions, and generated structure that an application needs. The application remains an XGo project and can use Go packages directly.
+
+## Why this matters
+
+The approach keeps the language core small while allowing domain tools to feel natural. A web framework can use filenames to describe routes. A testing framework can turn `_test.gox` files into test classes. An educational framework can provide sprites and events through a focused set of classfiles.
+
+See [XGo class framework](/docs/toolchain/classfiles) for the generated class structure and [Classfile specification](/docs/toolchain/classfile-specification) for the compiler-level rules.
+
+The project README describes this idea as a combination of a simple language core and reusable domain knowledge. The examples site includes [GSH and classfile examples](/docs/examples/gsh-and-classfiles) and [data and text examples](/docs/examples/data-and-text).

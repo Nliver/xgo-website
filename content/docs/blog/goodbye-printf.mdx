@@ -1,0 +1,45 @@
+---
+title: Goodbye printf
+description: Why XGo uses interpolation and command-style output for common formatting tasks.
+---
+
+Formatting information for a user is common, but `printf` asks beginners to remember format verbs and escape sequences at the same time. XGo provides string interpolation for the ordinary case.
+
+## Concatenation and printf
+
+String concatenation works, although it requires an explicit conversion.
+
+```xgo
+age := 10
+println "age = " + age.string
+```
+
+The traditional formatting form is also available.
+
+```xgo
+age := 10
+printf "age = %d\n", age
+```
+
+## Interpolated strings
+
+An `${expr}` inside a string evaluates the expression and inserts its value.
+
+```xgo
+age := 10
+echo "age = ${age}"
+```
+
+Interpolation also composes naturally in URLs and other structured text.
+
+```xgo
+host := "foo.com"
+page := 0
+limit := 20
+println "https://${host}/items?page=${page+1}&limit=${limit}"
+println "$$"
+```
+
+`$$` emits a literal dollar sign. The built-in `echo` name is an alias for `println`, which makes the most common output command read like a shell command.
+
+For the complete string rules, see [Strings](/docs/reference/strings). For command-style calls, see [Commands and function calls](/docs/reference/function-calls).

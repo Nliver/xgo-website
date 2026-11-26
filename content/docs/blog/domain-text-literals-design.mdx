@@ -1,0 +1,14 @@
+---
+title: "Domain Text Literals: A Readable Boundary for Embedded Languages"
+description: The design background for domain text literals and their relationship to TPL and specific domain friendliness.
+---
+
+Domain text literals let an identifier introduce a raw text body that a domain processor can interpret. This makes embedded formats readable while keeping the boundary explicit in XGo source.
+
+~~~xgo
+json`{"name": "Ken", age: 15}`
+~~~
+
+The design grew from the need to support grammar-oriented text processing and formats that should remain visually close to their native notation. [Domain text literals](/docs/reference/domain-text-literals) documents the syntax and semantics.
+
+TPL provides the grammar-based processing model behind several such formats. Its [data and text examples](/docs/examples/data-and-text) show domain text, DQL, and template programs.
