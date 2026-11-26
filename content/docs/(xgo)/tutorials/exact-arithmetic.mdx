@@ -1,0 +1,47 @@
+---
+title: Calculate with large integers and exact fractions
+description: Use the r suffix, bigint, and bigrat for exact integer and rational arithmetic in XGo.
+---
+
+Calculate an integer larger than a 64-bit value and add two fractions without rounding. Save each program in the file shown and run it with XGo.
+
+## Increment a large integer
+
+A literal such as `1r` defaults to `bigint`, an arbitrary-precision integer. Shift it left by 80 bits and add one.
+
+```xgo title="big-count.xgo"
+count := 1r << 80
+echo count
+echo count + 1
+```
+
+Run `xgo run big-count.xgo`.
+
+```text
+1208925819614629174706176
+1208925819614629174706177
+```
+
+The first value is 2 to the power of 80. Both lines preserve the exact integer.
+
+## Add fractions and control division
+
+A literal such as `1/3r` is a rational constant. You can also convert an integer to `bigrat` explicitly to perform rational division.
+
+```xgo title="fractions.xgo"
+total := 1/3r + 1/6r
+whole := 1r
+echo total
+echo whole / 3
+echo bigrat(whole) / 3
+```
+
+Run `xgo run fractions.xgo`.
+
+```text
+1/2
+0
+1/3
+```
+
+The second line comes from integer division. Converting `whole` before division produces the exact rational value on the third line.

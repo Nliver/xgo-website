@@ -1,0 +1,102 @@
+---
+title: Model readings with structs and methods
+description: Create a struct from context, inspect a struct type tag, and implement a custom iterator.
+---
+
+Store sensor readings in a struct, format them with a method, then expose a sequence of readings to `for ... in`. Save the three programs in separate files.
+
+## Construct and label a reading
+
+```xgo title="readings.xgo"
+type Reading struct {
+    Name  string
+    Value int
+}
+
+func (r *Reading) Label() string {
+    return "${r.Name}: ${r.Value}"
+}
+
+func makeReading(value int) *Reading {
+    return {Name: "wind", Value: value}
+}
+
+func printReading(r *Reading) {
+    echo r.label
+}
+
+printReading {Name: "rain", Value: 3}
+printReading makeReading(12)
+```
+
+Run `xgo run readings.xgo`.
+
+```text
+rain: 3
+wind: 12
+```
+
+The parameter to `printReading` and the result of `makeReading` both have type `*Reading`. In those contexts XGo infers the type of the keyed literal. You could write `&Reading{Name: "rain", Value: 3}` explicitly. Use the explicit type when supplying positional fields, as in `&Reading{"rain", 3}`.
+
+Reading `r.label` calls `r.Label()`. XGo calls this shorthand for eligible zero-argument methods an *auto property*.
+
+## Attach and read a type tag
+
+```xgo title="tagged.xgo"
+import "reflect"
+
+type Reading struct {
+    _ "Daily reading"
+    Value int `json:"value"`
+}
+
+kind := reflect.TypeOf(Reading{})
+tag := kind.Field(0).Tag
+echo tag.Get("_")
+field := kind.Field(1)
+echo field.Tag.Get("json")
+```
+
+Run `xgo run tagged.xgo`.
+
+```text
+Daily reading
+value
+```
+
+XGo represents the type tag `_ "Daily reading"` as a Go blank field of type `struct{}` with an `_` tag key. An ordinary Go struct field tag such as `json:"value"` belongs to its named field.
+
+## Iterate over readings
+
+```xgo title="iterator.xgo"
+type Readings struct {
+    values []int
+}
+
+func (r *Readings) XGo_Enum() func(func(int) bool) {
+    return func(yield func(int) bool) {
+        for value in r.values {
+            if !yield(value) {
+                return
+            }
+        }
+    }
+}
+
+readings := &Readings{values: [12, 18, 24, 30]}
+for value in readings {
+    if value > 20 {
+        break
+    }
+    echo value
+}
+```
+
+Run `xgo run iterator.xgo`.
+
+```text
+12
+18
+```
+
+`XGo_Enum` supplies values to the loop through `yield`. When the loop breaks, `yield` returns `false`. The iterator must then stop calling it. See [For statements](/docs/reference/for-loops) for other iterator signatures.

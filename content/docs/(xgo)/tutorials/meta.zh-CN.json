@@ -1,1 +1,13 @@
-{"title":"教程","pages":["first-program","functions","control-flow","error-handling"]}
+{
+  "title": "教程",
+  "pages": [
+    "first-program",
+    "functions",
+    "control-flow",
+    "error-handling",
+    "process-collections",
+    "exact-arithmetic",
+    "structs-and-methods",
+    "organize-projects"
+  ]
+}

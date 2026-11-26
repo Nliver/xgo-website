@@ -1,0 +1,63 @@
+---
+title: Filter and query collections
+description: Use XGo comprehensions to filter a slice, build a map, select one result, and test whether a match exists.
+---
+
+Build a shortlist of passing scores, then look up a student's score and check whether anyone failed. Save the two examples as separate files and run each with XGo.
+
+## Filter a slice
+
+```xgo title="shortlist.xgo"
+scores := [92, 58, 76, 58]
+passing := [score for score in scores if score >= 60]
+failedAt := [index for index, score in scores if score < 60]
+echo passing
+echo failedAt
+```
+
+Run `xgo run shortlist.xgo`.
+
+```text
+[92 76]
+[1 3]
+```
+
+A list comprehension builds a slice. The expression before `for` determines what goes into the result. The optional `if` clause determines which elements contribute a value. The second comprehension uses the zero-based index as its result expression.
+
+## Index records and select a match
+
+```xgo title="lookup.xgo"
+type Student struct {
+    Name  string
+    Score int
+}
+students := [Student{"Ken", 90}, Student{"Jason", 80}, Student{"Lily", 85}]
+
+byName := {s.Name: s.Score for s in students}
+echo byName["Lily"]
+
+found, ok := {s.Score for s in students if s.Name == "Jason"}
+echo found, ok
+missing, ok := {s.Score for s in students if s.Name == "Unknown"}
+echo missing, ok
+
+hasLowScore := {for s in students if s.Score < 60}
+echo hasLowScore
+```
+
+Run `xgo run lookup.xgo`.
+
+```text
+85
+80 true
+0 false
+false
+```
+
+The map comprehension uses `key: value` before `for`. Build an index this way when you need to look up several records. If student names repeat, the last record encountered sets the score for that name.
+
+The selection expression `{value for ...}` returns the value from the first matching element in the traversal. In the two-result form, a missing match produces the value type's zero value and `false`. The Boolean lets you distinguish a missing student from one whose score is zero. A slice visits elements in index order. A map's iteration order is unspecified.
+
+The existence expression `{for ...}` returns `true` as soon as one element matches and `false` when none match. Change Lily's score to `59` and rerun the program to see the final line change to `true`.
+
+See [List comprehensions](/docs/reference/slices#list-comprehensions), [Map comprehensions](/docs/reference/maps#map-comprehensions), and [For statements](/docs/reference/for-loops) for more examples.

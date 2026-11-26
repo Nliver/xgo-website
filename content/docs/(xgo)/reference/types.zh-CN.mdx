@@ -9,7 +9,7 @@ description: 在可运行的 XGo 示例中使用字符串、切片、映射和�
 
 双引号字符串支持转义序列，也支持用 `${expression}` 插入表达式的值。用反引号括起来的字符串会保留原始内容。
 
-```go title="strings.xgo"
+```xgo title="strings.xgo"
 name := "Bob"
 echo "Hello, ${name}"
 echo `Line 1\nLine 2`
@@ -26,7 +26,7 @@ Line 1\nLine 2
 
 在 XGo 中，列表（list）和切片（slice）指的是同一种数据结构。用方括号可以写出切片字面量。索引从 0 开始，可用 `<-` 向切片追加元素。
 
-```go title="slices.xgo"
+```xgo title="slices.xgo"
 numbers := [1, 2, 3]
 numbers[1] = 5
 numbers <- 8
@@ -48,7 +48,7 @@ echo numbers[1:3]
 
 映射（map）按键存储值。用花括号可以写出映射字面量，用方括号指定键即可读取或更新对应的值。
 
-```go title="maps.xgo"
+```xgo title="maps.xgo"
 scores := {"Alice": 3, "Bob": 2}
 scores["Alice"] = 4
 
@@ -65,7 +65,7 @@ echo scores["Alice"]
 
 结构体由多个具名字段组成。用结构体复合字面量初始化时，可以按字段名赋值。省略的字段会取其类型的零值。
 
-```go title="structs.xgo"
+```xgo title="structs.xgo"
 type Point struct {
     X int
     Y int

@@ -7,7 +7,7 @@ description: 定义函数，传入参数，并返回一个或多个值。
 
 ## 传入参数
 
-```go title="greet.xgo"
+```xgo title="greet.xgo"
 func greet(name string) {
     echo "Hello,", name
 }
@@ -29,7 +29,7 @@ Hello, Bob
 
 在参数列表后写出类型，即可声明返回值的类型。
 
-```go title="add.xgo"
+```xgo title="add.xgo"
 func add(x, y int) int {
     return x + y
 }
@@ -49,7 +49,7 @@ echo add(2, 3)
 
 在括号中列出多个返回类型，然后用不同变量接收这些结果。
 
-```go title="results.xgo"
+```xgo title="results.xgo"
 func values() (int, int) {
     return 2, 3
 }

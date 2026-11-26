@@ -1,0 +1,63 @@
+---
+title: 筛选和查询集合
+description: 用 XGo 推导式筛选切片、构建映射、查找单个结果并判断是否存在匹配项。
+---
+
+先筛出及格成绩，再按学生姓名查找分数，并判断是否有人不及格。将下面两个示例分别保存为对应的文件，用 XGo 运行。
+
+## 筛选切片
+
+```xgo title="shortlist.xgo"
+scores := [92, 58, 76, 58]
+passing := [score for score in scores if score >= 60]
+failedAt := [index for index, score in scores if score < 60]
+echo passing
+echo failedAt
+```
+
+运行 `xgo run shortlist.xgo`。
+
+```text
+[92 76]
+[1 3]
+```
+
+列表推导式会生成一个切片。`for` 前面的表达式决定结果中存放什么，可选的 `if` 子句决定哪些元素参与计算。第二个推导式把从 0 开始的索引放入结果。
+
+## 建立索引并查找匹配项
+
+```xgo title="lookup.xgo"
+type Student struct {
+    Name  string
+    Score int
+}
+students := [Student{"Ken", 90}, Student{"Jason", 80}, Student{"Lily", 85}]
+
+byName := {s.Name: s.Score for s in students}
+echo byName["Lily"]
+
+found, ok := {s.Score for s in students if s.Name == "Jason"}
+echo found, ok
+missing, ok := {s.Score for s in students if s.Name == "Unknown"}
+echo missing, ok
+
+hasLowScore := {for s in students if s.Score < 60}
+echo hasLowScore
+```
+
+运行 `xgo run lookup.xgo`。
+
+```text
+85
+80 true
+0 false
+false
+```
+
+映射推导式在 `for` 前使用 `键: 值`。需要多次查找时，可以用它建立索引。如果姓名重复，最后遍历到的记录会覆盖该姓名对应的分数。
+
+选择表达式 `{值 for ...}` 返回遍历到的第一个匹配项对应的值。使用双返回值形式时，若没有匹配项，结果为值类型的零值和 `false`。借助布尔值可以区分学生不存在和学生得了零分。切片按索引顺序遍历，映射的遍历顺序不固定。
+
+存在性表达式 `{for ...}` 遇到第一个匹配项就返回 `true`，没有匹配项时返回 `false`。将 Lily 的成绩改为 `59` 并重跑，最后一行会变为 `true`。
+
+相关页面：[控制流](/zh-CN/docs/tutorials/control-flow)、[类型和值](/zh-CN/docs/reference/types)。

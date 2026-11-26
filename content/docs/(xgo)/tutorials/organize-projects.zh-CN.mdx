@@ -1,0 +1,94 @@
+---
+title: 运行和构建多文件项目
+description: 将 XGo 文件组织成包，传入命令行参数，监听文件变动并通过 shebang 运行脚本。
+---
+
+创建一个接收姓名的命令行问候程序。开始前，确保 `xgo` 命令已加入 PATH。参见 [安装 XGo](/zh-CN/docs/getting-started/installation)。
+
+## 创建项目
+
+在终端中创建一个空目录并初始化模块。
+
+```sh
+mkdir greeting
+cd greeting
+xgo mod init example.com/greeting
+```
+
+把下面两个文件保存到 `go.mod` 所在目录。
+
+### main.xgo
+
+```xgo
+import "os"
+
+name := "world"
+if len(os.Args) > 1 {
+    name = os.Args[1]
+}
+echo greet(name)
+```
+
+### greeting.xgo
+
+```xgo
+package main
+
+import strop "strings"
+
+func greet(name string) string {
+    return "Hello, " + strop.ToUpper(name)
+}
+```
+
+程序从 `main.xgo` 中的顶层语句开始执行。两个文件同属 `main` 包，所以第一个文件可以直接调用 `greet`。第二个文件把 Go 标准库中的 `strings` 包导入为 `strop`。
+
+## 运行和构建包
+
+命令中的点表示当前目录下的包。点之后的参数会传给程序。`os.Args[0]` 是程序名，因此第一个用户参数是 `os.Args[1]`。
+
+```sh
+xgo run .
+xgo run . Ada
+```
+
+```text
+Hello, WORLD
+Hello, ADA
+```
+
+在 macOS 或 Linux 上，构建可执行文件并直接运行。Windows 上可用 `xgo build -o greet.exe .` 构建，再在 PowerShell 中运行 `.\greet.exe Ada`。
+
+```sh
+xgo build -o greet .
+./greet Ada
+```
+
+可执行文件会输出 `Hello, ADA`。
+
+## 监听文件变化并重新生成 Go 源码
+
+在项目目录执行 `xgo watch .`。监听期间把 `greeting.xgo` 中的 `Hello, ` 改成 `Hi, ` 并保存。终端会出现 `GenGo` 日志，`xgo_autogen.go` 也会更新。按 Ctrl+C 停止监听后，执行 `xgo run . Ada`，会输出 `Hi, ADA`。如需同时生成 Go 测试源码，请用 `xgo watch -gentest .`。
+
+## 在 Unix 上直接运行单文件脚本
+
+如果系统支持 `env -S`，在另一个目录中将下面代码保存为 `hello.xgo`。首行指定用 `xgo run` 运行脚本。
+
+```xgo title="hello.xgo"
+#!/usr/bin/env -S xgo run
+
+echo "Hello, XGo"
+```
+
+```sh
+chmod +x hello.xgo
+./hello.xgo
+```
+
+```text
+Hello, XGo
+```
+
+如果项目同时包含 Go 源文件，参见 [Go 互操作](/zh-CN/docs/interoperability/go)。
+
+格式化、代码生成和测试相关命令见 命令行参考。

@@ -7,7 +7,7 @@ XGo can use Go packages and mix Go and XGo files in one package.
 
 ## Import a Go package
 
-```go title="package.xgo"
+```xgo title="package.xgo"
 import "fmt"
 
 fmt.Println("Hello from Go")
@@ -46,7 +46,7 @@ func p(a interface{}) {
 
 Create `b.xgo` in the same directory.
 
-```go title="b.xgo"
+```xgo title="b.xgo"
 func sayMix() {
     println "Mix Go and XGo"
 }

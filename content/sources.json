@@ -307,6 +307,275 @@
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/toolchain/repl.mdx",
       "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/builtins.mdx": {
+      "sourcePath": "doc/builtin.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cl/_testxgo/newexpr/in.xgo",
+        "cl/_testxgo/newexpr/out.go"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/reference/full-specification.mdx": {
+      "sourcePath": "doc/spec.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/reference/mini-specification.mdx": {
+      "sourcePath": "doc/spec-mini.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec/mini/mini.xgo",
+        "cmd/chore/xgominispec/minispec.xgo",
+        "cmd/go.mod",
+        "tpl/tpl.go",
+        "x/xgoprojs/proj.go"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/reference/strings.mdx": {
+      "sourcePath": "doc/string.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cl/builtin.go",
+        "doc/spec-mini.md"
+      ]
+    },
+    "content/docs/(xgo)/reference/slices.mdx": {
+      "sourcePath": "doc/slice.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/reference/maps.mdx": {
+      "sourcePath": "doc/map.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/reference/functions-and-closures.mdx": {
+      "sourcePath": "doc/func-closure.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cl/compile.go",
+        "cl/expr.go",
+        "cl/decorator_test.go",
+        "cl/_testxgo/deco1/in.xgo",
+        "cl/_testxgo/deco2/in.xgo",
+        "cl/_testxgo/deco3/in.xgo",
+        "cl/_testxgo/repeatuntil/in.xgo",
+        "cl/_testxgo/repeatuntil/out.go"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/reference/function-calls.mdx": {
+      "sourcePath": "doc/fncall.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/tooling-conventions.md",
+        "cl/expr.go",
+        "cl/_testxgo/unit/in.xgo",
+        "cl/_testxgo/unit/out.go",
+        "demo/unitliteral/unitlit.xgo",
+        "cl/_testxgo/type-as-args/in.xgo",
+        "cl/_testxgo/type-as-args/out.go",
+        "cl/_testxgo/type-as-fnargs/in.xgo",
+        "cl/_testxgo/type-as-fnargs/out.go",
+        "cl/internal/typeargs/typeargs.go",
+        "parser/parser.go"
+      ],
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/reference/for-loops.mdx": {
+      "sourcePath": "doc/for.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/reference/overloads.mdx": {
+      "sourcePath": "doc/overload.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/reference/enums.mdx": {
+      "sourcePath": "doc/enum.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/reference/domain-text-literals.mdx": {
+      "sourcePath": "doc/domian-text-lit.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/reference/structs-and-tuples.mdx": {
+      "sourcePath": "doc/struct-vs-tuple.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/reference/template-receiver-method.mdx": {
+      "sourcePath": "doc/template-recv-method.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/concepts/xgo-and-go.mdx": {
+      "sourcePath": "doc/xgo-vs-go.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot"
+    },
+    "content/docs/(xgo)/reference/dql.mdx": {
+      "sourcePath": "dql/README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/reference/tpl.mdx": {
+      "sourcePath": "tpl/README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26"
+    },
+    "content/docs/(xgo)/tutorials/exact-arithmetic.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec-mini.md"
+      ]
+    },
+    "content/docs/(xgo)/tutorials/exact-arithmetic.zh-CN.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec-mini.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/tutorials/exact-arithmetic.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/tutorials/process-collections.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/slice.md",
+        "doc/map.md",
+        "cl/expr.go"
+      ]
+    },
+    "content/docs/(xgo)/tutorials/process-collections.zh-CN.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/slice.md",
+        "doc/map.md",
+        "cl/expr.go"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/tutorials/process-collections.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/tutorials/structs-and-methods.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec.md",
+        "doc/for.md",
+        "cl/expr.go"
+      ]
+    },
+    "content/docs/(xgo)/tutorials/structs-and-methods.zh-CN.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec.md",
+        "doc/for.md",
+        "cl/expr.go"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/tutorials/structs-and-methods.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/tutorials/organize-projects.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cmd/internal/mod/init.go",
+        "cmd/internal/run/run.go",
+        "cmd/internal/build/build.go",
+        "cmd/internal/watch/watch.go"
+      ]
+    },
+    "content/docs/(xgo)/tutorials/organize-projects.zh-CN.mdx": {
+      "sourcePath": "doc/docs.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cmd/internal/mod/init.go",
+        "cmd/internal/run/run.go",
+        "cmd/internal/build/build.go",
+        "cmd/internal/watch/watch.go"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/tutorials/organize-projects.mdx",
+      "translationReviewStatus": "pending"
     }
   },
   "sourceLicense": "Apache-2.0",

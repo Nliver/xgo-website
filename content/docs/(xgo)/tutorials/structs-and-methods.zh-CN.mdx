@@ -1,0 +1,102 @@
+---
+title: 用结构体和方法表示测量值
+description: 让 XGo 推断结构体字面量的类型，读取结构体类型标签并实现自定义迭代器。
+---
+
+用结构体存放传感器测量值，定义方法格式化输出，再用 `for ... in` 遍历一组测量值。将下面三个程序分别保存为对应的文件。
+
+## 创建测量记录并格式化输出
+
+```xgo title="readings.xgo"
+type Reading struct {
+    Name  string
+    Value int
+}
+
+func (r *Reading) Label() string {
+    return "${r.Name}: ${r.Value}"
+}
+
+func makeReading(value int) *Reading {
+    return {Name: "wind", Value: value}
+}
+
+func printReading(r *Reading) {
+    echo r.label
+}
+
+printReading {Name: "rain", Value: 3}
+printReading makeReading(12)
+```
+
+运行 `xgo run readings.xgo`。
+
+```text
+rain: 3
+wind: 12
+```
+
+`printReading` 的参数和 `makeReading` 的返回值均为 `*Reading`，所以 XGo 可以根据上下文推断具名字段字面量的类型。也可以写全 `&Reading{Name: "rain", Value: 3}`。按字段顺序传值时，需明确写出类型，例如 `&Reading{"rain", 3}`。
+
+读取 `r.label` 会调用 `r.Label()`。XGo 将这种适用于特定无参方法的简写称为自动属性（auto property）。
+
+## 添加和读取类型标签
+
+```xgo title="tagged.xgo"
+import "reflect"
+
+type Reading struct {
+    _ "Daily reading"
+    Value int `json:"value"`
+}
+
+kind := reflect.TypeOf(Reading{})
+tag := kind.Field(0).Tag
+echo tag.Get("_")
+field := kind.Field(1)
+echo field.Tag.Get("json")
+```
+
+运行 `xgo run tagged.xgo`。
+
+```text
+Daily reading
+value
+```
+
+XGo 将 `_ "Daily reading"` 形式的类型标签表示为一个类型为 `struct{}`、标签键为 `_` 的 Go 空白字段。`json:"value"` 这样的普通 Go 字段标签则属于相应的具名字段。
+
+## 遍历测量值
+
+```xgo title="iterator.xgo"
+type Readings struct {
+    values []int
+}
+
+func (r *Readings) XGo_Enum() func(func(int) bool) {
+    return func(yield func(int) bool) {
+        for value in r.values {
+            if !yield(value) {
+                return
+            }
+        }
+    }
+}
+
+readings := &Readings{values: [12, 18, 24, 30]}
+for value in readings {
+    if value > 20 {
+        break
+    }
+    echo value
+}
+```
+
+运行 `xgo run iterator.xgo`。
+
+```text
+12
+18
+```
+
+`XGo_Enum` 通过 `yield` 为循环提供元素。循环执行 `break` 时，`yield` 返回 `false`，迭代器应立即停止调用它。
