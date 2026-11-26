@@ -1,2 +1,22 @@
-{"title":"Toolchain","pages":["playground","repl"]}
-
+{
+  "title": "Toolchain",
+  "pages": [
+    "command-reference",
+    "environment",
+    "playground",
+    "repl",
+    "vscode",
+    "modules",
+    "gox-mod",
+    "classfiles",
+    "classfile-specification",
+    "tooling-conventions",
+    "code-coverage",
+    "code-style",
+    "pack-project-configuration",
+    "inspect-source",
+    "load-and-check-packages",
+    "embed-tpl",
+    "html-query-cli"
+  ]
+}

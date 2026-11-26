@@ -1,0 +1,637 @@
+---
+title: "Core language demos"
+description: "Run the XGo language demos for literals, classes, scanners, parsers, and runtime type inspection."
+---
+
+Run each command from its listed directory in the XGo checkout. Use the XGo revision listed under Sources for this page. See the [installation guide](/docs/getting-started/installation) to build the corresponding toolchain.
+
+## Class initialization
+
+Run from `demo/clsinit`.
+
+Inspect an instance created from the classfile. Its initialized dimensions and border are printed alongside the zero value for its color.
+
+### Rect.gox
+
+```xgo
+var (
+	w, h   = 10, 20
+	color  int
+	border float64 = 1.2
+)
+
+echo *this
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+{10 20 0 1.2}
+```
+
+## Keyword arguments
+
+Run from `demo/kwargs`.
+
+Compare a call that supplies two keyword arguments with a call that uses defaults for the entire optional configuration.
+
+### run.xgo
+
+```xgo title="run.xgo"
+type Config (timeout, maxRetries int, debug bool)
+
+func run(task int, cfg Config?) {
+	if cfg.timeout == 0 {
+		cfg.timeout = 30
+	}
+	if cfg.maxRetries == 0 {
+		cfg.maxRetries = 3
+	}
+	echo "timeout:", cfg.timeout, "maxRetries:", cfg.maxRetries, "debug:", cfg.debug
+	echo "task:", task
+}
+
+run 100, timeout = 60, maxRetries = 5
+run 200
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+timeout: 60 maxRetries: 5 debug: false
+task: 100
+timeout: 30 maxRetries: 3 debug: false
+task: 200
+```
+
+## Lambda expressions
+
+Run from `demo/lambda1`.
+
+Pass an expression lambda and a block lambda into the same function.
+
+### lambda.xgo
+
+```xgo title="lambda.xgo"
+func f(x float64, t func(float64) float64) float64 {
+	return t(x)
+}
+
+echo f(1.0, x => 2 * x)
+echo f(5.0, (x) => {
+	return 2 * x
+})
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+2
+10
+```
+
+## Map literals
+
+Run from `demo/mapliteral`.
+
+Compare an inferred map literal with map literals in typed contexts. The displayed key-value pairs match even though the map types differ.
+
+### mapliteral.xgo
+
+```xgo title="mapliteral.xgo"
+func echoS2f32(vals map[string]float32) {
+	echo vals
+}
+
+echo {"Monday": 1, "Sunday": 7}
+echoS2f32 {"Monday": 1, "Sunday": 7}
+
+var a map[string]any = {"Monday": 1, "Sunday": 7}
+echo a
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+map[Monday:1 Sunday:7]
+map[Monday:1 Sunday:7]
+map[Monday:1 Sunday:7]
+```
+
+## Slice literals
+
+Run from `demo/sliceliteral`.
+
+Use the same values in inferred, explicitly typed, and interface-element slice contexts.
+
+### sliceliteral.xgo
+
+```xgo title="sliceliteral.xgo"
+func echoF32s(vals []float32) {
+	echo vals
+}
+
+func anyslice() []any {
+	return [10, 3.14, 200]
+}
+
+echo [10, 3.14, 200]
+echoF32s [10, 3.14, 200]
+
+var a []any = [10, 3.14, 200]
+a = [10, 3.14, 200]
+echo a
+echo anyslice()
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+[10 3.14 200]
+[10 3.14 200]
+[10 3.14 200]
+[10 3.14 200]
+```
+
+## String transformations
+
+Run from `demo/stringtrans`.
+
+Split a name on underscores, then apply string transformations to the parts.
+
+### transform.xgo
+
+```xgo title="transform.xgo"
+t := "u_int32_t"
+echo t.split("_").capitalize.join("")
+echo t.split("_").repeat(3).join(" ")
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+UInt32T
+uuu int32int32int32 ttt
+```
+
+## Tuple types
+
+Run from `demo/tupletype`.
+
+Build a named tuple with positional and keyword arguments, then use a tuple as a map key.
+
+### tuple.xgo
+
+```xgo title="tuple.xgo"
+type Point (x, y int)
+
+pt := Point(2, 3)
+echo pt.x, pt.y
+
+pt = (100, 200)
+echo pt
+
+pt2 := Point(pt)
+echo pt2
+
+pt3 := Point(y = 5, x = 3)
+echo pt3.x, pt3.y
+
+pts := make(map[Point]string)
+pts[(0, 0)] = "origin"
+echo pts
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+2 3
+{100 200}
+{100 200}
+3 5
+map[{0 0}:origin]
+```
+
+## Duration units
+
+Run from `demo/unitliteral`.
+
+Pass the duration literal `1s` to `time.Sleep` using XGo method naming. The second line appears after about one second.
+
+### unitlit.xgo
+
+```xgo title="unitlit.xgo"
+import "time"
+
+echo "Let's wait for a second"
+time.sleep 1s
+echo "Hello, world"
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+Let's wait for a second
+Hello, world
+```
+
+## Parse and evaluate expressions
+
+Run from `demo/xgo-calc`.
+
+Use the XGo parser to evaluate arithmetic and function calls.
+
+### calc.xgo
+
+```xgo
+import (
+	"math"
+	"os"
+	"xgo/ast"
+	"xgo/parser"
+	"xgo/token"
+)
+
+func calc(e ast.Expr) float64 {
+	switch e := e.(type) {
+	case *ast.BasicLit:
+		return e.Value.float!
+	case *ast.BinaryExpr:
+		switch e.Op {
+		case token.ADD:
+			return calc(e.X) + calc(e.Y)
+		case token.SUB:
+			return calc(e.X) - calc(e.Y)
+		case token.MUL:
+			return calc(e.X) * calc(e.Y)
+		case token.QUO:
+			return calc(e.X) / calc(e.Y)
+		}
+		panic("unknown binary operator")
+	case *ast.CallExpr:
+		switch e.Fun.(*ast.Ident).Name {
+		case "sin":
+			return math.Sin(calc(e.Args[0]))
+		case "cos":
+			return math.Cos(calc(e.Args[0]))
+		case "pow":
+			return math.Pow(calc(e.Args[0]), calc(e.Args[1]))
+		}
+		panic("unknown function")
+	case *ast.ParenExpr:
+		return calc(e.X)
+	case *ast.UnaryExpr:
+		switch e.Op {
+		case token.SUB:
+			return -calc(e.X)
+		}
+		panic("unknown unary operator")
+	}
+	panic("unknown expression")
+}
+
+print "> "
+for line in os.Stdin {
+	e, err := parser.parseExpr(line)
+	if err != nil {
+		print "error: ${err}\n> "
+	} else {
+		print "${calc(e)}\n> "
+	}
+}
+```
+
+```sh
+printf '2+3*4\npow(2, 3)\n' | xgo run .
+```
+
+The program prints the following output.
+
+```text
+> 14
+> 8
+>
+```
+
+## Inspect a binary expression
+
+Run from `demo/xgo-parser`.
+
+Parse one expression and print its left operand, operator, and right operand.
+
+### parser.xgo
+
+```xgo title="parser.xgo"
+import (
+	"xgo/ast"
+	"xgo/parser"
+)
+
+e := parser.parseExpr("10 + 3.2")!.(*ast.BinaryExpr)
+echo e.X, e.Op, e.Y
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+&{1 INT 10 <nil>} + &{6 FLOAT 3.2 <nil>}
+```
+
+## Local and imported functions
+
+Run from `demo/xgo-sample`.
+
+Run two files in the same package along with their local Go dependency. The XGo package writes its two lines to standard output and the Go dependency uses Go’s built-in `println` for the third line.
+
+### a.xgo
+
+```xgo
+package main
+
+func a() {
+	println("a")
+}
+
+func Ab() {
+	println("ab")
+}
+```
+
+### b.xgo
+
+```xgo
+package main
+
+import (
+	ab "github.com/goplus/xgo/demo/xgo-sample/cpkag/b"
+)
+
+a()
+Ab()
+ab.Ab()
+```
+
+### cpkag/b/ab.go
+
+```go
+package ab
+
+func Ab() {
+	println("ab")
+}
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+a
+ab
+ab
+```
+
+## Scan individual tokens
+
+Run from `demo/xgo-scanner`.
+
+Read the first three tokens from the input and print their literals or token kinds.
+
+### scanner.xgo
+
+```xgo title="scanner.xgo"
+import "xgo/scanner"
+
+s := scanner.new("10 + 3.2", nil, 0)
+_, _, lit1 := s.scan()
+_, tok2, _ := s.scan()
+_, _, lit3 := s.scan()
+echo lit1, tok2, lit3
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+10 + 3.2
+```
+
+## Infix calculator
+
+Run from `demo/xgo-scanner/simplecalc`.
+
+Use token kinds and a precedence table to evaluate infix notation.
+
+### calc.xgo
+
+```xgo
+import (
+	"os"
+	"xgo/scanner"
+	"xgo/token"
+)
+
+func calc(expr string) string {
+	var (
+		ops  []token.Token
+		vals []float64
+	)
+	prec := {
+		token.ADD: 1,
+		token.SUB: 1,
+		token.MUL: 2,
+		token.QUO: 2,
+	}
+	s := scanner.new(expr, nil, 0)
+	n := 0       // op count
+	rv := true   // require value
+	neg := false // negative number
+	for {
+		pos, tok, lit := s.scan()
+		switch tok {
+		case token.INT, token.FLOAT:
+			if !rv {
+				return "${pos}: require operator"
+			}
+			v := lit.float!
+			if neg {
+				v = -v
+				neg = false
+			}
+			vals <- v
+			rv = false
+		case token.ADD, token.SUB, token.MUL, token.QUO, token.SEMICOLON:
+			if rv {
+				if tok == token.SUB {
+					neg = !neg // toggle negative flag
+					continue
+				}
+				return "${pos}: require value"
+			}
+			for n > 0 && prec[ops[n-1]] >= prec[tok] {
+				x := len(vals) - 1
+				switch ops[n-1] {
+				case token.ADD:
+					vals[x-1] += vals[x]
+				case token.SUB:
+					vals[x-1] -= vals[x]
+				case token.MUL:
+					vals[x-1] *= vals[x]
+				case token.QUO:
+					vals[x-1] /= vals[x]
+				}
+				vals = vals[:x]
+				n--
+			}
+			if tok == token.SEMICOLON {
+				return vals[0].string
+			}
+			ops = append(ops[:n], tok)
+			rv = true
+			n++
+		default:
+			return "${pos}: invalid token ${tok}"
+		}
+	}
+}
+
+print "> "
+for line in os.Stdin {
+	print "${calc(line)}\n> "
+}
+```
+
+```sh
+printf '2+3*4\n' | xgo run .
+```
+
+The program prints the following output.
+
+```text
+> 14
+>
+```
+
+## Reverse Polish notation
+
+Run from `demo/xgo-scanner/rpncalc`.
+
+Place the operator after its two arguments. The calculator processes the tokens with a value stack.
+
+### rpncalc.xgo
+
+```xgo
+import (
+	"os"
+	"xgo/scanner"
+	"xgo/token"
+)
+
+func calc(expr string) string {
+	var vals []float64
+	s := scanner.new(expr, nil, 0)
+	for {
+		pos, tok, lit := s.scan()
+		switch tok {
+		case token.INT, token.FLOAT:
+			vals <- lit.float!
+		case token.ADD, token.SUB, token.MUL, token.QUO:
+			x := len(vals) - 1
+			switch tok {
+			case token.ADD:
+				vals[x-1] += vals[x]
+			case token.SUB:
+				vals[x-1] -= vals[x]
+			case token.MUL:
+				vals[x-1] *= vals[x]
+			case token.QUO:
+				vals[x-1] /= vals[x]
+			}
+			vals = vals[:x]
+		case token.EOF, token.SEMICOLON:
+			return vals[0].string
+		default:
+			return "${pos}: invalid token ${tok}"
+		}
+	}
+}
+
+print "> "
+for line in os.Stdin {
+	print "${calc(line)}\n> "
+}
+```
+
+```sh
+printf '2 3 +\n' | xgo run .
+```
+
+The program prints the following output.
+
+```text
+> 5
+>
+```
+
+## Runtime type inspection
+
+Run from `demo/xgo-typeof`.
+
+Print the types of a slice literal and a string.
+
+### typeof.xgo
+
+```xgo title="typeof.xgo"
+echo type([1]), type("Hi")
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+[]int string
+```

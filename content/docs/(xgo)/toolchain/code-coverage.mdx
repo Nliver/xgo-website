@@ -1,0 +1,15 @@
+---
+title: Measure unit test coverage
+description: Measure statement coverage for an XGo package and save the result as a coverage profile.
+---
+
+Run the [test classfile example](/docs/examples/mixed-go-generics#run-a-test-classfile) with statement coverage enabled. From a checkout of the documented XGo revision, run these commands with the standard Go backend.
+
+```sh
+cd demo/unit-test
+xgo test -covermode=atomic -coverprofile=coverage.out .
+```
+
+The test exercises `foo` with positive, negative and zero inputs. The package reports `coverage: 100.0% of statements`. The first line of `coverage.out` is `mode: atomic`. The remaining lines identify source ranges and their execution counts.
+
+The profile references `foo.xgo`. In this example, `go tool cover -func=coverage.out` tries to parse that file as Go and fails at the first function because the XGo source omits a package clause. Use the statement percentage printed by `xgo test` for this example.

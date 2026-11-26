@@ -1,0 +1,210 @@
+---
+title: Load and check XGo packages from Go
+description: Resolve cross-language references, load a module package, and display XGo overloads in documentation data.
+---
+
+Build a Go utility that resolves Go references to XGo declarations, reads packages from disk, and displays overload signatures in documentation. Use Go 1.26 or newer. Start in an empty directory and initialize a module with the XGo revision used in this guide.
+
+```sh
+go mod init example.com/xgotool
+go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
+```
+
+For working with individual syntax trees and source positions, see [Inspect and format XGo source from Go](/docs/toolchain/inspect-source).
+
+## Resolve identifiers across Go and XGo files
+
+Save the program below as `main.go`. The two parsers share one file set, and the checker receives both syntax trees for the same package. Allocate a map for each kind of type information you want to query. This program asks for XGo definitions and Go uses.
+
+```go
+package main
+
+import (
+	"fmt"
+	goast "go/ast"
+	goparser "go/parser"
+	"go/token"
+	"go/types"
+	"log"
+
+	"github.com/goplus/xgo/ast"
+	"github.com/goplus/xgo/parser"
+	"github.com/goplus/xgo/x/typesutil"
+)
+
+func main() {
+	files := token.NewFileSet()
+	goFile, err := goparser.ParseFile(files, "base.go", "package sample\nfunc Base() int { return Double(21) }", 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	xgoFile, err := parser.ParseFile(files, "double.xgo", "package sample\nfunc Double(n int) int { return n * 2 }", 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var diagnostics []error
+	config := &types.Config{
+		Error: func(err error) { diagnostics = append(diagnostics, err) },
+	}
+	options := &typesutil.Config{
+		Types: types.NewPackage("example.com/sample", "sample"),
+		Fset:  files,
+	}
+	goInfo := &types.Info{Uses: make(map[*goast.Ident]types.Object)}
+	xgoInfo := &typesutil.Info{Defs: make(map[*ast.Ident]types.Object)}
+	checker := typesutil.NewChecker(config, options, goInfo, xgoInfo)
+	err = checker.Files([]*goast.File{goFile}, []*ast.File{xgoFile})
+	if len(diagnostics) > 0 {
+		log.Fatal(diagnostics)
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	definition := xgoFile.Decls[0].(*ast.FuncDecl).Name
+	for use, object := range goInfo.Uses {
+		if object == xgoInfo.Defs[definition] {
+			fmt.Printf("%s resolves to %s\n", files.Position(use.Pos()), definition.Name)
+		}
+	}
+}
+```
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+base.go:2:26 resolves to Double
+```
+
+The Go call resolves to the same type object as the XGo declaration. Collect diagnostics with `types.Config.Error` as well as checking the return value. With mixed input, the final Go check can replace the earlier XGo error returned by `Files`. See [Type information](/docs/toolchain/tooling-conventions#type-information) for additional fields and overload records.
+
+## Load a package from a module directory
+
+Set `XGOROOT` to the source tree for the revision in the setup and run this example from the module root. See [Toolchain environment](/docs/toolchain/environment#check-the-source-root) for how to locate and set the source root. Create the `sample` directory and save this file as `sample/answer.xgo`.
+
+```xgo
+package sample
+
+func Answer() int {
+	return 42
+}
+```
+
+Replace `main.go` with the loader.
+
+```go
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/goplus/xgo/tool"
+)
+
+func main() {
+	const dir = "sample"
+	flags := tool.ConfFlagDontUpdateGoMod | tool.ConfFlagNoCacheFile
+	conf, err := tool.NewDefaultConf(dir, flags)
+	if err != nil {
+		log.Fatal(err)
+	}
+	pkg, _, err := tool.LoadDir(dir, conf, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := pkg.WriteTo(os.Stdout); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+```sh
+go mod tidy
+go run .
+```
+
+The program writes generated Go to standard output. The line directives refer back to the XGo source.
+
+```go
+package sample
+
+const _ = true
+//line sample/answer.xgo:3:1
+func Answer() int {
+//line sample/answer.xgo:4:1
+	return 42
+}
+```
+
+`NewDefaultConf` discovers module and workspace metadata from the package directory. `ConfFlagDontUpdateGoMod` disables the loader's update of the owning `go.mod`, and `ConfFlagNoCacheFile` leaves the importer cache file unset. The third argument to `LoadDir` controls whether to compile a separate external test package. Use `ConfFlagNoTestFiles` if you also need to exclude test files from the input.
+
+## Display overloaded names in Go documentation data
+
+Replace `main.go` with the program below. It compiles an XGo overload, parses the generated Go, and builds a `go/doc.Package` using the Go standard library.
+
+```go
+package main
+
+import (
+	"fmt"
+	"go/ast"
+	"go/doc"
+	"go/parser"
+	"go/token"
+	"log"
+
+	xgodoc "github.com/goplus/xgo/doc"
+	"github.com/goplus/xgo/x/build"
+)
+
+func main() {
+	const source = `package sample
+func Format = (
+	func(value int) string { return "int" }
+	func(value string) string { return value }
+)
+`
+	generated, err := build.Default().BuildFile("format.xgo", source)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	files := token.NewFileSet()
+	file, err := parser.ParseFile(files, "generated.go", generated, parser.ParseComments)
+	if err != nil {
+		log.Fatal(err)
+	}
+	pkg, err := doc.NewFromFiles(files, []*ast.File{file}, "example.com/sample")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, fn := range pkg.Funcs {
+		fmt.Println(fn.Name)
+	}
+
+	pkg = xgodoc.Transform(pkg)
+	for _, fn := range pkg.Funcs {
+		param := fn.Decl.Type.Params.List[0].Type.(*ast.Ident)
+		fmt.Printf("%s(%s)\n", fn.Name, param.Name)
+	}
+}
+```
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+Format__0
+Format__1
+Format(int)
+Format(string)
+```
+
+`doc.Transform` modifies the documentation model in place when it contains an `XGoPackage` or legacy `GopPackage` marker. The final two lines show the overload names a documentation tool can display. For the naming conventions used in generated Go, see [Overloading](/docs/reference/overloads#under-the-hood-how-xgo-encodes-overloading-in-go).

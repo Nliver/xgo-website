@@ -1,0 +1,30 @@
+---
+title: Replace an HDQ query with DQL
+description: Collect HTML link destinations using built-in DQL when migrating from the deprecated HDQ package.
+---
+
+HDQ was an HTML query package for XGo. Its upstream repository marks it deprecated. The successor, DQL, is part of the XGo standard library. Pull link destinations from a local HTML string to try the replacement without a web request.
+
+For the `hdq` executable shipped in the main repository, see [Query HTML with the hdq command](/docs/toolchain/html-query-cli).
+
+## Extract links
+
+Save the example as `list-links.xgo`.
+
+```xgo title="list-links.xgo"
+doc := html`<main><a href="/docs">Docs</a><a href="/blog">Blog</a></main>`!
+for link in doc.**.a {
+    echo link.$href
+}
+```
+
+Run `xgo run list-links.xgo`.
+
+```text
+/docs
+/blog
+```
+
+The `html` literal parses the markup. The query `**.a` selects anchor elements at any depth and `$href` selects their `href` attribute. For documents where an anchor may omit the attribute, use the error-handling default `link.$href?:""` and skip the empty string.
+
+The [DQL reference](/docs/reference/dql) covers query behavior and the [data and text examples](/docs/examples/data-and-text) include a link-oriented demo.

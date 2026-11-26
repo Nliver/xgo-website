@@ -1,0 +1,52 @@
+---
+title: Pack project configuration
+description: Merge nested JSON or YAML index files with xgo pack and check the packed output before deployment.
+---
+
+Use `xgo pack` to combine a tree of small index configuration files into one document that an application can load in a single read. You need the [XGo command-line tool](/docs/getting-started/installation).
+
+## Create and pack two index files
+
+Create these files in an empty project directory.
+
+```files
+assets/
+├── index.json
+└── player/
+    └── index.json
+```
+
+```json title="assets/index.json"
+{"title": "Demo"}
+```
+
+```json title="assets/player/index.json"
+{"speed": 3}
+```
+
+Run the following from the project directory.
+
+```sh
+xgo pack .
+```
+
+Open the generated file. The directory name `player` becomes the key for the child object.
+
+```json title="assets/index_pack.json"
+{
+  "player": {
+    "speed": 3
+  },
+  "title": "Demo"
+}
+```
+
+The command also supports `index.yml` and `index.yaml` and writes an `index_pack` file with the same extension. Within a pack root, use exactly the same index filename in child directories as in the root. A pre-existing key that would be replaced by a child directory produces a collision error.
+
+## Check for stale output
+
+```sh
+xgo pack -t .
+```
+
+The check succeeds when the packed file exists and its contents match the output the command would generate. Change the player's speed to `4` and repeat the check to see `pack -t: out of date: assets/index_pack.json`. Run `xgo pack .` again to update it. The check can also run in CI after the project has adopted the packed file.

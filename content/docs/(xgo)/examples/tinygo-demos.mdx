@@ -1,0 +1,84 @@
+---
+title: "TinyGo demo programs"
+description: "Try a portable sorting example and a board-specific LED program with XGo and TinyGo."
+---
+
+Use the directories in the pinned XGo checkout. The parent module declares TinyGo with `go 1.18 // tinygo 0.32`. See [module compiler annotations](/docs/toolchain/modules).
+
+## Sort integers and strings
+
+Run from `demo/_tinygo/sortdemo`.
+
+Use the standard library to sort integers in ascending order and strings by length, then alphabetically for equal-length strings. To inspect the ordering on a desktop, run with the default Go compiler.
+
+### sort.xgo
+
+```xgo
+import "sort"
+
+vals := [32, 58, 25, 92, 45, 78]
+sort.ints vals
+for v in vals {
+	println v
+}
+
+texts := ["apple", "banana", "cherry", "date", "elderberry", "fig"]
+sort.slice texts, (i, j) => {
+	leni, lenj := len(texts[i]), len(texts[j])
+	if leni != lenj {
+		return leni < lenj
+	}
+	return texts[i] < texts[j]
+}
+for v in texts {
+	println v
+}
+```
+
+```sh
+xgo run .
+```
+
+The program prints the following output.
+
+```text
+25
+32
+45
+58
+78
+92
+fig
+date
+apple
+banana
+cherry
+elderberry
+```
+
+## Blink a board LED
+
+The original source is in `demo/_tinygo/blink`.
+
+TinyGo provides the `machine` package and selects its pin definitions from the target. For example, TinyGo 0.32.0 maps `machine.LED` to digital pin 13 for the `arduino` target. The program configures that pin as an output, sets it low for one second, then sets it high for one second and repeats.
+
+At the pinned XGo revision, the importer resolves `machine` through the Go package importer. With the standard Go package tree, `xgo go .` fails with `package machine is not in std`. Compiling the original XGo source requires an importer that can resolve TinyGo's target-specific package.
+
+### blink.xgo
+
+```xgo
+import (
+	"machine"
+	"time"
+)
+
+led := machine.LED
+led.configure {Mode: machine.PinOutput}
+for {
+	led.low
+	time.sleep 1s
+
+	led.high
+	time.sleep 1s
+}
+```

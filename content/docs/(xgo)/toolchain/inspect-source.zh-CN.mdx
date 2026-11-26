@@ -1,0 +1,155 @@
+---
+title: 在 Go 中分析和格式化 XGo 源码
+description: 解析内存中的 XGo 文件，定位标识符，并输出格式化后的程序。
+---
+
+使用 Go 1.26 或更新版本。在空目录中初始化模块，选择本页使用的 XGo 版本。
+
+```sh
+go mod init example.com/inspect
+go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
+```
+
+将以下程序保存为 `main.go`。
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/goplus/xgo/ast"
+	"github.com/goplus/xgo/format"
+	"github.com/goplus/xgo/parser"
+	"github.com/goplus/xgo/token"
+)
+
+func main() {
+	const src = "scores:=[2,4]\necho scores\n"
+	files := token.NewFileSet()
+	file, err := parser.ParseFile(files, "scores.xgo", src, 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ast.Inspect(file, func(node ast.Node) bool {
+		if id, ok := node.(*ast.Ident); ok && id.Name == "scores" {
+			fmt.Println(files.Position(id.Pos()))
+		}
+		return true
+	})
+	if err := format.Node(os.Stdout, files, file); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+ParseFile 将内存中的源代码与文件名 scores.xgo 关联。Inspect 按深度优先顺序遍历语法树。用解析时的同一个文件集查询位置，得到的是原始行号和列号，即使格式化后的空格发生变化也不受影响。
+
+运行程序，检查两个位置和格式化结果。
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+scores.xgo:1:1
+scores.xgo:2:6
+scores := [2, 4]
+echo scores
+```
+
+这两个位置都拼写为 scores。若需区分不同作用域中的定义与引用，可查阅[类型信息（英文）](/docs/toolchain/tooling-conventions#type-information)。要在格式化时保留源码注释，请将解析模式设为 `parser.ParseComments`。
+
+## 在 Go 程序中生成 Go 源码
+
+在同一个模块中，用以下内容替换 `main.go`，然后运行 `go mod tidy` 和 `go run .`。BuildFile 将内存中的 XGo 程序编译为 Go 源码。示例用 Go 标准库解析结果，并打印包名和函数名。
+
+```go
+package main
+
+import (
+	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
+	"log"
+
+	"github.com/goplus/xgo/x/build"
+)
+
+func main() {
+	src, err := build.Default().BuildFile("hello.xgo", "echo 42")
+	if err != nil {
+		log.Fatal(err)
+	}
+	file, err := parser.ParseFile(token.NewFileSet(), "generated.go", src, 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, decl := range file.Decls {
+		if fn, ok := decl.(*ast.FuncDecl); ok {
+			fmt.Println(file.Name.Name, fn.Name.Name)
+		}
+	}
+}
+```
+
+```text
+main main
+```
+
+需要转换已有的声明语法树时，使用 `ast/fromgo.ASTFile` 或 `ast/togo.ASTFile`。当前版本中两者都不支持保留函数体；生成可运行的 Go 函数体请使用上述编译接口。
+
+## 从内存中的文件提取导入路径
+
+在同一个模块里，用下面的程序替换 `main.go`。假设编辑器里打开了同一包的两个文件，`memfs.TwoFiles` 把两个缓冲区交给 `parser.ParseFSDir`。使用 `parser.ImportsOnly` 后，解析器读到导入声明结束就会停止。
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"maps"
+	"slices"
+
+	"github.com/goplus/xgo/ast/mod"
+	"github.com/goplus/xgo/parser"
+	"github.com/goplus/xgo/parser/fsx/memfs"
+	"github.com/goplus/xgo/token"
+)
+
+func main() {
+	files := memfs.TwoFiles("report",
+		"query.xgo", "package report\nimport _ \"xgo/tpl\"\nimport _ \"fmt\"",
+		"render.go", "package report\nimport _ \"fmt\"\nimport _ \"io\"",
+	)
+	packages, err := parser.ParseFSDir(token.NewFileSet(), files, "report",
+		parser.Config{Mode: parser.ImportsOnly})
+	if err != nil {
+		log.Fatal(err)
+	}
+	imports := make(map[string]bool)
+	deps := mod.Deps{HandlePkg: func(path string) { imports[path] = true }}
+	deps.Load(packages["report"], true)
+	for _, path := range slices.Sorted(maps.Keys(imports)) {
+		fmt.Println(path)
+	}
+}
+```
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+fmt
+github.com/goplus/xgo/tpl
+io
+```
+
+回调接收两个文件直接引用的包路径。两个文件都导入了 `fmt`，示例先去重再排序。`Deps.Load` 的第二个参数控制 XGo 标准库路径的处理方式。传 `true` 时，`xgo/tpl` 展开为 `github.com/goplus/xgo/tpl`。改传 `false` 时将跳过这项导入，输出只剩 `fmt` 和 `io`。若需要查找调用对应的声明，请继续阅读[在 Go 中加载和检查 XGo 包](/zh-CN/docs/toolchain/load-and-check-packages)。

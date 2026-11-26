@@ -1,0 +1,116 @@
+---
+title: Use a TPL grammar from Go
+description: Compile a grammar, process a list of identifiers and report the position of unexpected input.
+---
+
+Parse a comma-separated list of names and report an error when a number follows a name. In an empty directory, create a module with Go 1.26 or later.
+
+```sh
+go mod init example.com/names
+go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
+```
+
+Save the program as `main.go`. `tpl.New` compiles the grammar once. `IDENT % ","` matches one or more identifiers separated by commas. `tpl.List` flattens the match tree so you can read each token's literal text.
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/goplus/xgo/tpl"
+)
+
+func main() {
+	grammar, err := tpl.New("names = IDENT % \",\"")
+	if err != nil {
+		log.Fatal(err)
+	}
+	result, err := grammar.ParseExprFrom("names.txt", "north, south", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, item := range tpl.List(result.([]any)) {
+		fmt.Println(item.(*tpl.Token).Lit)
+	}
+
+	_, err = grammar.ParseExprFrom("names.txt", "north 7", nil)
+	fmt.Println(err)
+}
+```
+
+Run the program to see the two identifiers and the diagnostic for the second input.
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+north
+south
+names.txt:1:7: unexpected token: 7
+```
+
+`ParseExprFrom` accepts an expression ending at a semicolon or end of input. The second input places `7` before either boundary, so the matcher reports its location in `names.txt`. For a whole-file grammar, use `Parse`, which checks that the grammar consumes all scanned tokens, including any semicolon inserted at the end of the line. For a prefix match, `Match` returns both the result and a `MatchState` containing the token slice and the number consumed.
+
+See [TPL grammar and match results](/docs/reference/tpl) for the list operator, rule alternatives and result rewriting.
+
+## Parse a list split across lines
+
+The default scanner inserts a semicolon after an identifier at the end of a line. For this list format, treat line breaks between names and commas as whitespace. Replace `main.go` in the same module with this program.
+
+`listScanner` embeds `scanner.Scanner`, reusing its `Init` method and token positions. Its `Scan` method skips semicolons with literal text `"\n"`, which the default scanner inserts at line breaks and at the end of input. It passes explicit semicolons through, so the grammar still rejects them.
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/goplus/xgo/tpl"
+	"github.com/goplus/xgo/tpl/scanner"
+	"github.com/goplus/xgo/tpl/token"
+)
+
+type listScanner struct {
+	scanner.Scanner
+}
+
+func (s *listScanner) Scan() tpl.Token {
+	for {
+		tok := s.Scanner.Scan()
+		if tok.Tok == token.SEMICOLON && tok.Lit == "\n" {
+			continue
+		}
+		return tok
+	}
+}
+
+func main() {
+	grammar, err := tpl.New("names = IDENT % \",\"")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	config := &tpl.Config{Scanner: &listScanner{}}
+	result, err := grammar.Parse("names.txt", "north\n, south\n", config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, item := range tpl.List(result.([]any)) {
+		fmt.Println(item.(*tpl.Token).Lit)
+	}
+}
+```
+
+Run the program with `go run .`.
+
+```text
+north
+south
+```
+
+`tpl.Config.Scanner` supplies the scanner for the input to `Parse`. The grammar text passed to `tpl.New` uses the default grammar parser. `Parse` checks that the rule consumes the entire token stream up to EOF. To collect lexical diagnostics separately from grammar matching errors, set `tpl.Config.ScanErrorHandler`.

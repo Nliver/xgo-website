@@ -1,0 +1,19 @@
+---
+title: Edit XGo in Visual Studio Code
+description: Install the Go/XGo extension, open a module and check editor support for XGo files.
+---
+
+Open a folder containing the program from [Hello World](/docs/getting-started/hello-world) in Visual Studio Code. If you are starting a new module, follow [Organize an XGo project](/docs/tutorials/organize-projects).
+
+1. Install the Go and XGo toolchains from the [installation guide](/docs/getting-started/installation). Confirm that both commands work in the editor's integrated terminal.
+2. In Extensions, search for the extension ID `goplus.gop` and install the extension published by `goplus`.
+3. Open `hello.xgo`. The extension recognizes this suffix and classfile suffixes including `.gox`, `.spx`, `.yap` and `.gsh`. The Go/XGo status bar displays toolchain information.
+4. If the editor shows **Analysis Tools Missing**, open the warning to see which tools the extension needs. The language server `xgols` provides features including navigation and completion. Delve (`dlv`) is used for debugging.
+
+Run the program from the integrated terminal.
+
+```sh
+xgo run hello.xgo
+```
+
+For a project with multiple files, open the module directory containing `go.mod` and run `xgo run .` there. See [Tooling conventions](/docs/toolchain/tooling-conventions) for the language details that editors need to handle.

@@ -1,0 +1,109 @@
+---
+title: Query HTML with the hdq command
+description: Build the DQL-powered hdq command from the XGo source tree and collect link destinations as JSON.
+---
+
+Use Go 1.27 or newer to build `hdq` from an XGo checkout at the source revision listed on this page. This standalone command uses DQL. The [HDQ package migration guide](/docs/ecosystem/hdq) covers the older library.
+
+```sh
+cd cmd
+go build -o hdq-tool ./hdq
+./hdq-tool list
+```
+
+On Windows, build with `go build -o hdq-tool.exe ./hdq` and run `.\hdq-tool.exe list` in PowerShell.
+
+The command lists the fetch types available in this build.
+
+```text
+github.com/issueTask
+github.com/repoList
+hrefs
+pkg.go.dev/importedBy
+pytorch.org/fndoc
+```
+
+## Collect link destinations
+
+Pass an HTTP or HTTPS URL to the `hrefs` fetch type. Replace the URL with a page you want to inspect.
+
+```sh
+./hdq-tool fetch hrefs https://example.com/
+```
+
+Standard output contains a JSON array with one object per URL. Each object includes the input `url` and, when found, a list of nonempty `hrefs`. Relative links appear as written in the source HTML. Fetch progress goes to standard error.
+
+Use `-` as the only input after the fetch type to read whitespace-separated inputs from standard input.
+
+```sh
+printf '%s\n' https://example.com/ | ./hdq-tool fetch hrefs -
+```
+
+## Convert saved HTML in Go
+
+Use Go 1.26 or later to extract the title from an HTML snapshot. In a new directory, initialize a separate Go module and select the XGo revision used on this page.
+
+```sh
+go mod init example.com/html
+go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
+```
+
+Save this program as `main.go`. The converter receives a string input and the parsed `html.NodeSet`. `Text__1` returns the text from the first matching title and reports any parsing or selection error.
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/goplus/xgo/dql/fetcher"
+	"github.com/goplus/xgo/dql/html"
+)
+
+type titleResult struct {
+	text string
+	err  error
+}
+
+func pageTitle(_ string, doc html.NodeSet) titleResult {
+	text, err := doc.XGo_Any("title").Text__1()
+	return titleResult{text: text, err: err}
+}
+
+func main() {
+	fetcher.Register("page-title", pageTitle, func(input any) string {
+		return input.(string)
+	})
+
+	const url = "https://example.com/docs"
+	snapshot := []byte("<html><head><title>Example documentation</title></head></html>")
+	value, err := fetcher.From("page-title", url, snapshot)
+	if err != nil {
+		log.Fatal(err)
+	}
+	title := value.(titleResult)
+	if title.err != nil {
+		log.Fatal(title.err)
+	}
+
+	fmt.Println(title.text)
+}
+```
+
+Run the program.
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+Example documentation
+```
+
+`fetcher.From` passes the input to the converter and parses the HTML from the source argument. Use a byte slice or an `io.Reader` for saved markup. A string source is opened as a location. `From` skips the URL function supplied to `Register`, so the example never requests the page at the input URL.
+
+A converter takes the input and an `html.NodeSet`, then returns one value. This converter returns both the title and its error in one struct. Check the error returned by `From` before reading that result. At this revision, `From` returns `fetcher.ErrUnknownFetchType` for an unregistered name. Call converters from the same Go process where you register them.
+
+For selector syntax and more HTML examples, see the [DQL reference](/docs/reference/dql#html).

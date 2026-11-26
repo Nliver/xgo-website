@@ -1,0 +1,51 @@
+---
+title: "GSH and classfile demos"
+description: "Compare direct command calls, exec, and per-command environment overrides in a GSH classfile."
+---
+
+Run each command from its listed directory in the XGo checkout. Use the XGo revision listed under Sources for this page. See the [installation guide](/docs/getting-started/installation) to build the corresponding toolchain. The [classfile guide](/docs/toolchain/classfiles) explains the framework behind the `.gsh` extension.
+
+## Pass environment variables to a child command
+
+Run from `demo/gsh-exec`.
+
+Run the demo with `FOO` initially unset. The script calls the adjacent XGo program five times, setting `FOO` in the third and fourth calls. It then lists the home directory twice, so those final lines vary by machine.
+
+### exec.gsh
+
+```xgo
+xgo "run", "./foo"
+exec "xgo run ./foo"
+exec "FOO=100 xgo run ./foo"
+exec {"FOO": "101"}, "xgo", "run", "./foo"
+exec "xgo", "run", "./foo"
+exec "ls $HOME"
+ls ${HOME}
+```
+
+### foo/foo.xgo
+
+```xgo
+import "os"
+
+foo := os.getenv("FOO")
+if foo != "" {
+	echo foo
+} else {
+	echo "FOO not found"
+}
+```
+
+```sh
+(unset FOO; xgo run exec.gsh)
+```
+
+The child processes print the following lines before the directory listings.
+
+```text
+FOO not found
+FOO not found
+100
+101
+FOO not found
+```
