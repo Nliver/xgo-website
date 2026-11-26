@@ -6,9 +6,10 @@ import { parseDocument } from 'yaml';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkMdx from 'remark-mdx';
+import { getSlugs } from 'fumadocs-core/source';
 
 const processor = unified().use(remarkParse).use(remarkMdx);
-const languages = new Set(['go', 'xgo', 'bash', 'sh', 'powershell', 'bat', 'text', 'console', 'json', 'yaml', 'toml', 'ini', 'diff', 'md', 'mdx', 'js', 'javascript', 'ts', 'typescript', 'tsx', 'python', 'c', 'cpp']);
+const languages = new Set(['go', 'xgo', 'bash', 'sh', 'powershell', 'bat', 'text', 'console', 'files', 'json', 'yaml', 'toml', 'ini', 'diff', 'md', 'mdx', 'js', 'javascript', 'ts', 'typescript', 'tsx', 'python', 'c', 'cpp']);
 
 export function collectNodes(node, predicate) {
   const nodes = predicate(node) ? [node] : [];
@@ -35,8 +36,9 @@ function listFiles(directory) {
 
 function pageUrl(file) {
   const { slug, locale } = pageIdentity(file);
-  const pathname = slug.replace(/(^|\/)index$/, '').replace(/\/$/, '');
-  return `${locale === 'en' ? '' : `/${locale}`}/docs${pathname ? `/${pathname}` : ''}`;
+  const pathname = getSlugs(`${slug}.mdx`).join('/');
+  const base = pathname === 'blog' || pathname.startsWith('blog/') ? '' : '/docs';
+  return `${locale === 'en' ? '' : `/${locale}`}${base}${pathname ? `/${pathname}` : ''}`;
 }
 
 function pageIdentity(file) {
@@ -96,10 +98,17 @@ export function checkDocs(root) {
   for (const file of files) {
     const localPath = path.relative(docsRoot, file).replaceAll(path.sep, '/');
     const relative = path.relative(root, file).replaceAll(path.sep, '/');
-    const url = pageUrl(localPath);
     const fail = (message) => report(relative, message);
     const { slug, locale } = pageIdentity(localPath);
-    if (!slug.split('/').every((part) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(part))) fail('slug must use lowercase words separated by hyphens');
+    const segments = slug.split('/');
+    if (!segments.every((part, index) => {
+      const name = index < segments.length - 1 ? part.replace(/^\((.*)\)$/, '$1') : part;
+      return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name);
+    })) {
+      fail('slug must use lowercase words separated by hyphens');
+      continue;
+    }
+    const url = pageUrl(localPath);
     if (pages.has(url)) fail(`duplicate URL ${url}`);
     let page;
     try { page = readPage(file); } catch (error) { fail(error.message); continue; }
@@ -128,8 +137,11 @@ export function checkDocs(root) {
     if (!metadata) fail('missing source metadata');
     else {
       if (!validSourcePath(metadata.sourcePath)) fail('invalid sourcePath');
+      if (metadata.externalSources !== undefined && (!Array.isArray(metadata.externalSources) ||
+        !metadata.externalSources.every((file) => file && /^[\w.-]+\/[\w.-]+$/.test(file.repository) &&
+          shaPattern.test(file.commit) && validSourcePath(file.path)))) fail('invalid externalSources');
       if (metadata.additionalSourcePaths && (!Array.isArray(metadata.additionalSourcePaths) || !metadata.additionalSourcePaths.every(validSourcePath))) fail('invalid additionalSourcePaths');
-      if (!['tutorial', 'reference', 'guide', 'example'].includes(metadata.contentType)) fail('invalid contentType');
+      if (!['tutorial', 'reference', 'guide', 'example', 'blog'].includes(metadata.contentType)) fail('invalid contentType');
       if (!['upstream-synced', 'editorial', 'original'].includes(metadata.sourceStatus)) fail('invalid sourceStatus');
       if (!['draft', 'technical-review', 'english-review', 'published'].includes(metadata.reviewStatus)) fail('invalid reviewStatus');
       if (typeof metadata.applicableVersion !== 'string' || !metadata.applicableVersion.trim()) fail('missing applicableVersion');
@@ -192,7 +204,7 @@ export function checkDocs(root) {
         targetPath = pageFiles.get(targetFile) ?? targetPath;
       }
       if (href.startsWith('#')) targetPath = url;
-      if (/^(?:\/zh-CN)?\/docs(?:\/|$)/.test(targetPath)) {
+      if (/^(?:\/zh-CN)?\/(?:docs|blog)(?:\/|$)/.test(targetPath)) {
         const target = pages.get(targetPath);
         if (!target) report(page.relative, `internal link points to missing page ${href}`);
         else if (destination.hash && !target.anchors.has(decodeURIComponent(destination.hash.slice(1)))) report(page.relative, `internal link points to missing heading ${href}`);

@@ -1,0 +1,138 @@
+---
+title: Install XGo
+description: Install the XGo command line tools and run a small program.
+---
+
+Choose an installation method for your operating system. The package commands below come from the XGo repository.
+
+## Before you start
+
+Local XGo programs use the Go toolchain to build and run. Install Go and make sure the `go` command is available in your terminal.
+
+```bash
+go version
+```
+
+For the source revision documented in this edition, use Go 1.27.0 or a compatible later version. Package managers may provide a different XGo release with different Go requirements. The source build instructions below select the exact revision used by these pages.
+
+## Package installation
+
+<Tabs defaultValue="windows">
+  <TabsList aria-label="Package installation" activateOnFocus>
+    <TabsTrigger value="windows"><PlatformLogo name="windows" />Windows</TabsTrigger>
+    <TabsTrigger value="debian"><PlatformLogo name="debian" />Debian / Ubuntu</TabsTrigger>
+    <TabsTrigger value="redhat"><PlatformLogo name="redhat" />Red Hat / CentOS / Fedora</TabsTrigger>
+    <TabsTrigger value="homebrew"><PlatformLogo name="homebrew" />Homebrew</TabsTrigger>
+  </TabsList>
+
+<TabsContent value="windows" keepMounted>
+
+### Windows
+
+```bash
+winget install goplus.xgo
+```
+
+</TabsContent>
+<TabsContent value="debian" keepMounted>
+
+### Debian or Ubuntu
+
+The upstream instructions use `trusted=yes`. This marks the repository as trusted even when its authentication checks fail.
+
+Add the repository, refresh the package index, and install XGo.
+
+```bash
+sudo bash -c ' echo "deb [trusted=yes] https://pkgs.xgo.dev/apt/ /" > /etc/apt/sources.list.d/goplus.list'
+sudo apt update
+sudo apt install xgo
+```
+
+</TabsContent>
+<TabsContent value="redhat" keepMounted>
+
+### Red Hat, CentOS, or Fedora
+
+The upstream instructions use `gpgcheck=0`, which disables package signature verification for this repository.
+
+```bash
+sudo bash -c 'echo -e "[goplus]\nname=XGo Repo\nbaseurl=https://pkgs.xgo.dev/yum/\nenabled=1\ngpgcheck=0" > /etc/yum.repos.d/goplus.repo'
+sudo yum install xgo
+```
+
+</TabsContent>
+<TabsContent value="homebrew" keepMounted>
+
+### macOS or Linux with Homebrew
+
+```bash
+brew install xgo
+```
+
+</TabsContent>
+
+</Tabs>
+
+## Build from the documented source revision
+
+This edition follows XGo commit `c70869bd8cc9936c9fa2f3023566662c8963c49a`. Its root `go.mod` declares Go 1.26.0, and the command line tools in `cmd/go.mod` require **Go 1.27.0**. Use Go 1.27.0 or a compatible later version to build the tools from this revision.
+
+```bash
+git clone https://github.com/goplus/xgo.git
+cd xgo
+git checkout c70869bd8cc9936c9fa2f3023566662c8963c49a
+```
+
+<Tabs defaultValue="unix">
+  <TabsList aria-label="Build scripts by platform" activateOnFocus>
+    <TabsTrigger value="unix"><PlatformLogo name="apple" /><PlatformLogo name="linux" />macOS / Linux</TabsTrigger>
+    <TabsTrigger value="windows"><PlatformLogo name="windows" />Windows</TabsTrigger>
+  </TabsList>
+
+<TabsContent value="unix" keepMounted>
+
+On macOS or Linux, run the build script.
+
+```bash
+./all.bash
+```
+
+</TabsContent>
+<TabsContent value="windows" keepMounted>
+
+On Windows, run the batch file.
+
+```bat
+all.bat
+```
+
+</TabsContent>
+
+</Tabs>
+
+The scripts invoke `go run cmd/make.go`.
+
+The upstream quick start still lists Go 1.19 as its minimum. That statement conflicts with this revision's module requirements. The source build instructions above follow the module files. A packaged release may use a different XGo revision.
+
+## Check the installation
+
+Check that both commands are available in your terminal.
+
+```bash
+go version
+xgo version
+```
+
+If your shell cannot find a command, check that its installation directory is on your `PATH`. Then continue to [Your first XGo program](/docs/getting-started/hello-world), create `hello.xgo`, and run `xgo run hello.xgo`.
+
+To set up highlighting and code navigation, see [Edit XGo in Visual Studio Code](/docs/toolchain/vscode).
+
+## Check XGo in a container
+
+With Docker installed, use the release image from GitHub Container Registry. To print the version of the toolchain in the 1.8.0 image, run the following command.
+
+```sh
+docker run --rm ghcr.io/goplus/xgo:1.8.0 xgo version
+```
+
+The image sets its working directory to `/xgo`. To run a local project, mount the project directory there and use `xgo run .` as the command.
