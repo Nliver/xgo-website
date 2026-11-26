@@ -17,6 +17,21 @@ import { source } from '@/lib/source';
 import { getPageEditUrl, getPageGitHubUrl, getPageSources } from '@/lib/upstream';
 import { PageActions } from './page-actions';
 
+const timestampOptions: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  timeZone: 'UTC',
+  timeZoneName: 'short',
+};
+const timestampFormatters = {
+  en: new Intl.DateTimeFormat('en', timestampOptions),
+  'zh-CN': new Intl.DateTimeFormat('zh-CN', timestampOptions),
+};
+
 export function DocumentationPage({ slug, locale }: { slug?: string[]; locale: 'en' | 'zh-CN' }) {
   const page = source.getPage(slug, locale);
   if (!page) notFound();
@@ -50,10 +65,32 @@ export function DocumentationPage({ slug, locale }: { slug?: string[]; locale: '
         <MDX components={getMDXComponents({ a: createRelativeLink(source, page) })} />
       </DocsBody>
       <ContentPageSources path={page.path} locale={locale} />
-      <footer className="pb-2">
-        <EditOnGitHub href={editUrl} />
-      </footer>
+      <ContentPageFooter editUrl={editUrl} lastModified={page.data.lastModified} locale={locale} />
     </DocsPage>
+  );
+}
+
+export function ContentPageFooter({ editUrl, lastModified, locale }: {
+  editUrl: string;
+  lastModified?: Date;
+  locale: 'en' | 'zh-CN';
+}) {
+  const chinese = locale === 'zh-CN';
+  return (
+    <footer className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b pb-4 text-sm">
+      <EditOnGitHub
+        href={editUrl}
+        className="min-h-7 border-0 bg-transparent p-0 text-sm text-fd-primary hover:bg-transparent hover:underline"
+      >
+        {chinese ? '编辑此页' : 'Edit this page'}
+      </EditOnGitHub>
+      <p className="ms-auto text-end text-fd-muted-foreground">
+        {chinese ? '最后更新：' : 'Last updated: '}
+        {lastModified ? (
+          <time dateTime={lastModified.toISOString()}>{timestampFormatters[locale].format(lastModified)}</time>
+        ) : chinese ? '暂无记录' : 'Unavailable'}
+      </p>
+    </footer>
   );
 }
 
