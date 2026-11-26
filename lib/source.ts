@@ -9,7 +9,14 @@ const docs = defineDocs({
   docs: {
     schema: pageSchema,
     postprocess: {
-      includeProcessedMarkdown: true,
+      includeProcessedMarkdown: {
+        filterElement(node) {
+          if (node.type !== 'mdxJsxFlowElement') return true;
+          if (node.name === 'TabsList') return false;
+          if (node.name === 'Tabs' || node.name === 'TabsContent') return 'children-only';
+          return true;
+        },
+      },
     },
   },
   meta: {

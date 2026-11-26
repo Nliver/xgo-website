@@ -11,9 +11,9 @@ The current edition is in English.
 
 ## Read the docs
 
-- **New to XGo?** [Install XGo](content/docs/getting-started/installation.mdx) and [run your first program](content/docs/getting-started/hello-world.mdx).
-- **Looking up syntax?** Browse the [language reference](content/docs/reference/language.mdx) or look up [strings, slices, maps, and structs](content/docs/reference/types.mdx).
-- **Coming from Go?** [Build a project with Go and XGo](content/docs/interoperability/go.mdx).
+- **New to XGo?** [Install XGo](content/docs/%28xgo%29/getting-started/installation.mdx) and [run your first program](content/docs/%28xgo%29/getting-started/hello-world.mdx).
+- **Looking up syntax?** Browse the [language reference](content/docs/%28xgo%29/reference/language.mdx) or look up [strings, slices, maps, and structs](content/docs/%28xgo%29/reference/types.mdx).
+- **Coming from Go?** [Build a project with Go and XGo](content/docs/%28xgo%29/interoperability/go.mdx).
 
 ## Run locally
 

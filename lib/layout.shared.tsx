@@ -1,5 +1,5 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { upstreamUrl } from './upstream';
+import { siteRepositoryUrl } from './upstream';
 
 export function baseOptions(locale: 'en' | 'zh-CN' = 'en'): BaseLayoutProps {
   const chinese = locale === 'zh-CN';
@@ -42,7 +42,7 @@ export function baseOptions(locale: 'en' | 'zh-CN' = 'en'): BaseLayoutProps {
         ),
       },
     ],
-    githubUrl: upstreamUrl,
+    githubUrl: siteRepositoryUrl,
   };
 }
 

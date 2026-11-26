@@ -1,4 +1,6 @@
 {
   "title": "Documentation",
-  "pages": ["index", "getting-started", "tutorials", "reference", "interoperability", "toolchain", "contributing"]
+  "pages": [
+    "(xgo)"
+  ]
 }

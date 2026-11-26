@@ -32,7 +32,7 @@ import robots from '@/app/robots';
 import sitemap from '@/app/sitemap';
 import proxy from '@/proxy';
 import { source } from '@/lib/source';
-import { getPageSources, upstreamUrl } from '@/lib/upstream';
+import { getPageSources, siteRepositoryUrl, upstreamUrl } from '@/lib/upstream';
 import { appName, getPageImageUrl, siteOrigin } from '@/lib/shared';
 import { cn } from '@/lib/cn';
 import { getMDXComponents, useMDXComponents } from '@/components/mdx';
@@ -67,7 +67,7 @@ function renderSite(children: ReactNode, pathname: string, searchParams = new UR
 
 function expectFumadocsLayoutOptions(locale: 'en' | 'zh-CN') {
   const options = baseOptions(locale);
-  expect(options.githubUrl).toBe(upstreamUrl);
+  expect(options.githubUrl).toBe(siteRepositoryUrl);
   expect(options.nav?.url).toBe(locale === 'zh-CN' ? '/zh-CN' : '/');
   expect(options.links).toEqual(expect.arrayContaining([
     expect.objectContaining({ text: locale === 'zh-CN' ? '文档' : 'Docs', url: locale === 'zh-CN' ? '/zh-CN/docs' : '/docs' }),
