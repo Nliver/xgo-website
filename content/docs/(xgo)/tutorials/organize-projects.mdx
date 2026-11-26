@@ -1,0 +1,94 @@
+---
+title: Run and build a multi-file project
+description: Organize XGo files in one package, pass command-line arguments, watch for changes, and run a script with a shebang.
+---
+
+Create a command-line greeting program that takes a name. Use the XGo installation on your PATH. See [Install XGo](/docs/getting-started/installation) for the setup steps.
+
+## Create the project
+
+Open a terminal and initialize a module in an empty directory.
+
+```sh
+mkdir greeting
+cd greeting
+xgo mod init example.com/greeting
+```
+
+Save the following two files next to `go.mod`.
+
+### main.xgo
+
+```xgo
+import "os"
+
+name := "world"
+if len(os.Args) > 1 {
+    name = os.Args[1]
+}
+echo greet(name)
+```
+
+### greeting.xgo
+
+```xgo
+package main
+
+import strop "strings"
+
+func greet(name string) string {
+    return "Hello, " + strop.ToUpper(name)
+}
+```
+
+`main.xgo` contains the top-level statements that start the program. Both files belong to package `main`, so the first file can call `greet` directly. The second file imports the Go standard library package `strings` under the local name `strop`.
+
+## Run and build the package
+
+The dot tells XGo to run the package in the current directory. Arguments after the dot go to the program. The first user argument is `os.Args[1]`, since `os.Args[0]` is the program name.
+
+```sh
+xgo run .
+xgo run . Ada
+```
+
+```text
+Hello, WORLD
+Hello, ADA
+```
+
+On macOS or Linux, build a binary and run it directly. On Windows use `xgo build -o greet.exe .` and run `.\greet.exe Ada` in PowerShell.
+
+```sh
+xgo build -o greet .
+./greet Ada
+```
+
+The executable prints `Hello, ADA`.
+
+## Regenerate Go code when a file changes
+
+Run `xgo watch .` in the project directory. With the watcher running, change the text `Hello, ` in `greeting.xgo` to `Hi, ` and save. Look for the `GenGo` log and the changed greeting in `xgo_autogen.go`. Press Ctrl+C to stop watching, then run `xgo run . Ada` to see `Hi, ADA`. Use `xgo watch -gentest .` when you also want to generate Go test code.
+
+## Run a single-file Unix script
+
+On a Unix-like system with `env -S`, save the following as `hello.xgo` in a separate directory. The first line asks the system to run the file with `xgo run`.
+
+```xgo title="hello.xgo"
+#!/usr/bin/env -S xgo run
+
+echo "Hello, XGo"
+```
+
+```sh
+chmod +x hello.xgo
+./hello.xgo
+```
+
+```text
+Hello, XGo
+```
+
+See [Go interoperability](/docs/interoperability/go) for projects that also contain Go source files.
+
+Find related formatting, generation, and testing commands in the command-line reference.

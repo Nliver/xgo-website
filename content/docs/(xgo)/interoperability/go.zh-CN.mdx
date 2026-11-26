@@ -7,7 +7,7 @@ XGo 可以使用 Go 包，也可以在同一个包中混合 Go 文件和 XGo 文
 
 ## 导入 Go 包
 
-```go title="package.xgo"
+```xgo title="package.xgo"
 import "fmt"
 
 fmt.Println("Hello from Go")
@@ -46,7 +46,7 @@ func p(a interface{}) {
 
 在同一个目录中创建 `b.xgo`。
 
-```go title="b.xgo"
+```xgo title="b.xgo"
 func sayMix() {
     println "Mix Go and XGo"
 }

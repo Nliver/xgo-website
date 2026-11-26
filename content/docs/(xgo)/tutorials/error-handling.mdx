@@ -21,7 +21,7 @@ When the call succeeds, each expression produces the returned value.
 
 Create `add-input.xgo`. The Go standard library function `strconv.Atoi` converts a string to an integer and returns an error if the conversion fails.
 
-```go title="add-input.xgo"
+```xgo title="add-input.xgo"
 import "strconv"
 
 func add(x, y string) (int, error) {
@@ -61,7 +61,7 @@ For a calculation that treats invalid input as zero, replace `?` with `?:0`. Thi
 
 Create `add-fallback.xgo`.
 
-```go title="add-fallback.xgo"
+```xgo title="add-fallback.xgo"
 import "strconv"
 
 func addSafe(x, y string) int {

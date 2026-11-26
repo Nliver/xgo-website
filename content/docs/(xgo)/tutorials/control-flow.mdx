@@ -9,7 +9,7 @@ Use conditions and loops to classify and total a set of scores. Save each exampl
 
 Classify a score with `if`, `else if`, and `else`.
 
-```go title="classify-score.xgo"
+```xgo title="classify-score.xgo"
 score := 72
 
 if score >= 90 {
@@ -35,7 +35,7 @@ Change the score to `95` or `40` and run the program again to try the other bran
 
 Use `for index, value in collection` to visit each score and compute a total.
 
-```go title="score-total.xgo"
+```xgo title="score-total.xgo"
 scores := [92, 58, 76]
 total := 0
 
@@ -64,7 +64,7 @@ If you only need the value, use `for score in scores`. See [Types and values](/d
 
 Suppose a score of `0` means an entry should be skipped, and `-1` marks the end of the input. Use `continue` to move to the next entry and `break` to stop the loop.
 
-```go title="select-scores.xgo"
+```xgo title="select-scores.xgo"
 scores := [92, 0, 58, 76, -1, 88]
 
 for score in scores {
@@ -88,6 +88,6 @@ Run `xgo run select-scores.xgo`.
 
 `continue` skips the remaining statements in the current iteration. `break` exits the loop, so the final score, `88`, is never reached. In nested loops, these unlabelled statements affect the innermost loop.
 
-The upstream [Quick Start](https://github.com/goplus/xgo/blob/c70869bd8cc9936c9fa2f3023566662c8963c49a/doc/docs.md#for-loop) also describes numeric ranges, filtered iteration, and condition-controlled loops.
+See [For statements](/docs/reference/for-loops) for numeric ranges, filtered iteration, and condition-controlled loops.
 
 Continue with [Handle errors](/docs/tutorials/error-handling) to handle operations that can fail.

@@ -21,7 +21,7 @@ description: 将输入转换为整数，返回转换错误或使用备用值。
 
 创建 `add-input.xgo`。Go 标准库函数 `strconv.Atoi` 会把字符串转换为整数，转换失败时返回错误。
 
-```go title="add-input.xgo"
+```xgo title="add-input.xgo"
 import "strconv"
 
 func add(x, y string) (int, error) {
@@ -61,7 +61,7 @@ Known valid total: 123
 
 创建 `add-fallback.xgo`。
 
-```go title="add-fallback.xgo"
+```xgo title="add-fallback.xgo"
 import "strconv"
 
 func addSafe(x, y string) int {
