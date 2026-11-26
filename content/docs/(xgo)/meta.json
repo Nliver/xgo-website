@@ -2,7 +2,6 @@
   "title": "XGo",
   "description": "Learn the XGo language and its toolchain.",
   "root": true,
-  "icon": "BookOpen",
   "pages": [
     "index",
     "getting-started",
@@ -11,6 +10,8 @@
     "interoperability",
     "toolchain",
     "concepts",
-    "contributing"
+    "contributing",
+    "ecosystem",
+    "examples"
   ]
 }

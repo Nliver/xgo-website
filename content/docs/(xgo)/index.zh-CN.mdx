@@ -3,12 +3,23 @@ title: XGo 文档
 description: 安装 XGo，编写第一个程序，并学习它的语言特性。
 ---
 
+import { Cpu, Terminal, PanelsTopLeft, Gamepad2 } from 'lucide-react';
+
 XGo 是一种兼容 Go 的编程语言，面向工程、STEM 教育和数据科学。它支持命令式函数调用、字符串插值和简洁的集合字面量。
 
 <Cards>
   <Card title="从这里开始" href="/zh-CN/docs/getting-started/installation" description="安装 XGo 并运行第一个程序。" />
   <Card title="跟着教程学习" href="/zh-CN/docs/tutorials/first-program" description="编写打印问候语的程序，然后定义并调用函数。" />
   <Card title="查阅语言参考" href="/zh-CN/docs/reference/language" description="查找语法说明和上游规范。" />
+</Cards>
+
+## 生态项目
+
+<Cards>
+  <Card icon={<Cpu />} title="LLGo" href="/zh-CN/docs/llgo" description="用 LLVM 编译并运行 Go 程序。" />
+  <Card icon={<Terminal />} title="iXGo" href="/zh-CN/docs/ixgo" description="运行脚本或将解释器嵌入 Go 应用。" />
+  <Card icon={<PanelsTopLeft />} title="XBuilder" href="/zh-CN/docs/xbuilder" description="在浏览器中搭建并预览游戏。" />
+  <Card icon={<Gamepad2 />} title="SPX" href="/zh-CN/docs/spx" description="创建精灵，编写事件并在本地运行游戏。" />
 </Cards>
 
 ## 学习路径
@@ -23,6 +34,12 @@ XGo 是一种兼容 Go 的编程语言，面向工程、STEM 教育和数据科�
 8. [使用 Go 包并混合编写 Go/XGo 代码](/zh-CN/docs/interoperability/go)。
 
 你也可以用 [Playground](/zh-CN/docs/toolchain/playground) 或 [REPL](/zh-CN/docs/toolchain/repl) 在浏览器里试用 XGo。
+
+## 继续学习
+
+[命令行参考](/zh-CN/docs/toolchain/command-reference)汇总了构建、测试、格式化和项目配置命令。
+
+练习[查询集合](/zh-CN/docs/tutorials/process-collections)、[精确计算](/zh-CN/docs/tutorials/exact-arithmetic)、[自定义迭代器](/zh-CN/docs/tutorials/structs-and-methods)和[编写多文件项目](/zh-CN/docs/tutorials/organize-projects)。[示例目录（英文）](/docs/examples/overview)和[生态项目指南](/zh-CN/docs/ecosystem)提供完整代码和各项目的运行条件。
 
 ## 关于本中文版
 
