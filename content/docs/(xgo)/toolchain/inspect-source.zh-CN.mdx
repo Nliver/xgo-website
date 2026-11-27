@@ -67,7 +67,7 @@ echo scores
 
 在同一个模块中，用以下内容替换 `main.go`，然后运行 `go mod tidy` 和 `go run .`。BuildFile 将内存中的 XGo 程序编译为 Go 源码。示例用 Go 标准库解析结果，并打印包名和函数名。
 
-```go
+```go verify="go mod tidy && go run ."
 package main
 
 import (

@@ -28,6 +28,15 @@ jobs:
       - run: npm run lint
       - run: npm run types:check
       - run: npm run check:docs
+      - name: List Go and XGo excerpts for technical review
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          echo '### Go and XGo excerpts outside the example runner' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Check the affected excerpts on these changed pages against the pinned implementation or a separate reproduction.' >> "$GITHUB_STEP_SUMMARY"
+          git diff --name-only -z --diff-filter=ACMR "$BASE_SHA" HEAD -- ':(glob)content/docs/**/*.md' ':(glob)content/docs/**/*.mdx' |
+            xargs -0 -r node scripts/check-examples.mjs --review-files >> "$GITHUB_STEP_SUMMARY"
       - run: npm run build
 
   coverage:
