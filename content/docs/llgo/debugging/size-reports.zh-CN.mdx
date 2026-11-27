@@ -1,0 +1,34 @@
+---
+title: 测量最终产物的大小
+description: 使用 LLGo 的文本和 JSON 大小报告比较可执行文件和固件。
+---
+
+完成链接、符号剥离和目标平台所需的打包后，测量入门示例生成的可执行文件。macOS 上需要让报告读取器能够调用 LLVM 的 `llvm-readelf`，以便读取 Mach-O 文件。[编译第一个 Go 程序](/zh-CN/docs/llgo/getting-started/first-program)
+
+## 比较两次构建的产物
+
+在程序所在目录执行下列命令。
+
+```sh
+llgo build -size -o hello .
+llgo build -Oz -ldflags=-s -size -o hello-small .
+llgo build -Oz -ldflags=-s -size -size-format=json -o hello-small .
+```
+
+每条命令都会打印本次构建的可执行文件大小报告。比较最终文件的字节数，以及代码和数据占用空间的总量。第二条命令要求 LLVM 优先缩小产物，并对原生产物执行符号剥离。各平台和产物格式支持的剥离行为见上游文档。[大小优化与符号剥离](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/wasm-size.md)
+
+使用 `-size-level=module` 查看依赖模块的总量，使用 `-size-level=package` 定位具体包，使用 `-size-level=full` 保留报告根据符号名推断出的原始归属。默认级别为 `module`。内联和链接时优化可能改变最终可执行文件中字节所属的包。即使剥离符号后有些字节无法归到具体符号，报告仍会给出节区总量。
+
+## 阅读报告
+
+JSON 报告中的 `version` 为 `1`，`stage` 为 `"final"`。`file_size` 记录链接后文件的大小，`modules` 和 `total` 记录归属和总量，`artifacts` 记录配套文件。WebAssembly 报告还包含 `wasm` 对象，其中记录编码后的节区大小和线性内存属性。
+
+| 字段或输出 | 测量内容 |
+| --- | --- |
+| 本机 `flash` | 分配了空间的代码、只读数据和已初始化数据 |
+| 本机 `ram` | 分配了空间的数据和零填充节区，可能包括链接器预留的空间 |
+| WebAssembly `code` 和 `data` | 编码后的函数体和存储的数据段 |
+| WebAssembly 内存 | 声明的初始及最大线性内存、是否共享，以及是否使用 Memory64 |
+| 产物文件 | 最终构建报告列出的文件，包括生成的各类固件、调试数据和浏览器配套脚本 |
+
+常驻内存、堆活动和外部库分配需要在程序运行时测量。部署固件或 Wasm 时，统计实际随应用一起交付的文件。ELF、BIN、HEX 和 UF2 可以是同一固件的不同格式。Emscripten ES 模块需要同目录中的 Wasm 文件。请求大小报告后，如果驱动无法读取产物，构建会失败。[上游报告格式和解析规则](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/size-report.md)

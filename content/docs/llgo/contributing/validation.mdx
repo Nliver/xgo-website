@@ -1,0 +1,42 @@
+---
+title: Validate a compiler or runtime change
+description: Choose focused upstream checks for LLVM lowering, native execution, Go compatibility, or a target runtime.
+---
+
+Run checks from a configured [LLGo development environment](/docs/llgo/contributing/development). Start with the package that owns the behavior, then run a linked program or test when the change affects execution.
+
+## Run a focused native check
+
+From the compiler repository root, run a compiler test package and a standard-library package through the checkout's LLGo driver.
+
+```sh
+go test ./cl
+./dev/llgo.sh test ./test/std/runtime
+```
+
+The first command checks compiler behavior, including LLVM IR assertions in the lowering tests. The second builds and executes the repository's standard-library runtime tests under LLGo. Use `-run` to select individual tests when narrowing a failure.
+
+| Area | Upstream entry point |
+| --- | --- |
+| Go-to-LLVM lowering | `go test ./cl ./ssa` |
+| Build graph, linking, or instrumentation | `go test ./internal/build` with the relevant test selected |
+| Public commands or flag behavior | `go test ./cmd/llgo` and `go test ./cmd/internal/compat` |
+| Runtime source or traceback code | Run the affected host tests in the `runtime/` module and exercise the associated `test/go/` or `test/std/` packages with `./dev/llgo.sh test` |
+| A standard-library package | Compare `go test ./test/std/bytes` and `./dev/llgo.sh test ./test/std/bytes`, substituting the affected package |
+| A specific Go toolchain version | `./dev/test_go_version.sh 1.24 ./test/std/bytes` |
+| GOROOT compiler cases | `dev/test_goroot.sh` and the selection instructions in `test/goroot/README.md` |
+
+The root module and `runtime/` have separate `go.mod` files. For example, use `go -C runtime test ./internal/traceback` to run the host tests for traceback code. The root `go test ./...` only walks the root module.
+
+## Check the affected target
+
+WebAssembly, embedded images, and debugger sessions need their own toolchains and runners. Use the checks that match the affected path.
+
+| Workflow | Upstream check |
+| --- | --- |
+| WebAssembly target selection, Go layouts, and native boundaries | `bash dev/test_wasm_target_profiles.sh` with the target toolchains and runners on `PATH` |
+| WASI threads and garbage collection | `python3 dev/test_wasm_wasi_threads.py` with the pinned LLGo Wasmer runner |
+| Embedded debugger on a Cortex-M emulator | `bash test/debug/embedded/runtest.sh` after preparing the QEMU and debugger dependencies from its README |
+| Native source debugging | `bash test/debug/native/runtest.sh` with the checkout's `llgo` and a supported LLDB on `PATH` |
+
+Record the Go version, host, and target with the results. Distinguish compilation, emulator execution, and physical-device execution. For Go compatibility cases, use the upstream `xfail.yaml` for reviewed expected failures and `notapplicable.yaml` for cases outside LLGo's compatibility scope. See the upstream [validation guide](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/CONTRIBUTING.md#choose-tests-for-the-change) and [development scripts](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/dev/README.md).

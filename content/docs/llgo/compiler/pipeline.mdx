@@ -1,0 +1,38 @@
+---
+title: LLGo compiler pipeline
+description: Trace package loading, Go SSA, escape analysis, LLVM lowering, and final linking in LLGo.
+---
+
+An LLGo build begins with the Go module and package graph. The driver resolves the Go toolchain and target, selects source files, applies source overlays and runtime replacements, and constructs a typed representation of the selected packages. The remaining stages translate that representation into target-specific code.
+
+| Stage | What LLGo does |
+| --- | --- |
+| Load packages | The driver in `internal/build` selects packages from the Go environment, module graph, and build constraints. Its source view includes LLGo's target-specific runtime code and the selected GOROOT sources. |
+| Build Go SSA | The frontend constructs static single assignment (SSA) form, where each computed value has one definition. It uses Go type information and the selected function bodies, including instantiated generic code. Eligible builds can restore validated data for cached dependencies. |
+| Analyze lifetimes | The frontend computes which references can outlive an invocation or loop iteration. Lowering uses these results when choosing storage for locals, closure environments, interface boxes, and other allocations. |
+| Lower to LLVM IR | The `cl` package implements Go package and function lowering. The `ssa` package builds LLVM intermediate representation (IR) for Go operations and their runtime calls. The driver also runs target-specific transformations, including C ABI lowering. |
+| Emit and link | The driver selects the LLVM pass pipeline and emits target object code or link-time optimization bitcode. It combines the package outputs and native inputs and links the program. Finalization can package runtime function and source-line metadata using addresses from the linked artifact. |
+
+[Compiler modules](https://github.com/xgo-dev/llgo/blob/v1.0.10/CONTRIBUTING.md#key-modules) · [Build driver](https://github.com/xgo-dev/llgo/blob/v1.0.10/internal/build/build.go) · [Link-phase metadata](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/design/pclntab-linkphase.md)
+
+## How escape analysis chooses storage
+
+Taking a variable's address creates a reference that the compiler must track. Passing that reference to a known function can still allow stack storage. For example, when a helper returns a pointer it received, LLGo tracks how the caller uses the returned pointer. Storing it in longer-lived state can force the original object onto the heap. Known calls use summaries of how the callee retains, returns, or mutates values. Recursive call groups are analyzed together until those summaries stabilize. When the analysis cannot establish a safe lifetime, it keeps the conservative storage decision.
+
+Lifetime is one part of the decision. The backend also accounts for object size, alignment, stack budgets, and garbage collector requirements. A small slice with a dynamic capacity may get a caller-owned buffer and still use heap storage for larger requests. On targets that register roots explicitly, the compiler tracks managed pointers in stack objects so the collector can find them after a borrowing callee writes to those fields. LLVM can perform further allocation optimization after LLGo lowers the source-level operations. [Escape-analysis design](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/escape-analysis.md)
+
+## Inspect the allocation plan
+
+Run these commands in a Go package directory. Pass the final command a Go source file from that directory.
+
+```sh
+llgo build -gcflags=-m=2 .
+llgo build -gcflags=all=-m=2 .
+llgo tool compile -m=2 file.go
+```
+
+The first command reports decisions for the command-line packages. The second includes dependencies. The third validates and lowers the specified source without linking. With `-m=2`, LLGo includes the reason for each decision. Look for `stack`, `stack-buffer`, `borrowed`, and `heap`. A stack buffer may have a heap fallback, and a borrowed view refers to existing storage. The report describes the frontend plan before LLVM optimization. [Allocation diagnostics](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/escape-analysis.md#packages-caches-and-diagnostics) · [Command-line compatibility](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/command-line/compatibility.md)
+
+## Reuse across builds
+
+When the build cache is enabled, `LLGO_ESCAPE_CACHE=1` opts supported builds into persistent frontend analysis. LLGo validates dependency facts against the corresponding archive and its inputs, including the source toolchain, target layout, and changes to the package's source view. A matching dependency can supply checked type exports and call effects without reconstructing all its SSA bodies. Sources are still loaded for cache misses and bodies needed for inlining or generic instantiation. Decisions that depend on the full program, such as selected Wasm reflection support, use a separate cache entry keyed to the complete build. [Frontend caching](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/escape-analysis.md#packages-caches-and-diagnostics)

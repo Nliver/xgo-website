@@ -1,0 +1,24 @@
+---
+title: 选择嵌入式目标
+description: 查看 ESP32-C3 的目标配置，并按它支持的格式构建固件。
+---
+
+为 ESP32-C3 构建 `hello.elf` 和 `hello.bin`。使用 LLGo `v1.0.10`，并进入上一页介绍的上游 `chello` 示例目录。 [嵌入式 LLGo 开发](/zh-CN/docs/llgo/embedded)
+
+## 查看目标配置
+
+```sh
+llgo env -target=esp32c3-basic LLGO_TARGET_LLVM_TARGET LLGO_TARGET_LIBC LLGO_TARGET_FLASH_COMMAND LLGO_TARGET_EMULATOR
+```
+
+`esp32c3-basic` 从 `riscv32-esp` 继承了 32 位 RISC-V 编译目标。它选用 Espressif 的 newlib C 库和适配开发板的链接脚本，使用 `esptool.py` 烧录，并配置了模拟 `esp32c3` 机型的 QEMU 命令。运行 `llgo env -json -target=esp32c3-basic` 可以查看完整配置。 [ESP32-C3 目标配置](https://github.com/xgo-dev/llgo/blob/v1.0.10/targets/esp32c3-basic.json)
+
+## 构建固件
+
+```sh
+llgo build -target=esp32c3-basic -obin -o hello.elf .
+```
+
+该命令会在当前目录生成 `hello.elf` 和 `hello.bin`。请保留带有调试信息的 ELF 文件。首次构建可能会下载该目标的交叉编译依赖。运行模拟器时才需要 QEMU。
+
+其他目标可能支持更多输出格式，例如 Intel HEX（`-ohex`）、固件镜像（`-oimg`）、UF2（`-ouf2`）和 ZIP/DFU（`-ozip`）。这些输出选项必须与 `-target` 一起使用。选择格式或烧录设备前，请先检查目标配置。 [上游嵌入式命令参考](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Embedded_Cmd.md)

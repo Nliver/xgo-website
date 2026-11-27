@@ -1,0 +1,32 @@
+---
+title: LLGo runtime model
+description: Understand LLGo's target-specific scheduling, garbage collection, calling conventions, and use of Go runtime source.
+---
+
+LLGo provides its own runtime. The compiler lowers operations such as starting a goroutine, allocating an object, or invoking a closure against that runtime's calling conventions and data layouts. Go source compatibility lets packages use these operations through their usual Go APIs. Binary interoperability with native libraries uses the target's C application binary interface (ABI). [Go support and runtime](https://github.com/xgo-dev/llgo/blob/v1.0.10/README.md#go-support)
+
+## Goroutines and memory
+
+On native targets, each goroutine runs on an OS thread with a fixed native stack. A synchronous C call stays on that stack and keeps the goroutine's context. When C calls back into Go on the same thread, the callback reuses that context. The runtime can adopt a foreign thread when it enters Go. Thread ownership matters for the garbage collector and runtime inspection. The default native collector is the conservative Boehm–Demers–Weiser collector (BDWGC), which treats values that could be heap pointers as possible references. [Native call boundaries](https://github.com/xgo-dev/llgo/blob/v1.0.10/runtime/NATIVE_CALLS.md) · [Native runtime](https://github.com/xgo-dev/llgo/blob/v1.0.10/README.md#runtime)
+
+Hosted WebAssembly has its own scheduling and collection rules. An Emscripten build uses a single worker by default and can opt into multiple workers, with each goroutine staying on its assigned worker. The Wasmer WASI pthread backend uses one goroutine per pthread and can stop participating threads for serial collection in linear memory. On that backend, a thread blocked in uninstrumented C code can delay a collection. If the stop times out, the collector resumes stopped threads and skips that collection. Bare-metal targets use a TinyGo-derived conservative mark-and-sweep collector. The `nogc` build tag disables garbage collection. [Wasm profiles](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-proposal.md) · [WASI threaded GC](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-threaded-gc.md) · [Native and bare-metal runtime](https://github.com/xgo-dev/llgo/blob/v1.0.10/README.md#runtime)
+
+Wasm goroutine stacks have fixed sizes. `-goroutine-stack-size=2MB` changes the goroutine stack and its Asyncify buffer, which stores stack state when a call suspends. The main goroutine's stack has its own size. JavaScript-hosted builds check stack bounds and abort on overflow. [Wasm stack sizing](https://github.com/xgo-dev/llgo/blob/v1.0.10/README.md#standard-libraries)
+
+## Function values and closures
+
+An LLGo function value contains a code pointer and an environment pointer. Plain functions use a nil environment. Capturing closures and bound methods carry the values they need in an environment. The environment is part of the physical calling convention, so a closure still has the same Go function type as a plain function with matching parameters and results.
+
+The LLVM target determines how to pass the environment. Qualified native targets use a hidden register selected through LLVM's `nest` or `swiftself` attribute. Wasm uses an explicit parameter for entries that require the environment. Reflection uses target-specific libffi adapters to call these entries. When an external C API accepts a function pointer and a context argument, pass a direct callback and supply its state through the context argument. [Closure ABI](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/closure.md) · [Native callbacks](https://github.com/xgo-dev/llgo/blob/v1.0.10/README.md#windows-api)
+
+## Selected Go runtime source
+
+The application selects a GOROOT, the directory of the Go toolchain and standard library. LLGo reuses reviewed routines from that toolchain, including UTF-8 encoding and decoding and complex division. It overlays selected implementations during package loading, preserving their Go source locations and including their bytes in the build cache fingerprint. Scheduling, stack switching, garbage collection, and type metadata still follow LLGo's runtime contracts. These contracts shape compatibility with code that depends on Go's internal ABI, including runtime assembly. [GOROOT runtime reuse](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/runtime-source-reuse.md)
+
+From a configured LLGo source checkout, generate a runtime source ownership report.
+
+```sh
+go run ./dev/runtimeaudit -goos=linux -goarch=amd64 -o=runtime-linux.json
+```
+
+The report records the selected Go version, platform, and build tags. It identifies where runtime declarations come from, what the compiler references, and which entries bind to external providers. The inventory covers declaration ownership. Use the target's compilation and execution tests to verify the ABI and behavior. [Runtime ownership audit](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/runtime-source-reuse.md#ownership-and-upgrade-audit)

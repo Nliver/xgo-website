@@ -681,7 +681,20 @@
       "contentType": "guide",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
-      "applicableVersion": "source-snapshot"
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        }
+      ]
     },
     "content/docs/(xgo)/examples/overview.mdx": {
       "sourcePath": "README.md",
@@ -804,8 +817,19 @@
           "repository": "goplus/lib",
           "commit": "3011291e9632070aa8c8e7cdc890caa504c26e44",
           "path": "c/raylib/raylib.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
         }
-      ]
+      ],
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/examples/tinygo-demos.mdx": {
       "sourcePath": "demo/_tinygo/sortdemo/sort.xgo",
@@ -1099,11 +1123,11 @@
     },
     "content/docs/llgo/index.mdx": {
       "sourcePath": "README.md",
-      "contentType": "tutorial",
+      "contentType": "guide",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "v1.0.10",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "xgo-dev/llgo",
@@ -2155,11 +2179,11 @@
     },
     "content/docs/llgo/index.zh-CN.mdx": {
       "sourcePath": "README.md",
-      "contentType": "tutorial",
+      "contentType": "guide",
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "v1.0.10",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "xgo-dev/llgo",
@@ -2213,7 +2237,8 @@
         }
       ],
       "translationOf": "content/docs/llgo/index.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "locale": "zh-CN"
     },
     "content/docs/ixgo/index.zh-CN.mdx": {
       "sourcePath": "README.md",
@@ -2885,11 +2910,22 @@
           "repository": "goplus/lib",
           "commit": "3011291e9632070aa8c8e7cdc890caa504c26e44",
           "path": "c/raylib/raylib.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
         }
       ],
       "locale": "zh-CN",
       "translationOf": "content/docs/llgo/examples.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/examples/gsh-and-classfiles.zh-CN.mdx": {
       "sourcePath": "demo/gsh-exec/exec.gsh",
@@ -3024,7 +3060,20 @@
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
       "translationOf": "content/docs/llgo/interoperability.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        }
+      ]
     },
     "content/docs/spx/examples/aircraft-war.zh-CN.mdx": {
       "sourcePath": "README.md",
@@ -3763,6 +3812,2663 @@
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/reference/mini-specification.mdx",
       "translationReviewStatus": "pending"
+    },
+    "content/docs/llgo/native-files.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/llgofiles_test.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/llgo/getting-started/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "go.mod"
+        }
+      ]
+    },
+    "content/docs/llgo/getting-started/installation.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "install.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "install.ps1"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "WINDOWS.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/scripts/install_ubuntu.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/scripts/install_macos.sh"
+        }
+      ]
+    },
+    "content/docs/llgo/getting-started/first-program.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_simple/simple.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/clang/clang.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "runtime/internal/clite/bdwgc/config_default.go"
+        }
+      ]
+    },
+    "content/docs/llgo/getting-started/environment.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/llgo/env_cmd.gox"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/env/query.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/cortex-m-qemu.json"
+        }
+      ]
+    },
+    "content/docs/llgo/tutorials/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Bindings.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        }
+      ]
+    },
+    "content/docs/llgo/tutorials/native-library.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_call_c/call_c.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/llgofiles_test.go"
+        }
+      ]
+    },
+    "content/docs/llgo/tutorials/python.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Bindings.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_call_py/call_py.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_call_py/call_math.py"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/scripts/run.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/py/go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/py/matrix/matrix.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        }
+      ]
+    },
+    "content/docs/llgo/tutorials/webassembly.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/wasi.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-wasi-threads.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/install_wasmer.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/test_wasm_target_profiles.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten-runner.mjs"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": ".github/workflows/llgo.yml"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": ".github/actions/setup-binaryen/action.yml"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/wasmworkers/browser_fs.js"
+        }
+      ]
+    },
+    "content/docs/llgo/reference/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Type-Mapping-between-C-and-Go.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        }
+      ]
+    },
+    "content/docs/llgo/reference/c-types.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Type-Mapping-between-C-and-Go.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        }
+      ]
+    },
+    "content/docs/llgo/reference/linknames.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "ssa/llvm_intrinsic.go"
+        }
+      ]
+    },
+    "content/docs/llgo/reference/calling-conventions.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Type-Mapping-between-C-and-Go.md"
+        }
+      ]
+    },
+    "content/docs/llgo/reference/targets.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/wasi.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten.json"
+        }
+      ]
+    },
+    "content/docs/llgo/toolchain/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        }
+      ]
+    },
+    "content/docs/llgo/toolchain/commands.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/llgo/main_app.gox"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/compat/manifest.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/llgo/compat_acceptance_test.go"
+        }
+      ]
+    },
+    "content/docs/llgo/toolchain/go-compatibility.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/compat/manifest.go"
+        }
+      ]
+    },
+    "content/docs/llgo/toolchain/modules.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/mod/mod.go"
+        }
+      ]
+    },
+    "content/docs/llgo/debugging/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/debugging.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        }
+      ]
+    },
+    "content/docs/llgo/debugging/debug-sessions.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/debugging.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/native/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/wasi/host/README.md"
+        }
+      ]
+    },
+    "content/docs/llgo/debugging/size-reports.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/size-report.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-size.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/sizereport/size_report.go"
+        }
+      ]
+    },
+    "content/docs/llgo/testing/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/test-coverage.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/README.md"
+        }
+      ]
+    },
+    "content/docs/llgo/testing/test-packages.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/std/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/llgo/compat_acceptance_test.go"
+        }
+      ]
+    },
+    "content/docs/llgo/testing/coverage.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/test-coverage.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/coverage.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/coverage_build_test.go"
+        }
+      ]
+    },
+    "content/docs/llgo/embedded/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/testdata/esp32-serial/chello/main.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/testdata/esp32-serial/chello/expect.txt"
+        }
+      ]
+    },
+    "content/docs/llgo/embedded/targets.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/esp32.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/cortex-m-qemu.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/esp32c3-basic.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/riscv32-esp.json"
+        }
+      ]
+    },
+    "content/docs/llgo/embedded/build-and-flash.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/esp32.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/cortex-m-qemu.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/esp32c3-basic.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/test-esp-serial-startup.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/testdata/esp32-serial/chello/expect.txt"
+        },
+        {
+          "repository": "espressif/esp-idf",
+          "commit": "051e4c4eb20346e043cdd47bc388fde75ff8af63",
+          "path": "docs/en/api-guides/tools/qemu.rst"
+        }
+      ]
+    },
+    "content/docs/llgo/contributing/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        }
+      ]
+    },
+    "content/docs/llgo/contributing/development.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": ".go-version"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/mise.toml"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/pixi.toml"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/llgo.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/c/hello/main.go"
+        }
+      ]
+    },
+    "content/docs/llgo/contributing/validation.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/test_go_versions.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/check_cli_surface.py"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/goroot/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/embedded/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/native/README.md"
+        }
+      ]
+    },
+    "content/docs/llgo/tutorials/bindings.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Bindings.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_call_cmath/call_cmath.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/go.mod"
+        }
+      ]
+    },
+    "content/docs/llgo/reference/webassembly.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/wasi.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-wasi-threads.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/test-coverage.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten-memory64.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/build.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/gojs_loader.go"
+        }
+      ]
+    },
+    "content/docs/llgo/toolchain/build-options.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/escape-analysis.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Inlining.md"
+        }
+      ]
+    },
+    "content/docs/llgo/debugging/diagnostics.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/escape-analysis.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        }
+      ]
+    },
+    "content/docs/llgo/compiler/index.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Inlining.md"
+        }
+      ]
+    },
+    "content/docs/llgo/compiler/pipeline.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/build.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/escape-analysis.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/design/pclntab-linkphase.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/compile/compile.go"
+        }
+      ]
+    },
+    "content/docs/llgo/compiler/runtime.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/closure.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-threaded-gc.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/runtime-source-reuse.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "runtime/NATIVE_CALLS.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "runtime/internal/runtime/proc.go"
+        }
+      ]
+    },
+    "content/docs/llgo/compiler/inlining.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Inlining.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/cross_inline_test.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "benchmark/crossinline/json/main.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cl/inline.go"
+        }
+      ]
+    },
+    "content/docs/llgo/tutorials/from-go.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Bindings.md"
+        }
+      ]
+    },
+    "content/docs/llgo/compiler/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Inlining.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/compiler/index.mdx"
+    },
+    "content/docs/llgo/compiler/inlining.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Inlining.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/cross_inline_test.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "benchmark/crossinline/json/main.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cl/inline.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/compiler/inlining.mdx"
+    },
+    "content/docs/llgo/compiler/pipeline.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/build.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/escape-analysis.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/design/pclntab-linkphase.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/compile/compile.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/compiler/pipeline.mdx"
+    },
+    "content/docs/llgo/compiler/runtime.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/closure.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-threaded-gc.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/runtime-source-reuse.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "runtime/NATIVE_CALLS.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "runtime/internal/runtime/proc.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/compiler/runtime.mdx"
+    },
+    "content/docs/llgo/contributing/development.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": ".go-version"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/mise.toml"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/pixi.toml"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/llgo.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/c/hello/main.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/contributing/development.mdx"
+    },
+    "content/docs/llgo/contributing/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/contributing/index.mdx"
+    },
+    "content/docs/llgo/contributing/validation.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/test_go_versions.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/check_cli_surface.py"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/goroot/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/embedded/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/native/README.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/contributing/validation.mdx"
+    },
+    "content/docs/llgo/debugging/debug-sessions.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/debugging.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/native/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/debug/wasi/host/README.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/debugging/debug-sessions.mdx"
+    },
+    "content/docs/llgo/debugging/diagnostics.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/escape-analysis.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/debugging/diagnostics.mdx"
+    },
+    "content/docs/llgo/debugging/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/debugging.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/debugging/index.mdx"
+    },
+    "content/docs/llgo/debugging/size-reports.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/size-report.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-size.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/sizereport/size_report.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/debugging/size-reports.mdx"
+    },
+    "content/docs/llgo/embedded/build-and-flash.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/esp32.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/cortex-m-qemu.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/esp32c3-basic.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/test-esp-serial-startup.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/testdata/esp32-serial/chello/expect.txt"
+        },
+        {
+          "repository": "espressif/esp-idf",
+          "commit": "051e4c4eb20346e043cdd47bc388fde75ff8af63",
+          "path": "docs/en/api-guides/tools/qemu.rst"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/embedded/build-and-flash.mdx"
+    },
+    "content/docs/llgo/embedded/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/testdata/esp32-serial/chello/main.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/embed/testdata/esp32-serial/chello/expect.txt"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/embedded/index.mdx"
+    },
+    "content/docs/llgo/embedded/targets.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/esp32.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/cortex-m-qemu.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/esp32c3-basic.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/riscv32-esp.json"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/embedded/targets.mdx"
+    },
+    "content/docs/llgo/getting-started/environment.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/llgo/env_cmd.gox"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/env/query.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/cortex-m-qemu.json"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/getting-started/environment.mdx"
+    },
+    "content/docs/llgo/getting-started/first-program.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_simple/simple.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/clang/clang.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "runtime/internal/clite/bdwgc/config_default.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/getting-started/first-program.mdx"
+    },
+    "content/docs/llgo/getting-started/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "go.mod"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/getting-started/index.mdx"
+    },
+    "content/docs/llgo/getting-started/installation.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "CONTRIBUTING.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "install.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "install.ps1"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "WINDOWS.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/scripts/install_ubuntu.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/scripts/install_macos.sh"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/getting-started/installation.mdx"
+    },
+    "content/docs/llgo/native-files.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/llgofiles_test.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "LICENSE"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/native-files.mdx"
+    },
+    "content/docs/llgo/reference/c-types.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Type-Mapping-between-C-and-Go.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/reference/c-types.mdx"
+    },
+    "content/docs/llgo/reference/calling-conventions.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Type-Mapping-between-C-and-Go.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/reference/calling-conventions.mdx"
+    },
+    "content/docs/llgo/reference/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Type-Mapping-between-C-and-Go.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/reference/index.mdx"
+    },
+    "content/docs/llgo/reference/linknames.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "ssa/llvm_intrinsic.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/reference/linknames.mdx"
+    },
+    "content/docs/llgo/reference/targets.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/wasi.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten.json"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/reference/targets.mdx"
+    },
+    "content/docs/llgo/reference/webassembly.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/wasi.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-wasi-threads.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/test-coverage.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten-memory64.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/build.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/gojs_loader.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/reference/webassembly.mdx"
+    },
+    "content/docs/llgo/testing/coverage.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/test-coverage.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/coverage.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/coverage_build_test.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/testing/coverage.mdx"
+    },
+    "content/docs/llgo/testing/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/test-coverage.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/README.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/testing/index.mdx"
+    },
+    "content/docs/llgo/testing/test-packages.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "test/std/README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/llgo/compat_acceptance_test.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/testing/test-packages.mdx"
+    },
+    "content/docs/llgo/toolchain/build-options.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Embedded_Cmd.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/escape-analysis.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/Inlining.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/toolchain/build-options.mdx"
+    },
+    "content/docs/llgo/toolchain/commands.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/llgo/main_app.gox"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/compat/manifest.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/llgo/compat_acceptance_test.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/toolchain/commands.mdx"
+    },
+    "content/docs/llgo/toolchain/go-compatibility.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/compat/manifest.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/toolchain/go-compatibility.mdx"
+    },
+    "content/docs/llgo/toolchain/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/toolchain/index.mdx"
+    },
+    "content/docs/llgo/toolchain/modules.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/command-line/compatibility.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "cmd/internal/mod/mod.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/toolchain/modules.mdx"
+    },
+    "content/docs/llgo/tutorials/bindings.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Bindings.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_call_cmath/call_cmath.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/go.mod"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/tutorials/bindings.mdx"
+    },
+    "content/docs/llgo/tutorials/from-go.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Bindings.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/tutorials/from-go.mdx"
+    },
+    "content/docs/llgo/tutorials/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Bindings.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/tutorials/index.mdx"
+    },
+    "content/docs/llgo/tutorials/native-library.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Link.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGoFiles.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_call_c/call_c.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/build/llgofiles_test.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/tutorials/native-library.mdx"
+    },
+    "content/docs/llgo/tutorials/python.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/LLGo-Bindings.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_call_py/call_py.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/llgo_call_py/call_math.py"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/_readme/scripts/run.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/py/go.mod"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "_demo/py/matrix/matrix.go"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/tutorials/python.mdx"
+    },
+    "content/docs/llgo/tutorials/webassembly.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.0.10",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-proposal.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "README.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/wasi.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten.json"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "doc/wasm-wasi-threads.md"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/install_wasmer.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "dev/test_wasm_target_profiles.sh"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "targets/emscripten-runner.mjs"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": ".github/workflows/llgo.yml"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": ".github/actions/setup-binaryen/action.yml"
+        },
+        {
+          "repository": "xgo-dev/llgo",
+          "commit": "52d17197e475f1c1f99d8472091defdfc63526ea",
+          "path": "internal/wasmworkers/browser_fs.js"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/llgo/tutorials/webassembly.mdx"
     }
   },
   "sourceLicense": "Apache-2.0",

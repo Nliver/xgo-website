@@ -1,0 +1,68 @@
+---
+title: 收集测试和应用覆盖率
+description: 用 LLGo 为 Go 包插入覆盖率计数器，读取 Go 文本格式的覆盖率报告，并合并本机应用多次运行的结果。
+---
+
+用 LLGo 检查本机测试或可执行程序实际执行了哪些语句。先按[安装指南](/zh-CN/docs/llgo/getting-started/installation)准备本机环境，并将 Go 工具链加入 `PATH`，以便使用 `go tool cover` 和 `go tool covdata`。
+
+## 测量包测试的覆盖率
+
+进入[运行包测试并分析性能](/zh-CN/docs/llgo/testing/test-packages)中创建的 `example.com/arith` 包，运行测试并查看生成的 Go 文本格式覆盖率报告。
+
+```sh
+llgo test -covermode=count -coverprofile=cover.out .
+go tool cover -func=cover.out
+go tool cover -html=cover.out -o coverage.html
+```
+
+测试执行了 `Add` 中唯一的语句，因此函数覆盖率和总覆盖率都是 `100.0%`。打开 `coverage.html` 可以看到源码中高亮标出的覆盖范围。
+
+默认的 `set` 模式记录每个语句块是否执行过。`count` 模式记录执行次数，并发计数则使用 `atomic` 模式。指定 `-covermode`、`-coverpkg` 或 `-coverprofile` 中的任一参数都会启用覆盖率。LLGo 默认只为被测试的包插入计数器。若要涵盖当前模块中更多参与链接的包，可以指定 `-coverpkg=./...`。LLGo 会排除测试源文件。报告文件使用相对路径时，默认写入执行命令时的目录；也可以用 `-outputdir` 指定目录。
+
+只编译测试会生成带计数器的可执行文件。运行它即可写出覆盖率报告。
+
+```sh
+llgo test -c -cover -o arith-cover.test .
+./arith-cover.test -test.coverprofile=cover.out
+```
+
+在 Windows 上，为可执行文件名加上 `.exe`。直接使用 `llgo test -coverprofile` 时，LLGo 会为每个测试进程分配单独的输出路径，再将结果合并成一份文本报告。
+
+## 测量应用运行时的覆盖率
+
+另建一个目录，运行 `go mod init example.com/coverapp`，然后创建 `main.go`。这个程序有两个分支，可以通过有无命令行参数分别执行。
+
+```go title="main.go" verify="manual"
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	if len(os.Args) > 1 {
+		fmt.Println("argument received")
+		return
+	}
+	fmt.Println("no arguments")
+}
+```
+
+编译一次，再将 `GOCOVERDIR` 指向一个已存在的目录，分别运行两个分支。
+
+```sh
+llgo build -covermode=atomic -o app .
+mkdir coverage-data
+GOCOVERDIR="$PWD/coverage-data" ./app
+GOCOVERDIR="$PWD/coverage-data" ./app hello
+go tool covdata percent -i=coverage-data
+go tool covdata textfmt -i=coverage-data -o=cover.out
+go tool cover -func=cover.out
+```
+
+第一次运行输出 `no arguments`，第二次输出 `argument received`。合并后的模块覆盖率为 `100.0%`。在 PowerShell 中，用 `-o app.exe` 编译，设置 `$env:GOCOVERDIR = (Resolve-Path coverage-data).Path`，然后分别执行 `.\app.exe` 和 `.\app.exe hello`。
+
+应用覆盖率默认涵盖命令行指定的包，以及它们在主模块内的依赖。要明确指定包范围，可使用 `-coverpkg`。程序正常返回或调用 `os.Exit` 时，会将覆盖率数据写入 `GOCOVERDIR`。使用 `go tool covdata` 可以合并多次运行的数据，也可以将二进制数据转换为文本报告。
+
+LLGo v1.0.10 支持为有宿主操作系统的原生可执行文件采集覆盖率。对于 Wasm、嵌入式和模拟器目标，以及 C 静态归档和 C 共享库，编译器驱动会拒绝插入覆盖率计数器。具体支持范围见上游[覆盖率说明](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/test-coverage.md)。

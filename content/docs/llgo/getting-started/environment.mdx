@@ -1,0 +1,22 @@
+---
+title: Inspect the selected toolchain
+description: Find the Go target, runtime directory, LLVM version, and board profile selected by LLGo.
+---
+
+Ask the driver which tools it will use before building a package.
+
+```sh
+llgo env -json GOOS GOARCH LLGO_ROOT LLGO_RUNTIME_DIR LLGO_LLVM_VERSION
+```
+
+Compare the root and runtime paths when a release installation and a development checkout coexist. Optional packaged tools can have empty paths. Use `llgo env -changed` to find explicit process overrides.
+
+## Inspect an embedded profile
+
+Run this query before selecting a board or emulator.
+
+```sh
+llgo env -json -target=cortex-m-qemu LLGO_TARGET_CPU LLGO_TARGET_LLVM_TARGET
+```
+
+For this profile, the CPU is `cortex-m3` and the LLVM target triple is `thumbv7m-unknown-unknown-eabi`. The driver resolves the inherited settings without downloading tools. Query `LLGO_TARGET_EMULATOR` to see the QEMU command this profile expects. The unprefixed `GOOS` and `GOARCH` fields describe the Go environment.

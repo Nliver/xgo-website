@@ -1,0 +1,22 @@
+---
+title: 检查选定的工具链
+description: 查看 LLGo 选定的 Go 目标、运行时目录、LLVM 版本和开发板配置。
+---
+
+在构建包前，查看 LLGo 驱动程序将使用的工具链。
+
+```sh
+llgo env -json GOOS GOARCH LLGO_ROOT LLGO_RUNTIME_DIR LLGO_LLVM_VERSION
+```
+
+当同时安装发行版并检出开发源码时，比较根目录和运行时路径。发行包中的可选工具如果未配置，路径可能为空。使用 `llgo env -changed` 查找当前进程中显式覆盖的环境值。
+
+## 检查嵌入式配置
+
+在选择开发板或模拟器前运行以下查询。
+
+```sh
+llgo env -json -target=cortex-m-qemu LLGO_TARGET_CPU LLGO_TARGET_LLVM_TARGET
+```
+
+对于该配置，CPU 为 `cortex-m3`，LLVM 目标三元组为 `thumbv7m-unknown-unknown-eabi`。驱动程序会解析继承的设置，不会下载工具。查询 `LLGO_TARGET_EMULATOR` 可查看该配置期望的 QEMU 命令。未加前缀的 `GOOS` 和 `GOARCH` 字段描述 Go 环境。

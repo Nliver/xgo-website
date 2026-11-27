@@ -1,0 +1,98 @@
+---
+title: Attach native source files with LLGoFiles
+description: Keep C and C++ wrappers in ordinary files and compile them as part of an LLGo package.
+---
+
+Use `LLGoFiles` when a package needs native source files that should remain visible to C or C++ tooling. The declaration is a package-level string constant. LLGo compiles the listed files and links their object code into the package.
+
+## Add a C wrapper
+
+Create a package with this layout. The `_wrap` directory is a convention that keeps native sources beside the Go declarations while standard Go tools ignore the directory as a package.
+
+```files
+embind/
+├── embind.go
+└── _wrap/
+    └── add.c
+```
+
+In `embind.go`, declare the native file and bind its symbol with `go:linkname`.
+
+```go title="embind/embind.go" verify="manual"
+package embind
+
+import _ "unsafe"
+
+const LLGoFiles = "_wrap/add.c"
+
+//go:linkname add C.add32
+func add(a, b int32) int32
+
+func Add(a, b int32) int32 {
+    return add(a, b)
+}
+```
+
+In `_wrap/add.c`:
+
+```c title="embind/_wrap/add.c" verify="manual"
+#include <stdint.h>
+
+int32_t add32(int32_t a, int32_t b) {
+    return a + b;
+}
+```
+
+Import `embind` from a Go or XGo program and build it with `llgo build`. LLGo selects the native compiler from the file extension, then links the result with the package.
+
+## List several files
+
+Separate native source paths with semicolons. Every path is relative to the Go package directory.
+
+```go title="embind/embind.go" verify="manual"
+const LLGoFiles = "_wrap/emval.cpp;_wrap/emval_helpers.cpp"
+```
+
+Use an optional compiler-flags segment when all listed files share flags.
+
+```go title="embind/embind.go" verify="manual"
+const LLGoFiles = "-I./_wrap/include:_wrap/emval.cpp;_wrap/emval_helpers.cpp"
+```
+
+The value before the first colon is the flags segment. Keep paths and flags appropriate for the host platform.
+
+## Ask the system for flags
+
+The flags segment can query `pkg-config` or `llvm-config` at build time.
+
+```go title="embind/embind.go" verify="manual"
+const LLGoFiles = "$(pkg-config --cflags libffi):_wrap/libffi.c"
+```
+
+LLGo accepts these two build-metadata commands for substitution. It does not interpret the expression as arbitrary shell code.
+
+## Select files by platform
+
+Use ordinary Go build constraints to choose a platform-specific declaration.
+
+In `embind_linux.go`:
+
+```go title="embind/embind_linux.go" verify="manual"
+//go:build linux
+
+package embind
+
+const LLGoFiles = "$(pkg-config --cflags libffi):_wrap/libffi_linux.cpp"
+```
+
+In `embind_darwin.go`:
+
+```go title="embind/embind_darwin.go" verify="manual"
+//go:build darwin
+
+package embind
+
+const LLGoFiles = "_wrap/libffi_darwin.mm"
+```
+
+For direct declarations, calling conventions, and C and C++ type mapping, see [calling conventions](/docs/llgo/reference/calling-conventions).

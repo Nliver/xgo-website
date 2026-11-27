@@ -1,0 +1,39 @@
+---
+title: 编译第一个 Go 程序
+description: 使用发行版编译器构建并运行原生可执行文件。
+---
+
+在新目录中创建 `main.go`。
+
+```go title="main.go" verify="manual"
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, LLGo")
+}
+```
+
+在同一目录初始化模块，构建并运行生成的可执行文件。
+
+```sh
+go mod init example.com/llgohello
+llgo build -o hello .
+./hello
+```
+
+如果链接器提示找不到 `-lgc`，且 Boehm 垃圾回收库安装在自定义目录中，请将 `pkg-config` 报告的目录传给构建命令。
+
+```sh
+LDFLAGS="$(pkg-config --libs-only-L bdw-gc)" llgo build -o hello .
+./hello
+```
+
+Windows 上使用 `llgo build -o hello.exe .` 构建，并在 PowerShell 中执行 `.\hello.exe`。
+
+```text
+Hello, LLGo
+```
+
+使用 `llgo run .` 可以一步完成构建和执行。

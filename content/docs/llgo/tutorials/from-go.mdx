@@ -1,0 +1,126 @@
+---
+title: Move an existing Go project to LLGo
+description: Build, test, run, and install the same Go module with the standard Go toolchain and LLGo.
+---
+
+Compile the same command and library with Go and LLGo, then run both installed executables. This tutorial uses Go 1.27 and LLGo v1.0.10 with the native toolchain and libraries for your host. The commands use a POSIX shell. [Install LLGo](/docs/llgo/getting-started/installation)
+
+## Create a Go module
+
+Create a module with a command in the root directory and a library package called `greeting`.
+
+```sh
+mkdir llgo-migration
+cd llgo-migration
+go mod init example.com/llgo-migration
+mkdir greeting
+```
+
+Save the library function in `greeting/greeting.go`.
+
+```go title="greeting/greeting.go" verify="manual"
+package greeting
+
+func Format(name string) string {
+	return "Hello, " + name + "!"
+}
+```
+
+Save its test in `greeting/greeting_test.go`.
+
+```go title="greeting/greeting_test.go" verify="manual"
+package greeting
+
+import "testing"
+
+func TestFormat(t *testing.T) {
+	got := Format("LLGo")
+	want := "Hello, LLGo!"
+	if got != want {
+		t.Fatalf("Format(%q) = %q, want %q", "LLGo", got, want)
+	}
+}
+```
+
+Save the command in `main.go`. It greets a default name or the first command-line argument.
+
+```go title="main.go" verify="manual"
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"example.com/llgo-migration/greeting"
+)
+
+func main() {
+	name := "LLGo"
+	if len(os.Args) > 1 {
+		name = os.Args[1]
+	}
+	fmt.Println(greeting.Format(name))
+}
+```
+
+## Compare package selection, tests, and builds
+
+From the module root, list the packages with both drivers.
+
+```sh
+go list ./...
+llgo list ./...
+```
+
+Each command prints these two import paths.
+
+```text
+example.com/llgo-migration
+example.com/llgo-migration/greeting
+```
+
+The `./...` pattern selects packages under the current directory. LLGo delegates package listing to Go with LLGo's source-selection rules, which matter when a project uses compiler-specific build tags or target-dependent files. Native commands use the module graph to resolve imports. [Go command compatibility](/docs/llgo/toolchain/go-compatibility)
+
+Run the existing test and check that each compiler can build both packages.
+
+```sh
+go test ./...
+llgo test ./...
+go build ./...
+llgo build ./...
+```
+
+Both test commands report `ok` for `example.com/llgo-migration/greeting`. Both builds should complete successfully. The next step runs the root command directly.
+
+## Run and install the command
+
+Pass `.` to select the root package. Arguments after the package operand go to the compiled program.
+
+```sh
+go run .
+llgo run .
+go run . Ada
+llgo run . Ada
+```
+
+Both commands print `Hello, LLGo!` without an argument and `Hello, Ada!` when you pass `Ada`.
+
+Set `GOBIN` to an absolute directory for each install. Using two directories lets you run both executables by path and keeps the experiment out of your usual Go binary directory.
+
+```sh
+mkdir -p bin/go bin/llgo
+GOBIN="$PWD/bin/go" go install ./...
+GOBIN="$PWD/bin/llgo" llgo install ./...
+./bin/go/llgo-migration
+./bin/llgo/llgo-migration
+```
+
+Each executable prints `Hello, LLGo!`. LLGo installs from the current module graph. For a command in an external module, use a module with pinned dependencies or build from a checkout at the desired revision. LLGo v1.0.10 rejects `package@version` operands for both `run` and `install`. [Manage modules with LLGo](/docs/llgo/toolchain/modules)
+
+## Check your own module
+
+Run the same list, test, and build commands from your project's module root. Inspect file selection with `llgo list -json ./...` when a package uses build tags or platform-specific sources. Confirm the build flags used by your scripts and in `GOFLAGS`. LLGo v1.0.10 rejects flags such as `-race`, `-msan`, `-asan`, `-pgo`, `-linkshared`, `-trimpath`, and `-buildvcs`. Keep workflows that require those controls on the standard Go toolchain. [Go command compatibility](/docs/llgo/toolchain/go-compatibility)
+
+Run representative workloads as well as package tests. LLGo's native goroutines map one-to-one to operating-system threads with fixed native stacks, and hosted native builds use the conservative Boehm garbage collector by default. Check peak concurrency, deep recursion, and memory use when those behaviors matter to your application. [LLGo runtime model](/docs/llgo/compiler/runtime)
+
+If a package needs a native dependency, verify the library and headers match the build target. Check the library search path for an error such as `-lgc` not found, and inspect the library architecture and exported symbols when linking fails on a native symbol. [Check the build environment](/docs/llgo/getting-started/environment) · [Call a native library](/docs/llgo/tutorials/native-library)

@@ -1,0 +1,18 @@
+---
+title: 使用 LLGo 管理模块
+description: 使用 Go 模块与包选择规则，并通过 LLGo 编译代码。
+---
+
+LLGo 使用 Go 模块图，并交由 Go 工具链执行模块命令。
+
+```sh
+llgo mod init example.com/project
+llgo mod tidy
+llgo mod vendor
+```
+
+确保 `PATH` 中包含 Go 工具链可执行文件的绝对目录。模块驱动会跳过指向 LLGo 的符号链接，避免委托的命令再次调用 LLGo。
+
+使用 `-mod` 和 `-modfile` 选择用于加载源码的模块依赖图。本机构建命令也支持通过 `-overlay` 指定 JSON 文件，按文档所述替换 Go 源码。相对路径从命令的 `-C` 目录解析。
+
+编译器仍然从实际文件系统中查找原生文件和运行时输入。如果处理这些文件的原生工具无法使用替换后的路径，LLGo v1.0.10 会拒绝覆盖非 Go 文件。

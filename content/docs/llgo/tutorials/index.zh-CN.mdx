@@ -1,0 +1,20 @@
+---
+title: LLGo 教程
+description: 构建跨越 Go 与原生语言边界的实用 LLGo 程序。
+---
+
+这些教程假设 `llgo version` 已成功执行，面向已经熟悉 Go、希望继续使用熟悉的包和模块工作流，同时采用 LLGo 独立编译器、LLVM 后端和运行时的开发者。
+
+Go 源码兼容性与命令兼容性有不同边界。项目可以使用普通 Go 语法，却依赖 LLGo v1.0.10 尚未实现的命令行选项、标准库路径、汇编文件或运行时功能。先阅读[将现有 Go 项目迁移到 LLGo](/zh-CN/docs/llgo/tutorials/from-go)，确认项目的兼容边界，再添加原生依赖。
+
+## 选择学习路径
+
+- [将现有 Go 项目迁移到 LLGo](/zh-CN/docs/llgo/tutorials/from-go) 对照熟悉的 `go` 命令和 LLGo 命令，并给出兼容性检查清单。
+- [链接本地 C 函数](/zh-CN/docs/llgo/tutorials/native-library) 使用 `LLGoFiles` 编译本地 C 源文件，适合小型适配器或私有库。
+- [使用 LLGo 绑定](/zh-CN/docs/llgo/tutorials/bindings) 调用已经描述 C、C++ 或 Python 库的绑定包。
+- [从 Go 调用 Python](/zh-CN/docs/llgo/tutorials/python) 先调用 Python 标准库，再从明确配置的环境中添加 NumPy。
+- [构建 WebAssembly](/zh-CN/docs/llgo/tutorials/webassembly) 选择 WASI 或 Emscripten 宿主，并运行相匹配的产物。
+
+需要查询命令和选项时阅读[工具链命令](/zh-CN/docs/llgo/toolchain/commands)，复制 Go 构建脚本前阅读[Go 命令兼容性](/zh-CN/docs/llgo/toolchain/go-compatibility)，处理原生源码时阅读[原生文件](/zh-CN/docs/llgo/native-files)，宿主决定输出格式时阅读[WebAssembly 目标配置](/zh-CN/docs/llgo/reference/webassembly)。
+
+如果要使用 LLGo 编译 XGo 源码，请参阅 [XGo 互操作指南](/zh-CN/docs/llgo/interoperability)和 [LLGo 示例](/zh-CN/docs/llgo/examples)。

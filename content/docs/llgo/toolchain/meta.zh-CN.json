@@ -1,0 +1,4 @@
+{
+  "title": "工具链",
+  "pages": ["commands", "go-compatibility", "build-options", "modules"]
+}

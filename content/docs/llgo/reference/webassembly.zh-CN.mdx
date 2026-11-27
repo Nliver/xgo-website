@@ -1,0 +1,32 @@
+---
+title: WebAssembly 目标配置
+description: 选择 WebAssembly 宿主，了解对应的 LLGo 构建产物和运行工具。
+---
+
+根据加载程序的宿主选择目标配置。Memory32 和 Memory64 表示 WebAssembly 内存地址的位宽。
+
+| 构建选项 | 配置 | v1.0.10 的宿主和运行工具 |
+| --- | --- | --- |
+| `-target=wasi` 或 `-target=wasip1` | W32，Memory32 | 通过 LLGo 的 Wasmer 分支运行支持线程的 WASI Preview 1 模块 |
+| `-target=emscripten` 或 `-target=wasm` | J32，Memory32 | 通过 LLGo 的 Node.js 运行工具加载 Emscripten ES 模块 |
+| `-target=emscripten-memory64` | J64，Memory64 | 通过 LLGo 的 Memory64 运行工具加载 Emscripten ES 模块 |
+| `GOOS=js GOARCH=wasm` | J32，Memory32 | 提供与 Go 兼容的 JavaScript API，通过 LLGo 的浏览器加载器或 Node.js 运行工具启动 |
+| `GOOS=wasip1 GOARCH=wasm` | W32，Memory32 | 按 Go 的 WASI 规则选择源文件，通过 LLGo 支持线程的 Wasmer 运行工具启动 |
+
+使用 `llgo env -json -target=wasi` 查看命名目标的配置。给 `llgo run` 或 `llgo test` 加上 `-emulator`，即可使用该目标配置指定的运行工具。直接设置 `GOOS` 和 `GOARCH` 时，LLGo 会在运行程序时根据环境选择宿主适配器。 [构建并运行 WebAssembly 程序](/zh-CN/docs/llgo/tutorials/webassembly)
+
+## JavaScript 宿主
+
+命名的 Emscripten 目标会生成一个 ES 模块和同目录下的 `.wasm` 文件。请将两个文件放在同一目录，并使用相应配置的运行工具。 [Memory32 目标定义](https://github.com/xgo-dev/llgo/blob/v1.0.10/targets/emscripten.json) · [Memory64 目标定义](https://github.com/xgo-dev/llgo/blob/v1.0.10/targets/emscripten-memory64.json)
+
+使用 `GOOS=js GOARCH=wasm` 构建时，LLGo 会选用 Go 的 `syscall/js` API，并在 WebAssembly 文件旁生成 LLGo 的 `wasm_exec.js` 加载器。加载器提供 Go 的浏览器 API，包括 `new Go()`、`go.importObject` 和 `go.run()`。LLGo 生成的二进制文件含有 Emscripten 生成的导入项，请使用与模块配套生成的加载器。同一目录有多个构建产物时，加载器的名称可能带上输出文件名的主干，例如 `app_wasm_exec.js`。 [上游配置设计](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-proposal.md)
+
+在 Emscripten 构建中，`-goroutine-stack-size=2MB` 设置 goroutine 固定栈和 Asyncify 缓冲区的大小。主栈有单独的上限。`-pthread-stack-size` 是同一选项的别名。可以将 `LLGO_WASM_WORKERS` 设为 `2` 到 `16`，让 Emscripten 浏览器运行时使用有数量上限的 Worker 池。 [上游运行时说明](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-proposal.md)
+
+## 支持线程的 WASI
+
+W32 使用 wasi-libc 的 POSIX 线程启动机制、共享线性内存，以及 LLGo 支持线程的垃圾回收器。它可以在无 Binaryen Asyncify 的情况下运行。除 WASI Preview 1 接口外，模块还会导入共享的 `env.memory` 和 `wasi.thread-spawn`。LLGo 的 Wasmer 分支提供该配置所需的线程、异常和已编译模块缓存支持。
+
+在 WASI 下，每个 goroutine 占用一个宿主线程，所以并发量受宿主的线程和内存上限约束。进程栈、各 goroutine 的栈和 Wasmer 的宿主栈分别有自己的容量上限。自定义 W32 配置可以继承 `wasi`，并以字节为单位设置 `wasm-initial-memory`、`wasm-max-memory` 和 `wasm-stack-size`。内存大小必须是 64 KiB 的整数倍。进程栈必须按 16 字节对齐。 [WASI 线程和内存设置](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-wasi-threads.md)
+
+LLGo v1.0.10 的覆盖率实现适用于本机执行。Wasm 和模拟器目标会拒绝覆盖率选项。 [LLGo 覆盖率](/zh-CN/docs/llgo/testing/coverage)

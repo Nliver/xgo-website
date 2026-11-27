@@ -1,0 +1,12 @@
+---
+title: Go command compatibility
+description: Understand the explicit compatibility boundary between LLGo and the standard Go command.
+---
+
+LLGo accepts Go source and module workflows while implementing a separate native compiler and runtime. A flag accepted by Go is not automatically implemented by LLGo.
+
+The v1.0.10 compatibility inventory records each public command and flag with a status. Native `build`, `run`, `test`, and `install` support a documented subset. `fmt`, `doc`, `mod`, and `work` delegate unchanged. Unsupported controls fail explicitly before package loading.
+
+Examples of controls outside the LLGo v1.0.10 backend contract include `-race`, `-msan`, `-asan`, `-pgo`, `-linkshared`, `-n`, `-work`, `-trimpath`, and `-buildvcs`. `-buildmode` supports `exe`, `c-archive`, and `c-shared`.
+
+Read the [command reference](/docs/llgo/toolchain/commands) before copying a Go command line into an LLGo build. Use the error as part of the contract when a feature is unsupported.

@@ -1,0 +1,20 @@
+---
+title: LLGo tutorials
+description: Build practical LLGo programs that cross the Go and native-language boundary.
+---
+
+These tutorials assume that `llgo version` succeeds. They are written for developers who already know Go and want to keep familiar packages and module workflows while using LLGo's separate compiler, LLVM backend, and runtime.
+
+Go source compatibility and command compatibility have different boundaries. A package can use ordinary Go syntax and still depend on a command flag, standard-library path, assembly file, or runtime feature that LLGo `v1.0.10` does not implement. Start with [Move an existing Go project to LLGo](/docs/llgo/tutorials/from-go) to identify that boundary before adding native dependencies.
+
+## Choose a path
+
+- [Move an existing Go project to LLGo](/docs/llgo/tutorials/from-go) maps familiar `go` commands to LLGo commands and gives you a first compatibility checklist.
+- [Call a native library](/docs/llgo/tutorials/native-library) binds a C symbol from a local source file when you need a small adapter or private library.
+- [Use LLGo bindings](/docs/llgo/tutorials/bindings) uses a package that already describes a C, C++, or Python library.
+- [Call Python](/docs/llgo/tutorials/python) starts with Python's standard library and then adds NumPy from an explicit environment.
+- [Build WebAssembly](/docs/llgo/tutorials/webassembly) selects a WASI or Emscripten host contract and runs the matching artifact.
+
+The tutorials use different layers of the project. Read [toolchain commands](/docs/llgo/toolchain/commands) when you need a command or flag, [Go command compatibility](/docs/llgo/toolchain/go-compatibility) before copying a Go build script, [native files](/docs/llgo/native-files) for file discovery and target-specific sources, and [WebAssembly profiles](/docs/llgo/reference/webassembly) when the host determines the output format.
+
+For XGo source compiled through LLGo, see the [XGo interoperability guide](/docs/llgo/interoperability) and the [LLGo examples](/docs/llgo/examples).

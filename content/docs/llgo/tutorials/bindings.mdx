@@ -1,0 +1,62 @@
+---
+title: Use LLGo bindings
+description: Call a C library from Go through an existing binding and check its native dependencies.
+---
+
+Call the C math library's `sqrt` function from a Go module and print the square root of 2. You will import a binding, a Go package that declares how LLGo calls functions in a native library. Use LLGo `v1.0.10` with a working native toolchain. [Install LLGo](/docs/llgo/getting-started/installation)
+
+## Call the C math library
+
+Initialize a Go module in an empty directory.
+
+```sh
+go mod init example.com/native-math
+```
+
+Save the upstream example as `main.go`. [Upstream example](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/_readme/llgo_call_cmath/call_cmath.go)
+
+```go title="main.go" verify="manual"
+package main
+
+import "github.com/goplus/lib/c/math"
+
+func main() {
+	println("sqrt(2) =", math.Sqrt(2))
+}
+```
+
+Add the version of the binding pinned by the upstream example module, then run the program. [Upstream example module](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/_readme/go.mod)
+
+```sh
+go get github.com/goplus/lib/c/math@v0.5.1
+llgo run .
+```
+
+```text
+sqrt(2) = 1.41421
+```
+
+The Go package exposes `math.Sqrt`. LLGo resolves that call to the C symbol `sqrt` and links the native implementation. To keep the executable, run `llgo build -o native-math .` and `./native-math`.
+
+## Look up a binding for another library
+
+LLAR Hub publishes bindings for libraries such as cJSON, libuv, OpenSSL, raylib, SQLite, and zlib. Most of its C and C++ binding packages are generated with `llcppg`. For the library you want to use, follow the binding's README to install the supported native library version and any required tools. Then add the binding with `go get`, import it in your source, and build with LLGo. [Upstream LLGo bindings catalog](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/LLGo-Bindings.md)
+
+The Go module provides the binding declarations. Native headers describe the C or C++ API and are needed when the build compiles native source that includes them. The compiled library supplies the symbols that the linker resolves. When the binding uses `pkg-config`, the library's metadata provides the compiler and linker flags for that installation.
+
+## Check native dependencies
+
+For a binding that relies on `pkg-config`, use the package name from its README. For example, these commands inspect libffi on a machine where it is installed.
+
+```sh
+pkg-config --modversion libffi
+pkg-config --cflags libffi
+pkg-config --libs libffi
+llgo env GOOS GOARCH
+```
+
+If `pkg-config` cannot find the module, check that the installed development package includes its metadata and that `pkg-config` can find it. Use `llgo build -x .` to inspect the build commands. If a symbol remains unresolved, check the selected native library version and architecture against the binding's requirements and the LLGo target.
+
+If you need to write a small adapter or call a function the package does not expose, attach your C or C++ source to the Go package. [Link a local C function](/docs/llgo/tutorials/native-library)
+
+To import a Python module through `github.com/goplus/lib/py`, follow the Python tutorial. [Call Python from Go](/docs/llgo/tutorials/python)

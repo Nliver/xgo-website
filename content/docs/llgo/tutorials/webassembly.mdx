@@ -1,0 +1,89 @@
+---
+title: Build a WebAssembly program
+description: Choose a WASI or Emscripten host contract and run the matching LLGo artifact.
+---
+
+Build a Go program with LLGo `v1.0.10` for two hosts. The WASI build runs with LLGo's Wasmer fork. The Emscripten build runs with Node.js. Both print `Hello, LLGo`. The shell commands below use Unix syntax. [Install LLGo](/docs/llgo/getting-started/installation)
+
+## Prepare the Go package
+
+Use your package from the first lesson, or create a new module with the following commands and save the code below as `main.go`. [Compile your first Go program](/docs/llgo/getting-started/first-program)
+
+```sh
+mkdir llgo-wasm-hello
+cd llgo-wasm-hello
+go mod init example.com/llgohello
+```
+
+```go title="main.go" verify="manual"
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello, LLGo")
+}
+```
+
+Keep this directory as your working directory for the rest of the tutorial. Check the WebAssembly profile and provider for each target.
+
+```sh
+llgo env -target=wasi LLGO_TARGET_WASM_PROFILE LLGO_TARGET_WASM_PROVIDER
+llgo env -target=emscripten LLGO_TARGET_WASM_PROFILE LLGO_TARGET_WASM_PROVIDER
+```
+
+The first command prints `w32` and `wasi`. The second prints `j32` and `emscripten`. For the full settings, run `llgo env -json -target=wasi` or `llgo env -json -target=emscripten`. Look for `LLGO_TARGET_LLVM_TARGET`, `LLGO_TARGET_GOOS`, `LLGO_TARGET_GOARCH`, and `LLGO_TARGET_EMULATOR`. The unprefixed `GOOS` and `GOARCH` describe the current Go environment. [WebAssembly profiles](/docs/llgo/reference/webassembly)
+
+Clone the matching upstream source. You will use this checkout for the WASI runner installer and the Emscripten support files.
+
+```sh
+git clone --depth 1 --branch v1.0.10 https://github.com/xgo-dev/llgo.git ../llgo-v1.0.10
+export LLGO_SOURCE="$(cd ../llgo-v1.0.10 && pwd)"
+```
+
+## Build for WASI
+
+WASI uses the threaded WASI Preview 1 contract in LLGo `v1.0.10`. The first build may download the WASI SDK. Install LLGo's Wasmer fork with the upstream script. On hosts without a prebuilt archive, such as Intel Macs, build the fork from source or run on a supported host. [WASI runner requirements](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-wasi-threads.md)
+
+```sh
+bash "$LLGO_SOURCE/dev/install_wasmer.sh"
+```
+
+Add the `bin` directory printed by the installer to `PATH`, then build and run the Go package.
+
+```sh
+llgo build -target=wasi -o hello-wasi.wasm .
+wasmer run --enable-exceptions --enable-simd --stack-size=1048576 hello-wasi.wasm
+```
+
+```text
+Hello, LLGo
+```
+
+`llgo run -target=wasi -emulator .` builds and runs the program with the target's configured runner.
+
+## Build for Node.js with Emscripten
+
+Set up Emscripten SDK 6.0.8 and Node.js 24 on `PATH` to match the tagged upstream CI. Download and extract the LLGo-patched Binaryen `llgo-v132.3` archive for your host. Replace `/path/to/binaryen-llgo-v132.3` below with the absolute path to its extracted directory. [Upstream WebAssembly CI](https://github.com/xgo-dev/llgo/blob/v1.0.10/.github/workflows/llgo.yml) · [Binaryen setup](https://github.com/xgo-dev/llgo/blob/v1.0.10/.github/actions/setup-binaryen/action.yml)
+
+Set `LLGO_ROOT` to the matching LLGo source checkout. The checkout contains the JavaScript runner and support files used by the linker.
+
+```sh
+export EM_BINARYEN_ROOT=/path/to/binaryen-llgo-v132.3
+export WASMOPT="$EM_BINARYEN_ROOT/bin/wasm-opt"
+export LLGO_ROOT="$LLGO_SOURCE"
+llgo build -target=emscripten -o hello.mjs .
+node "$LLGO_ROOT/targets/emscripten-runner.mjs" ./hello.mjs
+```
+
+```text
+Hello, LLGo
+```
+
+Keep `hello.mjs` and `hello.wasm` with the generated support files, including `wasm_fs.js`, in the same directory. The Node.js runner loads the ES module and finds its companion files there.
+
+## Choose the JavaScript API deliberately
+
+`GOOS=js GOARCH=wasm` selects the Go-compatible JavaScript API and generates an LLGo `wasm_exec.js` loader. Use that loader with its matching binary. For Memory64, select `-target=emscripten-memory64` and the Memory64 runner. See the reference for details on host imports and stack settings. [WebAssembly profiles](/docs/llgo/reference/webassembly)
+
+After the first successful build, continue with [target reference](/docs/llgo/reference/targets), [WebAssembly profiles](/docs/llgo/reference/webassembly), and [LLGo command compatibility](/docs/llgo/toolchain/go-compatibility).

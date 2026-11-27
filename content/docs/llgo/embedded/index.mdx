@@ -1,0 +1,16 @@
+---
+title: Embedded LLGo development
+description: Build firmware for an ESP32-C3 and check its serial output in QEMU or on a board.
+---
+
+Build the upstream ESP32-C3 serial example with LLGo `v1.0.10` and check that it prints `Hello World`. You can run the example in QEMU before connecting a board. Set up LLGo and the required host tools first. [Install LLGo](/docs/llgo/getting-started/installation)
+
+Use the example from the tagged upstream repository. Its `main.go` calls C's `printf` through the `github.com/goplus/lib/c` binding. The enclosing `_demo/embed/go.mod` supplies the dependency versions.
+
+```sh
+git clone --depth 1 --branch v1.0.10 https://github.com/xgo-dev/llgo.git
+cd llgo/_demo/embed/testdata/esp32-serial/chello
+```
+
+- Inspect the `esp32c3-basic` profile and build ELF and binary files. [Select an embedded target](/docs/llgo/embedded/targets)
+- Run the example in QEMU or flash it to a compatible board and open the serial monitor. [Build, flash, and monitor firmware](/docs/llgo/embedded/build-and-flash)

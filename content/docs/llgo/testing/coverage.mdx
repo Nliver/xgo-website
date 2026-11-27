@@ -1,0 +1,68 @@
+---
+title: Collect test and application coverage
+description: Instrument an LLGo package, read a Go text coverage profile, and collect counters from a native application.
+---
+
+Use LLGo to find which statements a native test or executable actually runs. The examples use the native setup from the [installation guide](/docs/llgo/getting-started/installation), with the Go toolchain on `PATH` for `go tool cover` and `go tool covdata`.
+
+## Measure a package test
+
+In the `example.com/arith` package from [Run and profile package tests](/docs/llgo/testing/test-packages), run the test and inspect the resulting Go text coverage profile.
+
+```sh
+llgo test -covermode=count -coverprofile=cover.out .
+go tool cover -func=cover.out
+go tool cover -html=cover.out -o coverage.html
+```
+
+The test executes the only statement in `Add`, so the function summary and total both read `100.0%`. Open `coverage.html` to see the highlighted source.
+
+The default `set` mode records whether each statement block ran. Use `count` to count executions, or `atomic` for concurrent counters. `-covermode`, `-coverpkg`, and `-coverprofile` each enable coverage. By default LLGo instruments the packages under test. Use `-coverpkg=./...` to select a wider set of linked packages from the current module. LLGo excludes test source files and places relative profile files under the invocation directory, or under `-outputdir` when supplied.
+
+A compile-only test run gives you an instrumented executable. Invoke it to create the profile.
+
+```sh
+llgo test -c -cover -o arith-cover.test .
+./arith-cover.test -test.coverprofile=cover.out
+```
+
+On Windows, append `.exe` to the executable name. With managed `llgo test -coverprofile` runs, LLGo assigns each test process its own output paths and combines the results into one text profile.
+
+## Measure an application run
+
+In a separate directory, create a native executable with a branch you can cover by passing a command-line argument. Run `go mod init example.com/coverapp` and add `main.go`.
+
+```go title="main.go" verify="manual"
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	if len(os.Args) > 1 {
+		fmt.Println("argument received")
+		return
+	}
+	fmt.Println("no arguments")
+}
+```
+
+Build once, then run both paths with `GOCOVERDIR` pointing at an existing directory.
+
+```sh
+llgo build -covermode=atomic -o app .
+mkdir coverage-data
+GOCOVERDIR="$PWD/coverage-data" ./app
+GOCOVERDIR="$PWD/coverage-data" ./app hello
+go tool covdata percent -i=coverage-data
+go tool covdata textfmt -i=coverage-data -o=cover.out
+go tool cover -func=cover.out
+```
+
+The first run prints `no arguments`. The second prints `argument received`. The combined report records `100.0%` for the module. On PowerShell, build with `-o app.exe`, set `$env:GOCOVERDIR = (Resolve-Path coverage-data).Path`, and run `.\app.exe` with and without the argument.
+
+Application coverage selects command-line packages and their dependencies in the main module by default. Use `-coverpkg` to set an explicit package selection. A normal return or `os.Exit` writes coverage data to `GOCOVERDIR`. Use `go tool covdata` to combine runs or convert the binary data to a text profile.
+
+LLGo v1.0.10 supports coverage on hosted native executables. The driver rejects instrumentation for Wasm, embedded and emulator targets, C archives, and C shared libraries. See the upstream [coverage contract](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/test-coverage.md).

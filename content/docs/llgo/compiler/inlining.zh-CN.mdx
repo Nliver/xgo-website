@@ -1,0 +1,37 @@
+---
+title: LLGo 的跨包内联
+description: 了解 LLGo 何时将 Go 函数体导入调用方，以及 LLVM 如何决定是否内联调用。
+---
+
+LLVM 需要看到函数体才能内联调用。在 Go 包之间发生直接调用时，LLGo 可以将符合条件的被调函数的 Go SSA 函数体转换并导入调用方的 LLVM 模块。副本使用 LLVM 的 `available_externally` 链接属性，优化器可以使用其中的函数体，产物中不会额外生成一份符号定义。调用和函数值仍然引用定义该函数的包所拥有的符号。[内联设计](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Inlining.md#llvm-representation)
+
+## LTO 如何影响函数体的可见性
+
+| 构建模式 | LLVM 在哪里读取依赖包的函数体 |
+| --- | --- |
+| `-lto=off` | LLGo 在优化包之前，将符合条件的函数体放入调用方的模块。 |
+| `-lto=thin` | 前端沿用相同的导入规则，链接器还可以读取 ThinLTO 位码。 |
+| `-lto=full` | LLGo 跳过前端导入。LLVM 在最终链接时读取定义所在包的函数体。 |
+
+导入函数体后，LLVM 仍根据优化级别、目标平台和调用位置的开销规则决定是否内联。依赖包的归档命中缓存时，仍然可以导入函数体。如果构建支持并启用了前端缓存，LLGo 会校验依赖包的分析数据，并按需重建符合条件的函数体。[内联模式](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Inlining.md) · [构建回归测试](https://github.com/xgo-dev/llgo/blob/v1.0.10/internal/build/cross_inline_test.go)
+
+## 前端可以导入哪些函数体
+
+LLGo v1.0.10 将每个候选函数的 SSA 开销限制为 80 个单位，将每个导入模块的总开销限制为 1,024 个单位，候选发现深度最多为五层。这些开销由前端估算。调用可导入的候选函数时，计入其函数体的开销。调用无法导入的函数时，单独计入该调用的开销。普通函数、值接收者方法和指针接收者方法使用相同的导入规则。
+
+包含循环、递归、携带环境的闭包、goroutine、defer 或 recover 的函数体，以及泛型声明及其具体实例，都无法导入。依赖真实调用者栈帧的函数体及仅含声明的包也不在导入范围内。如果符号和映射后的签名匹配，LLGo 源码补丁可以提供替换函数体。对于方法，匹配时还会检查接收者类型。`-O0` 以及启用影子栈或调试帧插桩的构建都会关闭前端函数体导入。
+
+需要保留调用边界时，在函数定义上使用 `//go:noinline`。LLGo 会阻止导入，并在 LLVM 定义和导入方的声明上添加 `noinline` 属性。即使最终链接阶段可以看到函数体，该指令仍然有效。[候选与导入限制](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Inlining.md#candidate-and-import-limits) · [函数体导入实现](https://github.com/xgo-dev/llgo/blob/v1.0.10/cl/inline.go)
+
+## 复现输出对比
+
+确保 `PATH` 中有可正常运行的 `llgo`，然后从 LLGo 源码目录执行以下命令。上游测试程序读取、更新并重新编码 64 条 JSON 记录。程序用到的 Go 内置函数可能写入标准错误，因此命令同时捕获两个输出流。
+
+```sh
+go run ./benchmark/crossinline/json > go.out 2>&1 &&
+  llgo run -Os ./benchmark/crossinline/json > llgo.out 2>&1 &&
+  test -s go.out &&
+  cmp go.out llgo.out
+```
+
+成功时，参考输出非空，且 `cmp` 确认两个文件逐字节一致。这验证了测试程序的行为。上游编译器测试还会检查调用方的模块中有哪些函数体，并在各种 LTO 模式下分别验证依赖归档未缓存和已缓存的情况。[对比步骤](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Inlining.md#validation) · [JSON 测试程序](https://github.com/xgo-dev/llgo/tree/v1.0.10/benchmark/crossinline/json) · [函数体导入测试](https://github.com/xgo-dev/llgo/blob/v1.0.10/internal/build/cross_inline_test.go)

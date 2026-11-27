@@ -1,0 +1,82 @@
+---
+title: Run and profile package tests
+description: Run ordinary Go tests with LLGo, retain test executables, and collect native profiles.
+---
+
+Write a test for a small Go package, then run it with LLGo. This walkthrough uses the native compiler from the [installation guide](/docs/llgo/getting-started/installation).
+
+## Run a test
+
+Create an empty directory, run `go mod init example.com/arith`, and add these files.
+
+In `arith.go`, add the following code.
+
+```go title="arith.go" verify="manual"
+package arith
+
+func Add(a, b int) int {
+	return a + b
+}
+```
+
+In `arith_test.go`, add the following code.
+
+```go title="arith_test.go" verify="manual"
+package arith
+
+import "testing"
+
+func TestAdd(t *testing.T) {
+	if got := Add(19, 23); got != 42 {
+		t.Errorf("Add(19, 23) = %d, want 42", got)
+	}
+}
+
+var benchmarkSum int
+
+func BenchmarkAdd(b *testing.B) {
+	var sum int
+	for i := 0; i < b.N; i++ {
+		sum = Add(sum^i, 1)
+	}
+	benchmarkSum = sum
+}
+```
+
+```sh
+llgo test -v -run '^TestAdd$' .
+llgo test -list 'Add' .
+llgo test -run '^$' -bench '^BenchmarkAdd$' -benchtime=100x -benchmem .
+```
+
+The first command reports `PASS` for `TestAdd`. The second lists `TestAdd` and `BenchmarkAdd` without running them. The last runs exactly 100 benchmark iterations and displays allocation metrics. This small benchmark demonstrates the runner options. For performance comparisons, benchmark the operation that matters to your application.
+
+Use `llgo test ./...` to run the tests in the current module. Each test executable runs in its package's source directory, so tests can open package-relative fixtures. Flags such as `-run`, `-skip`, `-count`, `-shuffle`, and `-parallel` select, repeat, reorder, or schedule tests. Public test-binary flags can also use the `-test.` prefix. Pass application-defined test flags after `-args`.
+
+## Retain the executable
+
+Use `-c` when you need to invoke the test executable yourself.
+
+```sh
+llgo test -c -o arith.test .
+./arith.test -test.v -test.run '^TestAdd$'
+```
+
+On Windows, use `-o arith.test.exe` and run `.\arith.test.exe` with the same arguments. A compiled test binary uses the `-test.` spelling directly.
+
+Use `-exec` to run a test binary through an execution wrapper. For example, `-exec 'env TRACE=1'` passes the executable and its arguments through the Unix `env` command. The wrapper receives the original test arguments and runs from the package directory. LLGo tokenizes the wrapper specification without invoking a shell.
+
+## Inspect native profiles
+
+Add these options to the benchmark command to retain the test executable and write two profiles in the invocation directory.
+
+```sh
+llgo test -run '^$' -bench '^BenchmarkAdd$' -benchtime=1s \
+  -cpuprofile=cpu.prof -memprofile=mem.prof .
+go tool pprof -top cpu.prof
+go tool pprof -raw mem.prof
+```
+
+The profiler accepts one package at a time. LLGo saves the executable in the invocation directory or at the path given by `-o`. Use `-outputdir` to direct the profile files elsewhere. CPU sampling is available on hosted Linux and macOS amd64 or arm64, and Windows 386, amd64, or arm64. Allocation profiles report cumulative allocation counts by size class. Their supported `-memprofilerate` is `1`.
+
+The native runner executes fuzz seeds as regular tests. LLGo v1.0.10 rejects the fuzz engine controls, `-cpu`, execution tracing, and block and mutex profiling. See the [command compatibility contract](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/command-line/compatibility.md) for the supported surface and its tests. For source instrumentation, continue with [test and application coverage](/docs/llgo/testing/coverage).

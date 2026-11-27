@@ -1,0 +1,19 @@
+---
+title: Read compiler diagnostics
+description: Inspect LLGo storage decisions and distinguish frontend plans from final machine allocation.
+---
+
+LLGo's escape analysis runs on Go SSA before LLVM lowering. It tracks locals, parameters, results, interfaces, closures, slices, maps, strings, defers, goroutines, unsafe views, and native calls. The analysis feeds stack placement and heap fallback decisions into lowering.
+
+```sh
+llgo build -gcflags=-m .
+llgo build -gcflags=-m=2 ./...
+```
+
+The first form reports storage plans. The second adds the reason for a decision. A `borrowed` view keeps the source storage alive for the required use. A `stack-buffer` plan uses a caller-owned buffer and retains a heap fallback for results that exceed its capacity. A `heap` plan indicates that the lifetime, target, size, or garbage-collector contract prevents stack placement.
+
+Unknown native calls and unresolved indirect calls are analyzed conservatively because the compiler cannot prove that their pointer arguments are not retained. Bodyless `go:noescape` declarations provide an explicit no-retention contract, while native declarations and compiler intrinsics use their registered LLGo contracts.
+
+The analysis has bounded work limits. When a function exceeds a limit, LLGo discards placement proofs for that function and preserves conservative retention. This affects optimization opportunities while keeping the storage contract safe.
+
+The diagnostic describes frontend placement. It does not include LLVM promotion, ABI spills, process RSS, foreign allocations, or the number of physical allocations after linking. Use [size reports](/docs/llgo/debugging/size-reports) for final artifact attribution.

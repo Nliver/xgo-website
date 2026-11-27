@@ -1,0 +1,48 @@
+---
+title: 设置断点并检查变量
+description: 使用 LLDB 调试 Go 包，并为嵌入式和 WebAssembly 目标选择合适的调试方式。
+---
+
+在调试器中运行入门教程构建的原生程序。这个流程需要可以正常使用的 LLDB。在 macOS 上可以使用 Xcode Command Line Tools 附带的 LLDB。[编译第一个 Go 程序](/zh-CN/docs/llgo/getting-started/first-program)
+
+## 启动本机调试会话
+
+在 `main.go` 所在目录构建包并打开调试会话。
+
+```sh
+llgo debug .
+```
+
+在 LLDB 提示符下，在调用 `fmt.Println` 的一行设置断点。入门例程中，这是 `main.go` 的第 6 行。
+
+```text
+breakpoint set --file main.go --line 6
+run
+frame info
+bt
+continue
+quit
+```
+
+LLDB 会在 `main` 中停住，并报告对应的 Go 源码位置。执行 `continue` 后，程序输出 `Hello, LLGo` 并退出。可以增加一个局部变量，在打印前把这段字符串赋给该变量，然后用 `next` 和 `frame variable` 查看变量值。
+
+`llgo debug` 构建一个带 DWARF 源码信息的可执行包。未显式指定优化级别时，默认用 `-O0`。它会清理临时产物和启动的本地调试服务器。用 `-o app` 保留二进制文件。如果要给调试器传参，将参数放在 `--` 后。使用 `llgo lldb ./app` 可以直接打开现有二进制文件。
+
+## 按目标选择调试器
+
+| 构建目标 | 自动选择的后端 | 会话要求 |
+| --- | --- | --- |
+| 本机 Linux、macOS 或 Windows | LLDB | 宿主机上有受支持的 LLDB 可执行文件 |
+| 嵌入式开发板或模拟器 | GDB | 目标的调试服务器命令、OpenOCD 配置或现有远程服务器 |
+| Emscripten 或 GoJS | Chrome DevTools | 允许加载未打包扩展的 Chrome for Testing 或 Chromium |
+| WASI | LLDB 和 `llgo-wasi-debug` | LLGo 的 WASI 调试宿主程序与 LLDB |
+
+如果已为开发板配置 OpenOCD，运行 `llgo debug -target=rp2040 .` 启动会话。LLGo 自动启动的 OpenOCD 会重置设备、加载镜像并让设备暂停。要连接现有 OpenOCD 服务器，先预加载匹配的镜像，再运行 `llgo debug -target=rp2040 -remote=:3333 .`。添加 `-load` 可让 LLGo 通过该远程服务器重置设备并写入镜像。目标支持时，可以用 `-backend=lldb` 选择 LLDB。
+
+调试浏览器产物时，使用 WebAssembly 教程配置的 Emscripten 工具链运行 `llgo debug -target=emscripten -chrome /path/to/chrome .`。LLGo 会使用独立的浏览器配置文件，并通过本机回环地址提供调试页面。先在 DevTools 的 **Sources** 面板设置断点，再从调试页面运行程序。[WebAssembly 教程](/zh-CN/docs/llgo/tutorials/webassembly)
+
+调试 WASI 时，使用 Rust 1.97 或更高版本构建可选的宿主程序 `llgo-wasi-debug`。运行 `llgo debug -target=wasi -wasi-host=/path/to/llgo-wasi-debug .`，然后在启动客户程序前执行 `breakpoint set --name main.main`。调试宿主提供 WASI 线程接口，和 `llgo run -target=wasi` 所用的 Wasmer 运行器分别配置。[配置 WASI 调试宿主](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/test/debug/wasi/host/README.md)
+
+## 构建部署产物时保留源码信息
+
+`llgo debug` 需要 DWARF，因此会拒绝 `-ldflags=-w` 和 `-debug-artifact=none`。直接构建原生产物时，可以用 `-ldflags=-w=false` 保留 DWARF。macOS 上，将关联的调试目标文件或匹配的 `.dSYM` 包与可执行文件一同保留。对于 WebAssembly，`-debug-artifact=embedded` 将 DWARF 保留在模块中，`-debug-artifact=external` 则在同目录生成匹配的 `.debug.wasm`。对于受支持的固件目标，`-debug-artifact=host` 将 DWARF 保留在供宿主机使用的 ELF 中，部署镜像仍然单独生成。[上游调试器选项与目标支持](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/debugging.md)

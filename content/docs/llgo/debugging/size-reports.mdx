@@ -1,0 +1,34 @@
+---
+title: Measure final artifact size
+description: Compare generated binaries and firmware with LLGo's text and JSON size reports.
+---
+
+Measure the executable from [Compile your first Go program](/docs/llgo/getting-started/first-program) after linking, stripping, and any target-specific packaging. On macOS, make LLVM's `llvm-readelf` available for the Mach-O report reader.
+
+## Compare two builds
+
+Run these commands from the program's directory.
+
+```sh
+llgo build -size -o hello .
+llgo build -Oz -ldflags=-s -size -o hello-small .
+llgo build -Oz -ldflags=-s -size -size-format=json -o hello-small .
+```
+
+Each command prints a size report for the executable it builds. Compare the final file byte count and the allocated code and data totals. The second command requests LLVM's size optimization and native stripping. Upstream records the supported stripping behavior by platform and artifact format. [Size optimization and stripping](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/wasm-size.md)
+
+Use `-size-level=module` for dependency totals, `-size-level=package` to identify a particular package, or `-size-level=full` to keep the raw owner inferred from symbol names. The default is `module`. Inlining and link-time optimization can change which package owns bytes in the final executable. Stripped files still have section totals even when some bytes cannot be attributed to symbols.
+
+## Read the report
+
+The JSON report uses `version: 1` and `stage: "final"`. Use `file_size` for the linked binary, `modules` and `total` for attribution and totals, and `artifacts` for companion files. A WASM report also includes a `wasm` object with encoded section sizes and linear-memory properties.
+
+| Field or output | What it measures |
+| --- | --- |
+| Native `flash` | Allocated code, read-only data, and initialized data |
+| Native `ram` | Allocated data and zero-fill sections, which may include linker reservations |
+| WebAssembly `code` and `data` | Encoded function bodies and stored data segments |
+| WebAssembly memory | Declared initial and maximum linear memory, shared state, and Memory64 status |
+| Artifacts | Files reported by the final build, including separate firmware formats, debug data, and browser glue where generated |
+
+Use a runtime measurement for resident memory, heap activity, or foreign allocations. For a firmware or Wasm deployment, count the files that actually ship together. ELF, BIN, HEX, and UF2 can describe alternate forms of the same firmware. An Emscripten ES module needs its sibling Wasm binary. A requested size report fails the build if the driver cannot read the artifact. [Upstream report format and parsing rules](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/size-report.md)
