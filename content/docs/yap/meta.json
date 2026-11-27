@@ -1,6 +1,6 @@
 {
   "title": "YAP",
-  "description": "Route HTTP requests, test handlers, and query a database.",
+  "description": "Route HTTP requests with XGo.",
   "root": true,
   "icon": "Server",
   "pages": [

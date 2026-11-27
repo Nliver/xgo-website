@@ -16,7 +16,7 @@ For working with individual syntax trees and source positions, see [Inspect and 
 
 Save the program below as `main.go`. The two parsers share one file set, and the checker receives both syntax trees for the same package. Allocate a map for each kind of type information you want to query. This program asks for XGo definitions and Go uses.
 
-```go
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (
@@ -86,7 +86,7 @@ The Go call resolves to the same type object as the XGo declaration. Collect dia
 
 Set `XGOROOT` to the source tree for the revision in the setup and run this example from the module root. See [Toolchain environment](/docs/toolchain/environment#check-the-source-root) for how to locate and set the source root. Create the `sample` directory and save this file as `sample/answer.xgo`.
 
-```xgo
+```xgo title="sample/answer.xgo" verify="go mod tidy && go run ."
 package sample
 
 func Answer() int {
@@ -96,7 +96,7 @@ func Answer() int {
 
 Replace `main.go` with the loader.
 
-```go
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (
@@ -147,7 +147,7 @@ func Answer() int {
 
 Replace `main.go` with the program below. It compiles an XGo overload, parses the generated Go, and builds a `go/doc.Package` using the Go standard library.
 
-```go
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (

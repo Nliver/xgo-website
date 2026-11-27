@@ -18,13 +18,13 @@ In `go.mod`, set the comment on the MCP dependency to `//xgo:class` so XGo loads
 
 Save this server declaration as `main_mcp.gox`.
 
-```xgo
+```xgo title="main_mcp.gox"
 server "Greeting Demo", "1.0.0"
 ```
 
 Save this tool as `hello_tool.gox`. The tool schema declares a required string named `name`, and the body reads it through the class framework's environment expression.
 
-```xgo
+```xgo title="hello_tool.gox"
 tool "helloWorld", => {
     description "Say hello to someone"
     string "name", => {
@@ -45,7 +45,7 @@ return text("Hello, ${name}!")
 
 Save this test as `hello_mtest.gox`.
 
-```xgo
+```xgo title="hello_mtest.gox"
 mock new(MCPApp)
 
 initialize nil

@@ -16,7 +16,7 @@ go get github.com/goplus/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
 
 将以下程序保存为 `main.go`。宿主从字符串加载 Go 脚本，读取解释执行的 `Label` 返回值，再调用脚本返回的 `Counter` 闭包两次。
 
-```go
+```go title="main.go"
 package main
 
 import (
@@ -104,7 +104,7 @@ iXGo 内置 `func()` 适配器。空白导入 `github.com/goplus/ixgo/directfunc
 
 用以下程序替换 `main.go`，再运行 `go mod tidy` 和 `go run .`。
 
-```go verify="go mod tidy && go run ."
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (

@@ -6,6 +6,7 @@
   "pages": [
     "index",
     "cli",
+    "coordinate-systems",
     "animation-audio",
     "examples"
   ]

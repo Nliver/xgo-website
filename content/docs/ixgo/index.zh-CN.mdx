@@ -18,7 +18,7 @@ ixgo version
 
 在空目录创建 `squares.xgo`。
 
-```xgo
+```xgo title="squares.xgo"
 values := [2, 3, 5]
 echo [n*n for n in values]
 ```
@@ -48,7 +48,7 @@ go get github.com/goplus/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
 
 将程序保存为 `main.go`。空白导入 `xgobuild` 会注册 XGo 构建器，使 `RunFile` 可以处理 `.xgo` 源码。
 
-```go
+```go title="main.go"
 package main
 
 import (

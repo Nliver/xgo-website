@@ -1,6 +1,6 @@
 {
   "title": "MCP",
-  "description": "编写并测试模型上下文协议服务器。",
+  "description": "开发和测试 MCP 服务器。",
   "root": true,
   "icon": "Network",
   "pages": [

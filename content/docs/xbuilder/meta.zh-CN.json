@@ -1,8 +1,10 @@
 {
   "title": "XBuilder",
-  "description": "在浏览器中制作和预览 SPX 游戏。",
+  "description": "在浏览器中制作 SPX 游戏。",
   "root": true,
+  "icon": "XBuilderMark",
   "pages": [
-    "index"
+    "index",
+    "project-model"
   ]
 }

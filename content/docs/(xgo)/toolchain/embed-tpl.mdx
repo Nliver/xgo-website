@@ -12,7 +12,7 @@ go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
 
 Save the program as `main.go`. `tpl.New` compiles the grammar once. `IDENT % ","` matches one or more identifiers separated by commas. `tpl.List` flattens the match tree so you can read each token's literal text.
 
-```go
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (
@@ -63,7 +63,7 @@ The default scanner inserts a semicolon after an identifier at the end of a line
 
 `listScanner` embeds `scanner.Scanner`, reusing its `Init` method and token positions. Its `Scan` method skips semicolons with literal text `"\n"`, which the default scanner inserts at line breaks and at the end of input. It passes explicit semicolons through, so the grammar still rejects them.
 
-```go
+```go title="main.go" verify="go run ."
 package main
 
 import (

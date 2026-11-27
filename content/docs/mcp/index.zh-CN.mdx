@@ -18,13 +18,13 @@ go get github.com/goplus/mcp@v0.9.8
 
 将服务器声明保存为 `main_mcp.gox`。
 
-```xgo
+```xgo title="main_mcp.gox"
 server "Greeting Demo", "1.0.0"
 ```
 
 将工具保存为 `hello_tool.gox`。工具模式声明了一个名为 `name` 的必填字符串，工具正文用类框架的环境表达式读取该值。
 
-```xgo
+```xgo title="hello_tool.gox"
 tool "helloWorld", => {
     description "Say hello to someone"
     string "name", => {
@@ -45,7 +45,7 @@ return text("Hello, ${name}!")
 
 将测试保存为 `hello_mtest.gox`。
 
-```xgo
+```xgo title="hello_mtest.gox"
 mock new(MCPApp)
 
 initialize nil

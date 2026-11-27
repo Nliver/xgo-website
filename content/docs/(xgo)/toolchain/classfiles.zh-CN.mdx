@@ -26,7 +26,7 @@ XGo 提倡**特定领域友好（SDF）**。框架作者用普通 Go 编写一�
 
 **类文件**是隐式定义类的 XGo 源文件。以 `Rect.gox` 为例。
 
-```xgo
+```xgo title="Rect.gox"
 var (
     Width, Height int
 )
@@ -137,7 +137,7 @@ SPX 是 XGo 生态中最早的类框架，为 STEM 教育而设计。
 
 #### gox.mod
 
-```text
+```text title="gox.mod"
 xgo 1.7
 
 project main.spx Game github.com/goplus/spx/v2 math
@@ -228,7 +228,7 @@ func XGot_Game_Main(game Gamer, sprites ...Sprite)
 
 #### gox.mod
 
-```text
+```text title="gox.mod"
 xgo 1.7
 
 project *_app.gox App github.com/goplus/cobra/xcmd
@@ -292,14 +292,14 @@ func XGot_App_Main(app iAppProto, cmds ...iCommandProto)
 
 YAP 通过文件名定义路由。`get.yap` 处理 `GET /`，`get_p_#id.yap` 处理 `GET /p/:id`。最简单的 Web 服务器只要一个文件。
 
-```xgo
+```xgo title="get.yap"
 // get.yap
 html `<html><body>Hello, YAP!</body></html>`
 ```
 
 #### gox.mod
 
-```text
+```text title="gox.mod"
 xgo 1.7
 
 project main.yap AppV2 github.com/goplus/yap
@@ -335,7 +335,7 @@ MCP 框架定义了**多种独立的工作类**。
 
 #### gox.mod
 
-```text
+```text title="gox.mod"
 xgo 1.7
 
 project *_mcp.gox MCPApp github.com/goplus/mcp/server
@@ -433,7 +433,7 @@ func foo(v int) int {
 
 可在 `foo_test.gox` 中直接测试此函数，无需声明 `TestXXX` 函数。
 
-```xgo
+```xgo title="foo_test.gox"
 if v := foo(50); v != 100 {
     t.error "foo(50) ret: ${v}"
 }

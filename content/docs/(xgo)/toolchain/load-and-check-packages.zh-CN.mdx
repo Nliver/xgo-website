@@ -16,7 +16,7 @@ go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
 
 将下面的程序保存为 `main.go`。两个解析器共用同一个文件集，检查器接收同一个包的两棵语法树。为每类需要查询的类型信息分配一个映射。本例收集 XGo 定义和 Go 引用。
 
-```go
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (
@@ -86,7 +86,7 @@ Go 调用中的引用与 XGo 声明指向同一个类型对象。检查返回值
 
 将 `XGOROOT` 设为本页指定版本的源码树，然后从模块根目录运行本例。查找和设置源码树的方法见[工具链环境](/zh-CN/docs/toolchain/environment)。创建 `sample` 目录，将下面的内容保存为 `sample/answer.xgo`。
 
-```xgo
+```xgo title="sample/answer.xgo" verify="go mod tidy && go run ."
 package sample
 
 func Answer() int {
@@ -96,7 +96,7 @@ func Answer() int {
 
 用下面的加载程序替换 `main.go`。
 
-```go
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (
@@ -147,7 +147,7 @@ func Answer() int {
 
 用下面的程序替换 `main.go`。它先编译一个 XGo 重载声明，再解析生成的 Go 源码，并使用 Go 标准库构建 `go/doc.Package`。
 
-```go
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (

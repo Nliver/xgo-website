@@ -18,7 +18,7 @@ In `go.mod`, set the comment on the Cobra dependency to `//xgo:class` so XGo loa
 
 Save this as `version_cmd.gox`. The `flag` field tag defines `--verbose` with `-v` as its short form. The `short` directive sets the help text.
 
-```xgo
+```xgo title="version_cmd.gox" verify="xgo mod tidy && xgo run . version -v"
 var Verbose bool `flag:"verbose, short: v, usage: print verbose information"`
 
 short "print the example version"

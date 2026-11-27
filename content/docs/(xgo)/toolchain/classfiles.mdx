@@ -25,7 +25,7 @@ A class framework consists of two roles:
 
 A **classfile** is an XGo source file that implicitly defines a class. For example, `Rect.gox`:
 
-```xgo
+```xgo title="Rect.gox"
 var (
     Width, Height int
 )
@@ -133,7 +133,7 @@ spx is the earliest class framework in the XGo ecosystem, purpose-built for STEM
 
 #### `gox.mod`
 
-```text
+```text title="gox.mod"
 xgo 1.7
 
 project main.spx Game github.com/goplus/spx/v2 math
@@ -222,7 +222,7 @@ func XGot_Game_Main(game Gamer, sprites ...Sprite)
 
 #### `gox.mod`
 
-```text
+```text title="gox.mod"
 xgo 1.7
 
 project *_app.gox App github.com/goplus/cobra/xcmd
@@ -284,13 +284,13 @@ func XGot_App_Main(app iAppProto, cmds ...iCommandProto)
 
 YAP uses filenames to define routes: `get.yap` handles `GET /`; `get_p_#id.yap` handles `GET /p/:id`. A minimal web server is a single file:
 
-```xgo
+```xgo title="get.yap"
 // get.yap
 html `<html><body>Hello, YAP!</body></html>`
 ```
 #### `gox.mod`
 
-```text
+```text title="gox.mod"
 xgo 1.7
 
 project main.yap AppV2 github.com/goplus/yap
@@ -323,7 +323,7 @@ The MCP framework is an example of a framework with **multiple distinct work cla
 
 #### `gox.mod`
 
-```text
+```text title="gox.mod"
 xgo 1.7
 
 project *_mcp.gox MCPApp github.com/goplus/mcp/server
@@ -417,7 +417,7 @@ func foo(v int) int {
 ```
 A `foo_test.gox` file can test it directly — no `TestXXX` function boilerplate required:
 
-```xgo
+```xgo title="foo_test.gox"
 if v := foo(50); v != 100 {
     t.error "foo(50) ret: ${v}"
 }

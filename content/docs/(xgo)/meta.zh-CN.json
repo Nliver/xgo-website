@@ -2,6 +2,7 @@
   "title": "XGo",
   "description": "学习 XGo 语言和工具链。",
   "root": true,
+  "icon": "XGoMark",
   "pages": [
     "index",
     "getting-started",
