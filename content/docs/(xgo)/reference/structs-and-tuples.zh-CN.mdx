@@ -11,13 +11,13 @@ description: XGo 上游参考文档对元组和结构体的比较。
 
 **类型标识**：元素结构相同的元组具有相同的底层表示。`(a int, b string)` 与 `(c int, d string)` 是相同的匿名元组类型。通过类型定义声明的命名元组各有独立的类型标识，例如 `type Point (x int, y int)` 和 `type Coord (a int, b int)` 定义了两个不同的类型，即使底层结构相同。元组字段名只在编译时作为别名使用。
 
-结构体的类型检查对字段更加严格。即使字段的类型和顺序相同，只要声明的是不同的定义类型，或字段名不同，也会得到不同的类型。这让结构体适合表达语义明确的数据结构。
+结构体的字段名也参与类型判定。即使字段类型与顺序相同，字段名不同也可能使两个结构体的底层类型不同。两个不同的定义结构体类型具有相同的底层类型时，可以显式转换。
 
 **初始化语法**：元组类型定义与初始化都可以采用类似函数的写法。定义元组像编写函数签名，构造实例像调用函数，因此这两种操作的形式容易辨认。
 
 元组初始化还与类型转换使用相同的记法。创建元组或者转换兼容的元组类型都可以使用 `TypeName(values)`，这样函数调用、元组构造和类型转换沿用了同一套语法。
 
-结构体则用花括号包围字段值来初始化，例如 `Point{3, 4}`，类型转换另有写法。读者需要在函数调用的写法之外再掌握这些形式。
+结构体字面量使用花括号，例如 `Point{3, 4}` 或 `Point{X: 3, Y: 4}`。显式转换使用 `TypeName(value)`。
 
 ### 元组示例
 
@@ -46,9 +46,10 @@ var cd = Coord(pt1) // Type conversion (structurally compatible)
 ```
 ### 结构体示例
 
-```xgo
-// Structs: always require exact type match
-type Point struct {        // Definition: requires 'struct' keyword
+`Point` 和 `Coord` 是两个不同的定义类型，底层结构体类型相同。将 `Point` 值直接赋给 `Coord` 类型的变量会产生类型错误。用 `Coord(pt1)` 可以显式转换。
+
+```xgo title="convert-struct.xgo"
+type Point struct {
     X, Y int
 }
 
@@ -63,12 +64,13 @@ var pt1 = Point{3, 4}
 // Form 2: named fields (explicit field names)
 var pt2 = Point{X: 3, Y: 4}
 
-// Type conversion still requires explicit field access
-var cd = Coord(pt1)          // ✗ Error: different types
-var cd = Coord{pt1.X, pt1.Y} // Positional conversion
+var cd = Coord(pt1)
 
-// Struct requires learning the {field: value} syntax separately
-// No unified pattern across initialization and conversion
+echo pt1, pt2, cd
+```
+
+```text
+{3 4} {3 4} {3 4}
 ```
 ## 可见性规则
 

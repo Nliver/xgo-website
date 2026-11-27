@@ -72,11 +72,19 @@ echo("Result:", 42)        // Function call style
 ```
 `echo` 和 `print` 的输出格式有以下区别。
 - `echo` 用空格分隔各参数，并在末尾换行。
-- `print` 直接连接各参数，末尾不换行。
+- `print` 仅在相邻参数都不是字符串时插入空格，末尾不换行。
 
-```xgo
-echo "A", "B", "C"    // Output: A B C\n
-print "A", "B", "C"   // Output: ABC
+最后的 `|` 会紧接在上一条输出后面，显示在同一行。
+
+```xgo title="print-spacing.xgo"
+echo "A", "B", "C"
+print 1, 2, "A", 3, 4
+print "|"
+```
+
+```text
+A B C
+1 2A3 4|
 ```
 #### 错误处理
 

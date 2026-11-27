@@ -73,14 +73,13 @@ Pull Request 的标题和说明通常取自 Fork 分支中的第一条提交消�
 
 ### 第 7 步：处理审阅反馈
 
-上游维护者可能会提出后续改动或审阅意见。修改后，重复[第 5 步](#第-5-步提交并推送)。建议在提交时使用 `--amend`，将改动并入同一次提交，便于保持线性提交历史。
+收到审阅反馈后，在同一功能分支上修改，并创建带 DCO 签署的新提交。推送到自己的 Fork 后，已有的 Pull Request 会自动包含这次提交。
 
 ```sh
 git add README.md
-git commit --amend
+git commit -s -m 'docs: clarify the README wording'
+git push origin typo
 ```
-
-提交数量由贡献者自行决定。
 
 ### 第 8 步：合并后清理分支
 

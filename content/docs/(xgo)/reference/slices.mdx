@@ -147,7 +147,7 @@ XGo provides two ways to append elements to slices: the `<-` operator and the `a
 
 #### Using the `<-` Operator
 
-The `<-` operator provides an intuitive way to append elements:
+Use `<-` to append to a slice variable. To append to a slice stored under a map key, call `append` and assign the result back to the map entry.
 
 ```xgo
 nums := [1, 2, 3]
@@ -460,10 +460,10 @@ echo reversed  // Output: [5 4 3 2 1]
 ```
 ### Removing Duplicates
 
-```xgo
+```xgo title="deduplicate.xgo"
 nums := [1, 2, 2, 3, 3, 3, 4, 5, 5]
 unique := []
-seen := {}
+seen := make(map[int]bool)
 
 for v in nums {
     if !seen[v] {
@@ -472,21 +472,29 @@ for v in nums {
     }
 }
 
-echo unique  // Output: [1 2 3 4 5]
+echo unique
+```
+
+```text
+[1 2 3 4 5]
 ```
 ### Merging Multiple Slices
 
-```xgo
+```xgo title="merge-slices.xgo"
 a := [1, 2, 3]
 b := [4, 5, 6]
 c := [7, 8, 9]
 
-merged := []
+merged := []int{}
 merged <- a...
 merged <- b...
 merged <- c...
 
-echo merged  // Output: [1 2 3 4 5 6 7 8 9]
+echo merged
+```
+
+```text
+[1 2 3 4 5 6 7 8 9]
 ```
 ### Summing Elements
 
@@ -556,15 +564,19 @@ echo odds   // Output: [1 3 5 7 9]
 ```
 ### Flattening Nested Slices
 
-```xgo
+```xgo title="flatten-slices.xgo"
 nested := [[1, 2], [3, 4], [5, 6]]
-flat := []
+flat := []int{}
 
 for subslice in nested {
     flat <- subslice...
 }
 
-echo flat  // Output: [1 2 3 4 5 6]
+echo flat
+```
+
+```text
+[1 2 3 4 5 6]
 ```
 ### Using Slices as Stacks
 
@@ -624,23 +636,24 @@ for i := 0; i <= len(nums) - windowSize; i++ {
 ```
 ### Grouping Data
 
-```xgo
-// Group items by category
-items := ["apple", "banana", "carrot", "date", "eggplant"]
+Use the first letter as a map key. A missing key yields a `nil` slice, so `append` also works for the first item in each group.
+
+```xgo title="group-items.xgo"
+items := ["apple", "banana", "carrot", "date", "eggplant", "apricot"]
 groups := make(map[string][]string)
 
 for item in items {
     firstLetter := item[0:1]
-    groups[firstLetter] <- item
+    groups[firstLetter] = append(groups[firstLetter], item)
 }
 
-// Access grouped data
-for category, itemList in groups {
-    echo "Category:", category
-    for item in itemList {
-        echo "  -", item
-    }
-}
+echo "a:", groups["a"]
+echo "b:", groups["b"]
+```
+
+```text
+a: [apple apricot]
+b: [banana]
 ```
 ## Best Practices
 
@@ -648,7 +661,7 @@ for category, itemList in groups {
 2. **Use `len(slice)` and `cap(slice)`**: These are the recommended ways to get length and capacity
 3. **Check bounds before accessing**: Ensure indexes are within valid range `[0, len(slice)-1]`
 4. **Be aware of slice sharing**: Slices created by slicing share the same underlying array
-5. **Use the `<-` operator for appending**: It's more concise and idiomatic in XGo
+5. **Use `<-` to append to a slice variable**. Use `append` with assignment for a map entry.
 6. **Use meaningful variable names**: Make code self-documenting
 7. **Avoid modifying slices during iteration**: Create a new slice instead
 8. **Document slice modifications**: Make it clear whether functions modify input slices

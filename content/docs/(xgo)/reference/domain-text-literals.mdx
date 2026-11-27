@@ -43,14 +43,35 @@ XGo currently supports several domain text literals natively:
 
 A grammar-based alternative to regular expressions that emphasizes clarity and composability. Ideal for defining parsers and text processors.
 
-```xgo
+The first `!` panics if the grammar cannot be compiled. The second panics if the input cannot be parsed. `tpl.dump` prints the resulting parse structure.
+
+```xgo title="parse-expression.xgo"
+import "xgo/tpl"
+
 grammar := tpl`
 expr = term % ("+" | "-")
 term = INT % ("*" | "/")
 `!
 
-result := grammar.parseExpr("10+5*2", nil)
-echo result
+result := grammar.parseExpr("10+5*2", nil)!
+tpl.dump result
+```
+
+```text
+[
+  10
+  [
+    [
+      +
+      [
+        5
+        [
+          [* 2]
+        ]
+      ]
+    ]
+  ]
+]
 ```
 Learn more in the TPL documentation.
 
@@ -94,11 +115,9 @@ Bob,25,SF
 ```
 ### HTML
 
-Embed HTML with proper parsing (requires `golang.org/x/net/html`):
+Without an import named `html`, an `html` literal uses the built-in XGo HTML adapter, which returns an `*html.Node` and any parse error.
 
-```xgo
-import "golang.org/x/net/html"
-
+```xgo title="parse-html.xgo"
 page := html`
 <html>
 	<body>
@@ -107,6 +126,11 @@ page := html`
 	</body>
 </html>
 `!
+printf "%T\n", page
+```
+
+```text
+*html.Node
 ```
 ### Regular Expressions
 

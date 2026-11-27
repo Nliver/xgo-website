@@ -84,15 +84,16 @@ xgo 1.6.0
 ### project 项目声明
 
 ```text
-project [*.projExt ProjectClass] classFilePkgPath ...
+project [-flat] [*.projExt ProjectClass] classFilePkgPath ...
 ```
 
 `project` 定义类文件项目，指定入口文件后缀、表示项目的 Go 类型，以及实现类文件框架的一个或多个 Go 包路径。
 
 | 参数 | 是否必需 | 说明 |
 | --- | --- | --- |
-| `*.projExt` 或 `*_projTag.gox` | 可选 | 匹配项目文件后缀的通配模式，如 `main.spx`、`*_app.gox` |
-| `ProjectClass` | 指定后缀时必需 | 用作项目类的 Go 类型名称，如 `Game` |
+| `-flat` | 可选 | 把使用项目后缀的文件合并到同一个项目类。 |
+| `*.projExt` 或 `*_projTag.gox` | 可选 | 以模式声明项目文件后缀，如 `main.spx`、`*_app.gox`。 |
+| `ProjectClass` | 指定后缀时必需 | 框架为项目类提供的 Go 基类型，如 `Game`。 |
 | `classFilePkgPath ...` | 必需 | 一个或多个 Go 包导入路径。第一项是主要类文件包 |
 
 **示例**
@@ -105,14 +106,16 @@ project main.spx Game github.com/goplus/spx/v2 math
 project github.com/example/myframework
 ```
 
-项目文件的匹配模式可采用以下形式。
+**项目文件后缀与归类**
 
-| 模式 | 含义 |
+在普通项目中，加载器会将 `main.spx` 与 `*.spx` 归一化为后缀 `.spx`，也会将 `main_yap.gox` 与 `*_yap.gox` 归一化为 `_yap.gox`。文件归类取决于工作类是否使用相同后缀。
+
+| 配置 | 文件归类 |
 | --- | --- |
-| `main.spx` | 只有 `main.spx` 是项目文件 |
-| `*.spx` | 任意 `.spx` 文件都是项目文件 |
-| `main_yap.gox` | 只有 `main_yap.gox` 是项目文件 |
-| `*_yap.gox` | 任意 `*_yap.gox` 文件都是项目文件 |
+| 项目和工作类都使用 `.spx` | 只有 `main.spx` 是项目文件，其余匹配文件是工作文件。 |
+| 只有项目使用 `_yap.gox` | 带此后缀的文件都归为项目文件。同一包中，同一个框架存在多个项目文件时，编译器会报错。工作文件按各自的类后缀归类。 |
+
+使用 `-flat` 时，只有以 `main` 加项目后缀命名的文件是入口。其他同后缀文件都是同一项目类的片段。平铺项目不能用 `class` 声明工作类。
 
 ---
 

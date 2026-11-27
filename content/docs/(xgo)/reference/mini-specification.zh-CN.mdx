@@ -1143,13 +1143,18 @@ x => {
 ```
 匿名函数通常作为实参传给函数调用。
 
-```xgo
+```xgo title="sort-slice.xgo"
 import "sort"
 
 a := [32, 100, 50, 6, 92]
 sort.Slice a, (i, j) => {
-	return a[i] < b[j]
+	return a[i] < a[j]
 }
+echo a
+```
+
+```text
+[6 32 50 92 100]
 ```
 匿名函数省略参数类型和返回值类型，由 XGo 进行类型推断。
 

@@ -82,7 +82,7 @@ The directive was historically also written as `gop` and is still accepted under
 ### `project` — Project Declaration
  
 ```text
-project [*.projExt ProjectClass] classFilePkgPath ...
+project [-flat] [*.projExt ProjectClass] classFilePkgPath ...
 ```
 Declares a classfile project. A project defines the entry-point file extension, the Go class that represents the project, and one or more Go package paths that implement the classfile framework.
  
@@ -90,8 +90,9 @@ Declares a classfile project. A project defines the entry-point file extension, 
  
 | Argument | Required | Description |
 |----------|----------|-------------|
-| `*.projExt` or `*_projTag.gox` | Optional | Glob pattern for the project file extension (e.g. `main.spx`, `*_app.gox`) |
-| `ProjectClass` | Required if ext given | The Go type name used as the project class (e.g. `Game`) |
+| `-flat` | Optional | Combine files with the project suffix into one project class. |
+| `*.projExt` or `*_projTag.gox` | Optional | Project file suffix in pattern form (e.g. `main.spx`, `*_app.gox`). |
+| `ProjectClass` | Required if ext given | The framework's Go base type for the project class (e.g. `Game`). |
 | `classFilePkgPath ...` | Required | One or more Go package import paths; the first is the primary classfile package |
  
 **Examples:**
@@ -102,16 +103,16 @@ project main.spx Game github.com/goplus/spx/v2 math
 # Project with package path only (no dedicated entry file)
 project github.com/example/myframework
 ```
-**Extension formats:**
- 
-The project extension (`*.projExt`) can be expressed in several forms:
- 
-| Pattern | Meaning |
-|---------|---------|
-| `main.spx` | Only `main.spx` is a project file |
-| `*.spx` | Any `.spx` file is a project file |
-| `main_yap.gox` | Only `main_yap.gox` is a project file |
-| `*_yap.gox` | Any `*_yap.gox` file is a project file |
+**Extension formats and classification**
+
+In an ordinary project, the loader normalizes `main.spx` and `*.spx` to the suffix `.spx`. It similarly normalizes `main_yap.gox` and `*_yap.gox` to `_yap.gox`. Classification depends on whether a work class uses the same suffix.
+
+| Configuration | File classification |
+| --- | --- |
+| The project and a work class both use `.spx` | Only `main.spx` is the project file. Other matching files are work files. |
+| Only the project uses `_yap.gox` | Any file with this suffix is classified as a project file. The compiler rejects multiple project files for the same framework in one package. Work files use their respective class suffixes. |
+
+With `-flat`, only the file named `main` plus the project suffix is the entry. Other files with that suffix are fragments of the same project class. A flat project cannot declare work classes with `class`.
  
 ---
  

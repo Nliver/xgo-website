@@ -291,23 +291,53 @@ fatal("Critical error occurred")
 
 以只读模式 `O_RDONLY` 打开文件。
 
-```xgo
-file, err := open("data.txt")
+```xgo title="open-file.xgo"
+import (
+    "io"
+    "os"
+    "path/filepath"
+)
+
+dir := os.mkdirTemp("", "xgo-open-")!
+defer os.removeAll(dir)
+name := filepath.join(dir, "data.txt")
+os.writeFile(name, []byte("Hello, XGo!"), 0o600)!
+
+file, err := open(name)
 if err != nil {
     fatal(err)
 }
-defer file.close
+defer file.close()
+echo string(io.readAll(file)!)
+```
+
+```text
+Hello, XGo!
 ```
 **`Create(name string) (*os.File, error)`**
 
 创建文件或截断已有文件，创建时使用权限模式 `0o666`。
 
-```xgo
-file, err := create("output.txt")
+```xgo title="create-file.xgo"
+import (
+    "os"
+    "path/filepath"
+)
+
+dir := os.mkdirTemp("", "xgo-create-")!
+defer os.removeAll(dir)
+name := filepath.join(dir, "output.txt")
+
+file, err := create(name)
 if err != nil {
     fatal(err)
 }
-defer file.close
+defer file.close()
+echo "Created", filepath.base(file.name())
+```
+
+```text
+Created output.txt
 ```
 ## 类型反射
 

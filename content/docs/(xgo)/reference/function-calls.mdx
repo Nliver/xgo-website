@@ -72,11 +72,19 @@ echo("Result:", 42)        // Function call style
 ```
 **Difference between `echo` and `print`:**
 - `echo` adds spaces between arguments and ends with a newline
-- `print` concatenates arguments directly without spaces or newline
+- `print` inserts a space only between adjacent arguments that are both nonstrings. It does not append a newline.
 
-```xgo
-echo "A", "B", "C"    // Output: A B C\n
-print "A", "B", "C"   // Output: ABC
+The final `|` appears on the same line as the preceding output.
+
+```xgo title="print-spacing.xgo"
+echo "A", "B", "C"
+print 1, 2, "A", 3, 4
+print "|"
+```
+
+```text
+A B C
+1 2A3 4|
 ```
 #### Error Handling
 
