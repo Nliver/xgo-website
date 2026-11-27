@@ -252,6 +252,34 @@ test('rejects examples without expected output in local and CI discovery', () =>
   }
 }));
 
+test('requires source filenames or a separate command for code paired with output', () => withExamplesFixture(({ root, docs }) => {
+  const file = path.join(docs, 'reference/overview.mdx');
+  const original = fs.readFileSync(file, 'utf8');
+  const output = '\n```text\nHello\n```\n';
+  const source = '\n```xgo\necho "Hello"\n```\n';
+  fs.writeFileSync(file, original + source + output);
+  assert.throws(() => discoverExamples(root), /overview.mdx: xgo code.*has expected output/);
+  const separate = source.replace('```xgo', '```go verify="go run ."');
+  fs.writeFileSync(file, original + separate + output);
+  assert.ok(!discoverExamples(root).some(({ page }) => page === 'reference/overview.mdx'));
+  fs.writeFileSync(file, original + separate + source.replace('```xgo', '```xgo title="main.xgo"') + output);
+  assert.throws(() => discoverExamples(root), /overview.mdx: go code.*has expected output/);
+  fs.writeFileSync(file, original + source + '\nAn unrelated section.\n' + output);
+  assert.doesNotThrow(() => discoverExamples(root));
+}));
+
+test('lists the physical lines of unregistered snippets for review without running them', () => withExamplesFixture(({ root, docs, invoke, log }) => {
+  const page = 'content/docs/reference/overview.mdx';
+  const file = path.join(root, page);
+  const body = fs.readFileSync(file, 'utf8') + '\n';
+  const line = body.split('\n').length;
+  fs.writeFileSync(file, body + '```xgo\necho 1\n```\n');
+  const result = invoke(['--review-files', page, path.join(docs, 'tutorials/new-topic.mdx')]);
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stdout.trim(), `- \`${page}\` · lines ${line}`);
+  assert.ok(!fs.existsSync(log));
+}));
+
 test('discovers translated runnable examples using their own source record', () => withExamplesFixture(({ root, docs, manifest, saveManifest, invoke }) => {
   fs.copyFileSync(path.join(docs, 'getting-started/hello-world.mdx'), path.join(docs, 'getting-started/hello-world.zh-CN.mdx'));
   manifest.pages['content/docs/getting-started/hello-world.zh-CN.mdx'] = {

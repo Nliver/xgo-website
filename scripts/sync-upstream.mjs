@@ -134,7 +134,13 @@ export async function syncUpstream({ root = process.cwd(), write = false, initia
     lines.push(`## ${change.path}`, '', `${change.status === 'newly-tracked' ? 'Newly tracked source. ' : ''}[Read source](${change.sourceUrl}) and review the source diff in \`upstream-sync/changes/${change.path}.diff\`.`, '', 'Affected pages', '', ...change.affectedPages.slice(0, 10).map((file) => `- \`${file}\``), ...(change.affectedPages.length ? [] : ['- Requires manual content triage']), ...(change.affectedPages.length > 10 ? [`- ${change.affectedPages.length - 10} additional pages are listed in the complete change index`] : []), '');
   }
   if (changes.length > 40) lines.push(`${changes.length - 40} additional sources are listed in the complete change index.`, '');
-  lines.push('## Required review', '', '- [ ] Verify language and toolchain behavior against the source diff', '- [ ] Update affected English pages and examples', '- [ ] Run documentation checks and executable examples', '- [ ] Complete human technical and English editorial review', '- [ ] For each approved page, set its sourceCommit to candidateSourceCommit, update sourceCheckedAt, and remove candidateSourceCommit and candidateChangedSources', '- [ ] Merge manually after review');
+  lines.push('## Required review', '',
+    '- [ ] Before updating prose, verify affected claims against the candidate implementation, tests, or generated output. Record the revision and evidence.',
+    '- [ ] Update the English page and its translations together. Keep the original source mapping for editorial corrections.',
+    '- [ ] Run standalone examples from the MDX with the pinned toolchain. Record commands, results, and any checks still needed for excerpts or external tools.',
+    '- [ ] Complete human technical and English editorial review',
+    '- [ ] For each approved page, set its sourceCommit to candidateSourceCommit, update sourceCheckedAt, and remove candidateSourceCommit and candidateChangedSources',
+    '- [ ] Merge manually after review');
   const report = `${lines.join('\n')}\n`;
   if (Buffer.byteLength(report) > 60_000) throw new Error('Review summary exceeds 60 KB. Reduce the tracked-source batch before generating a PR.');
   if (write) {

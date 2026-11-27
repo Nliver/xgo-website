@@ -13,18 +13,61 @@ function documentationFiles(directory) {
   }).sort();
 }
 
+function exampleFilename(block) {
+  const title = block.meta?.match(/(?:^|\s)title=(?:"([^"]+)"|'([^']+)')/);
+  const filename = title?.[1] ?? title?.[2];
+  if (filename && /\.(xgo|go)$/.test(filename)) return filename;
+}
+
+function reportManualExamples(files) {
+  for (const file of files) {
+    const { text, body, tree } = readPage(file);
+    const headerLines = text.slice(0, text.length - body.length).split('\n').length - 1;
+    const unregistered = collectNodes(tree, (block) => block.type === 'code' &&
+      ['go', 'xgo'].includes(block.lang) && !exampleFilename(block));
+    if (unregistered.length) {
+      const lines = unregistered.map((block) => headerLines + block.position.start.line);
+      console.log(`- \`${file}\` · lines ${lines.join(', ')}`);
+    }
+  }
+}
+
+// Inspect siblings so an output block in a different list item cannot claim a source.
+function checkOutputGroups(tree, page) {
+  for (const parent of collectNodes(tree, (node) => node.children?.some((child) => child.type === 'code' && child.lang === 'text'))) {
+    let group = [];
+    for (const block of parent.children) {
+      if (block.type === 'code' && ['xgo', 'go'].includes(block.lang)) {
+        group.push(block);
+        continue;
+      }
+      if (block.type === 'code' && block.lang === 'text' && group.length) {
+        const usesRunner = group.some(exampleFilename);
+        for (const source of group) {
+          if (exampleFilename(source)) continue;
+          const command = source.meta?.match(/(?:^|\s)verify="([^"]+)"/)?.[1];
+          if (usesRunner || !command?.trim()) {
+            throw new Error(`${page}: ${source.lang} code on body line ${source.position.start.line} has expected output. Name each source with title, or document the separate verification command with verify="..." for the whole group.`);
+          }
+        }
+      }
+      group = [];
+    }
+  }
+}
+
 export function discoverExamples(root) {
   const docsRoot = path.join(root, 'content/docs');
   const pages = [];
   for (const file of documentationFiles(docsRoot)) {
     const page = path.relative(docsRoot, file).replaceAll(path.sep, '/');
     const { tree } = readPage(file);
+    checkOutputGroups(tree, page);
     const examples = [];
     let sources = [];
     for (const block of collectNodes(tree, (node) => node.type === 'code')) {
-      const title = block.meta?.match(/(?:^|\s)title=(?:"([^"]+)"|'([^']+)')/);
-      const filename = title?.[1] ?? title?.[2];
-      if (filename && /\.(xgo|go)$/.test(filename)) {
+      const filename = exampleFilename(block);
+      if (filename) {
         if (!/^[a-z0-9-]+\.(xgo|go)$/.test(filename)) throw new Error(`${page}: example filename must be a simple basename`);
         if (sources.some((source) => source.title === filename)) throw new Error(`${page}: duplicate example filename ${filename}`);
         sources.push({ title: filename, value: block.value });
@@ -115,7 +158,9 @@ function checkExamples(root, revision) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const root = process.cwd();
-    if (process.argv[2] === '--revisions') {
+    if (process.argv[2] === '--review-files') {
+      reportManualExamples(process.argv.slice(3));
+    } else if (process.argv[2] === '--revisions') {
       const manifest = JSON.parse(fs.readFileSync(path.join(root, 'content/sources.json'), 'utf8'));
       console.log(JSON.stringify(exampleRevisions(manifest)));
     } else checkExamples(root, process.env.XGO_SOURCE_COMMIT);

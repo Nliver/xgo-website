@@ -67,7 +67,7 @@ The two positions identify occurrences of the same spelling. To distinguish defi
 
 In the same module, replace `main.go` with the program below, then run `go mod tidy` and `go run .`. BuildFile compiles the in-memory XGo program to Go source. The example parses the result with the Go standard library and prints the package and function names.
 
-```go
+```go verify="go mod tidy && go run ."
 package main
 
 import (
