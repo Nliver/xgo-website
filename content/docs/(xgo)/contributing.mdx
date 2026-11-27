@@ -116,18 +116,14 @@ necessary.
 Be open to feedback from upstream repository maintainers. They might request
 further changes or provide insights that could enhance your contribution.
 
-After making any further changes, simply repeat [Step 5](#step-5-commit-and-push). However, when
-committing, it's recommended to use the `--amend` option. This ensures that all
-your changes are contained within a single commit, maintaining a linear commit
-history. For example:
+On the same feature branch, make the requested changes and create another
+signed-off commit. Push it to your fork to update the open pull request.
 
 ```sh
 git add README.md
-git commit --amend
+git commit -s -m 'docs: clarify the README wording'
+git push origin typo
 ```
-
-This isn't a strict requirement, though. You can create as many commits as you
-like.
 
 ### Step 8: Do post-merge cleanup
 

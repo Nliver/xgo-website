@@ -291,23 +291,53 @@ fatal("Critical error occurred")
 
 Opens file for reading with O_RDONLY mode.
 
-```xgo
-file, err := open("data.txt")
+```xgo title="open-file.xgo"
+import (
+    "io"
+    "os"
+    "path/filepath"
+)
+
+dir := os.mkdirTemp("", "xgo-open-")!
+defer os.removeAll(dir)
+name := filepath.join(dir, "data.txt")
+os.writeFile(name, []byte("Hello, XGo!"), 0o600)!
+
+file, err := open(name)
 if err != nil {
     fatal(err)
 }
-defer file.close
+defer file.close()
+echo string(io.readAll(file)!)
+```
+
+```text
+Hello, XGo!
 ```
 **`Create(name string) (*os.File, error)`**
 
 Creates or truncates file with mode 0o666.
 
-```xgo
-file, err := create("output.txt")
+```xgo title="create-file.xgo"
+import (
+    "os"
+    "path/filepath"
+)
+
+dir := os.mkdirTemp("", "xgo-create-")!
+defer os.removeAll(dir)
+name := filepath.join(dir, "output.txt")
+
+file, err := create(name)
 if err != nil {
     fatal(err)
 }
-defer file.close
+defer file.close()
+echo "Created", filepath.base(file.name())
+```
+
+```text
+Created output.txt
 ```
 ## Type Reflection
 

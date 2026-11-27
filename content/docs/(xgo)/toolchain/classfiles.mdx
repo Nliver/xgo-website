@@ -93,7 +93,7 @@ If the base type itself implements the entry function, the compiler automaticall
 
 The compiler synthesizes a `Main` method on the project class that:
 
-1. Instantiates all work class objects.
+1. Instantiates each work class with a pointer to the current project instance.
 2. Initialises the `-embed` fields (if applicable).
 3. Calls the framework's **Template Recv Method**, passing the project instance and all work class instances.
 
@@ -117,7 +117,7 @@ Its signature encodes the framework's structural contract:
 func XGot_Game_Main(app Gamer, sprites ...Sprite)
 
 // Multiple work class kinds — one typed slice per kind
-func Gopt_MCPApp_Main(app iAppProto, resources []ResourceProto, tools []ToolProto, prompts []PromptProto)
+func XGot_MCPApp_Main(app iAppProto, resources []ResourceProto, tools []ToolProto, prompts []PromptProto)
 ```
 The compiler reads this signature to know how many kinds of work classes exist, and how to group instances when calling the method. The framework implementation of this function handles the rest: setting up the runtime, loading resources, calling each work class's `Main`, and so on.
 
@@ -157,7 +157,9 @@ MyAircraft.spx  // player behaviour
 ```
 #### Generated Go code
 
-```xgo
+This excerpt omits the user-defined fields and method bodies.
+
+```go
 // From main.spx — project class
 
 type Game struct {
@@ -174,9 +176,9 @@ func (this *Game) MainEntry() {
 
 // Synthesized by the XGo compiler:
 func (this *Game) Main() {
-    bullet     := new(Bullet)
-    enemy      := new(Enemy)
-    myAircraft := new(MyAircraft)
+    bullet     := &Bullet{Game: this}
+    enemy      := &Enemy{Game: this}
+    myAircraft := &MyAircraft{Game: this}
     // initialise -embed fields
     this.Bullet     = bullet
     this.Enemy      = enemy
@@ -239,6 +241,9 @@ myapp_app.gox   // application entry
 run_cmd.gox     // "run" subcommand
 build_cmd.gox   // "build" subcommand
 ```
+
+The compiler generates `myapp` from `myapp_app.gox`. The project type embeds `xcmd.App`, and each work class embeds a pointer to `myapp` so it can access project-defined fields and methods.
+
 #### Custom `Main` signature
 
 The `xcmd.Command` base type implements `iCommandProto`:
@@ -254,7 +259,7 @@ By defining this interface, the framework tells the compiler that every work cla
 ```go
 type Cmd_run struct {
     xcmd.Command
-    *xcmd.App
+    *myapp
 }
 
 func (this *Cmd_run) Main(_xgo_arg0 string) {
@@ -348,48 +353,49 @@ project/
 
 #### Generated Go code (abbreviated)
 
-```xgo
-// From myserver_mcp.gox — project class
+```go
+// From MyServer_mcp.gox — project class
 
 type MyServer struct {
     server.MCPApp
 }
 
 func (this *MyServer) MainEntry() {
-    ... // user code from myserver_mcp.gox
+    ... // user code from MyServer_mcp.gox
 }
 
 // Synthesized by the XGo compiler:
 func (this *MyServer) Main() {
-    filesRes      := new(Files)
-    searchTool    := new(Search)
-    summarizeTool := new(Summarize)
-    greetPrompt   := new(Greet)
+    filesRes      := &Files{MyServer: this}
+    searchTool    := &Search{MyServer: this}
+    summarizeTool := &Summarize{MyServer: this}
+    greetPrompt   := &Greet{MyServer: this}
 
-    server.Gopt_MCPApp_Main(this,
+    server.XGot_MCPApp_Main(this,
         []server.ResourceProto{filesRes},
         []server.ToolProto{searchTool, summarizeTool},
         []server.PromptProto{greetPrompt},
     )
 }
 
-// From search_tool.gox — work class
+// From Search_tool.gox — work class
 
 type Search struct {
     server.ToolApp
     *MyServer
 }
 
-func (this *Search) Main() {
-    ... // user code from search_tool.gox
+func (this *Search) Main(ctx context.Context, request mcp.CallToolRequest, proto *server.ToolAppProto) mcp.Content {
+    this.ToolApp.Main(ctx, request, proto)
+    ... // user code from Search_tool.gox
 }
 
-// Resources and prompts follow the same pattern with their respective base types.
+// The remaining work classes follow the same pattern with their respective base types.
 ```
 #### Template Recv Method
 
 ```go
-func Gopt_MCPApp_Main(
+func XGot_MCPApp_Main(
     app       iAppProto,
     resources []ResourceProto,
     tools     []ToolProto,

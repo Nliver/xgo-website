@@ -78,7 +78,7 @@ The content of `gox.mod` is outside the scope of this proposal; see [`gox.mod.md
 A project that uses a class framework references the framework's Go module through a normal `require`, and adds the marker `//xgo:class` to say that this dependency contains a class framework:
 
 ```text
-require <go-module-path> //xgo:class
+require <go-module-path> <version> //xgo:class
 ```
 For example, a command-line App project built on the `cobra` class framework:
 

@@ -43,14 +43,35 @@ XGo 原生支持多种领域文本格式。
 
 TPL 是基于文法的文本处理语言。与正则表达式相比，规则容易阅读和组合，适合定义解析器和文本处理器。
 
-```xgo
+第一个 `!` 在文法编译失败时触发 panic，第二个在输入解析失败时触发 panic。`tpl.dump` 打印解析得到的结构。
+
+```xgo title="parse-expression.xgo"
+import "xgo/tpl"
+
 grammar := tpl`
 expr = term % ("+" | "-")
 term = INT % ("*" | "/")
 `!
 
-result := grammar.parseExpr("10+5*2", nil)
-echo result
+result := grammar.parseExpr("10+5*2", nil)!
+tpl.dump result
+```
+
+```text
+[
+  10
+  [
+    [
+      +
+      [
+        5
+        [
+          [* 2]
+        ]
+      ]
+    ]
+  ]
+]
 ```
 更多用法见 TPL 文档。
 
@@ -94,11 +115,9 @@ Bob,25,SF
 ```
 ### HTML
 
-嵌入并解析 HTML，需要 `golang.org/x/net/html`。
+在没有同名导入时，`html` 字面量会调用 XGo 内置的 HTML 适配器，返回 `*html.Node` 和解析错误。
 
-```xgo
-import "golang.org/x/net/html"
-
+```xgo title="parse-html.xgo"
 page := html`
 <html>
 	<body>
@@ -107,6 +126,11 @@ page := html`
 	</body>
 </html>
 `!
+printf "%T\n", page
+```
+
+```text
+*html.Node
 ```
 ### 正则表达式
 

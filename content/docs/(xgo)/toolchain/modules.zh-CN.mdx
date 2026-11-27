@@ -83,7 +83,7 @@ mymodule/
 项目仍使用标准 `require` 引用框架的 Go 模块，并加入 `//xgo:class` 标记来表明该依赖包含类框架。
 
 ```text
-require <go-module-path> //xgo:class
+require <go-module-path> <version> //xgo:class
 ```
 
 例如，使用 `cobra` 类框架构建命令行应用时可这样声明依赖。

@@ -242,7 +242,8 @@
       "applicableVersion": "source-snapshot",
       "additionalSourcePaths": [
         "CODE_OF_CONDUCT.md"
-      ]
+      ],
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/getting-started/hello-world.zh-CN.mdx": {
       "sourcePath": "doc/docs.md",
@@ -283,7 +284,8 @@
       ],
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/contributing.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/interoperability/go.zh-CN.mdx": {
       "sourcePath": "demo/mixgo/README.md",
@@ -428,9 +430,10 @@
       "applicableVersion": "source-snapshot",
       "additionalSourcePaths": [
         "cl/_testxgo/newexpr/in.xgo",
-        "cl/_testxgo/newexpr/out.go"
+        "cl/_testxgo/newexpr/out.go",
+        "parser/parser.go"
       ],
-      "sourceCheckedAt": "2026-11-26"
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/reference/full-specification.mdx": {
       "sourcePath": "doc/spec.md",
@@ -452,7 +455,7 @@
         "tpl/tpl.go",
         "x/xgoprojs/proj.go"
       ],
-      "sourceCheckedAt": "2026-11-26"
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/reference/strings.mdx": {
       "sourcePath": "doc/string.md",
@@ -468,9 +471,13 @@
     "content/docs/(xgo)/reference/slices.mdx": {
       "sourcePath": "doc/slice.md",
       "contentType": "reference",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
-      "applicableVersion": "source-snapshot"
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "cl/stmt.go"
+      ]
     },
     "content/docs/(xgo)/reference/maps.mdx": {
       "sourcePath": "doc/map.md",
@@ -514,9 +521,11 @@
         "cl/_testxgo/type-as-fnargs/in.xgo",
         "cl/_testxgo/type-as-fnargs/out.go",
         "cl/internal/typeargs/typeargs.go",
-        "parser/parser.go"
+        "parser/parser.go",
+        "doc/builtin.md",
+        "cl/builtin.go"
       ],
-      "sourceCheckedAt": "2026-11-26"
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/reference/for-loops.mdx": {
       "sourcePath": "doc/for.md",
@@ -542,16 +551,23 @@
     "content/docs/(xgo)/reference/domain-text-literals.mdx": {
       "sourcePath": "doc/domian-text-lit.md",
       "contentType": "reference",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
-      "applicableVersion": "source-snapshot"
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "tpl/tpl.go",
+        "encoding/html/html.go",
+        "cl/expr.go"
+      ]
     },
     "content/docs/(xgo)/reference/structs-and-tuples.mdx": {
       "sourcePath": "doc/struct-vs-tuple.md",
       "contentType": "reference",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
-      "applicableVersion": "source-snapshot"
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/reference/template-receiver-method.mdx": {
       "sourcePath": "doc/template-recv-method.md",
@@ -563,9 +579,15 @@
     "content/docs/(xgo)/toolchain/classfiles.mdx": {
       "sourcePath": "doc/classfile.md",
       "contentType": "guide",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
-      "applicableVersion": "source-snapshot"
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "cl/classfile.go",
+        "cl/compile.go",
+        "cl/_testspx/multiworks/out.go"
+      ]
     },
     "content/docs/(xgo)/toolchain/classfile-specification.mdx": {
       "sourcePath": "doc/classfile-spec.md",
@@ -577,16 +599,43 @@
     "content/docs/(xgo)/toolchain/modules.mdx": {
       "sourcePath": "doc/go.mod.md",
       "contentType": "guide",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
-      "applicableVersion": "source-snapshot"
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "go.mod"
+      ],
+      "externalSources": [
+        {
+          "repository": "golang/mod",
+          "commit": "d4f320b9266480df5ed3d791e0c68e64c58c5dde",
+          "path": "modfile/rule.go"
+        }
+      ]
     },
     "content/docs/(xgo)/toolchain/gox-mod.mdx": {
       "sourcePath": "doc/gox.mod.md",
       "contentType": "guide",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
-      "applicableVersion": "source-snapshot"
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "go.mod"
+      ],
+      "externalSources": [
+        {
+          "repository": "goplus/mod",
+          "commit": "52a2adddcda8be72e6677015bff8083a6f64e34f",
+          "path": "modfile/rule.go"
+        },
+        {
+          "repository": "goplus/mod",
+          "commit": "52a2adddcda8be72e6677015bff8083a6f64e34f",
+          "path": "modfile/ext.go"
+        }
+      ]
     },
     "content/docs/(xgo)/toolchain/tooling-conventions.mdx": {
       "sourcePath": "doc/tooling-conventions.md",
@@ -3417,22 +3466,49 @@
     "content/docs/(xgo)/toolchain/modules.zh-CN.mdx": {
       "sourcePath": "doc/go.mod.md",
       "contentType": "guide",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/toolchain/modules.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "go.mod"
+      ],
+      "externalSources": [
+        {
+          "repository": "golang/mod",
+          "commit": "d4f320b9266480df5ed3d791e0c68e64c58c5dde",
+          "path": "modfile/rule.go"
+        }
+      ]
     },
     "content/docs/(xgo)/toolchain/gox-mod.zh-CN.mdx": {
       "sourcePath": "doc/gox.mod.md",
       "contentType": "guide",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/toolchain/gox-mod.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "go.mod"
+      ],
+      "externalSources": [
+        {
+          "repository": "goplus/mod",
+          "commit": "52a2adddcda8be72e6677015bff8083a6f64e34f",
+          "path": "modfile/rule.go"
+        },
+        {
+          "repository": "goplus/mod",
+          "commit": "52a2adddcda8be72e6677015bff8083a6f64e34f",
+          "path": "modfile/ext.go"
+        }
+      ]
     },
     "content/docs/(xgo)/toolchain/classfile-specification.zh-CN.mdx": {
       "sourcePath": "doc/classfile-spec.md",
@@ -3457,12 +3533,18 @@
     "content/docs/(xgo)/toolchain/classfiles.zh-CN.mdx": {
       "sourcePath": "doc/classfile.md",
       "contentType": "guide",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/toolchain/classfiles.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "cl/classfile.go",
+        "cl/compile.go",
+        "cl/_testspx/multiworks/out.go"
+      ]
     },
     "content/docs/(xgo)/reference/function-calls.zh-CN.mdx": {
       "sourcePath": "doc/fncall.md",
@@ -3481,9 +3563,11 @@
         "cl/_testxgo/type-as-fnargs/in.xgo",
         "cl/_testxgo/type-as-fnargs/out.go",
         "cl/internal/typeargs/typeargs.go",
-        "parser/parser.go"
+        "parser/parser.go",
+        "doc/builtin.md",
+        "cl/builtin.go"
       ],
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/reference/function-calls.mdx",
       "translationReviewStatus": "pending"
@@ -3491,12 +3575,16 @@
     "content/docs/(xgo)/reference/slices.zh-CN.mdx": {
       "sourcePath": "doc/slice.md",
       "contentType": "reference",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/reference/slices.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "cl/stmt.go"
+      ]
     },
     "content/docs/(xgo)/reference/full-specification.zh-CN.mdx": {
       "sourcePath": "doc/spec.md",
@@ -3532,12 +3620,13 @@
     "content/docs/(xgo)/reference/structs-and-tuples.zh-CN.mdx": {
       "sourcePath": "doc/struct-vs-tuple.md",
       "contentType": "reference",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/reference/structs-and-tuples.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/reference/strings.zh-CN.mdx": {
       "sourcePath": "doc/string.md",
@@ -3571,9 +3660,10 @@
       "applicableVersion": "source-snapshot",
       "additionalSourcePaths": [
         "cl/_testxgo/newexpr/in.xgo",
-        "cl/_testxgo/newexpr/out.go"
+        "cl/_testxgo/newexpr/out.go",
+        "parser/parser.go"
       ],
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/reference/builtins.mdx",
       "translationReviewStatus": "pending"
@@ -3581,12 +3671,18 @@
     "content/docs/(xgo)/reference/domain-text-literals.zh-CN.mdx": {
       "sourcePath": "doc/domian-text-lit.md",
       "contentType": "reference",
-      "sourceStatus": "upstream-synced",
+      "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/reference/domain-text-literals.mdx",
-      "translationReviewStatus": "pending"
+      "translationReviewStatus": "pending",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "tpl/tpl.go",
+        "encoding/html/html.go",
+        "cl/expr.go"
+      ]
     },
     "content/docs/(xgo)/reference/functions-and-closures.zh-CN.mdx": {
       "sourcePath": "doc/func-closure.md",
@@ -3663,7 +3759,7 @@
         "tpl/tpl.go",
         "x/xgoprojs/proj.go"
       ],
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "locale": "zh-CN",
       "translationOf": "content/docs/(xgo)/reference/mini-specification.mdx",
       "translationReviewStatus": "pending"

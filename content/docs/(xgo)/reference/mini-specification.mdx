@@ -1143,13 +1143,18 @@ x => {
 ```
 Anonymous functions are typically passed in as parameters for function calls.
 
-```xgo
+```xgo title="sort-slice.xgo"
 import "sort"
 
 a := [32, 100, 50, 6, 92]
 sort.Slice a, (i, j) => {
-	return a[i] < b[j]
+	return a[i] < a[j]
 }
+echo a
+```
+
+```text
+[6 32 50 92 100]
 ```
 Note: Both the parameter types and return value types of anonymous functions are omitted. XGo determines the parameter types and return value types of anonymous functions through type inference.
 
