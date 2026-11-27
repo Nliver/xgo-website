@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from 'fumadocs-ui/components
 import type { MDXComponents } from 'mdx/types';
 import { PlatformLogo } from './platform-logo';
 import { XGoLogo } from './xgo-logo';
+import { RunnableXGo } from './runnable-xgo';
 import type { ComponentProps } from 'react';
 
 function DocumentationCodeBlock({ 'data-xgo': isXGoLanguage, children, ...props }: ComponentProps<typeof CodeBlock> & { 'data-xgo'?: boolean }) {
@@ -33,6 +34,7 @@ export function getMDXComponents(components?: MDXComponents) {
     TabsList,
     TabsTrigger,
     PlatformLogo,
+    RunnableXGo,
     ...components,
   } satisfies MDXComponents;
 }

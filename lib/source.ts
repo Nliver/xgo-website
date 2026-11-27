@@ -16,7 +16,7 @@ const docs = defineDocs({
       includeProcessedMarkdown: {
         filterElement(node) {
           if (node.type !== 'mdxJsxFlowElement') return true;
-          if (node.name === 'TabsList') return false;
+          if (node.name === 'TabsList' || node.name === 'RunnableXGo') return false;
           if (node.name === 'Tabs' || node.name === 'TabsContent') return 'children-only';
           return true;
         },

@@ -136,3 +136,58 @@ a { text-underline-offset: 0.2em; }
 .blog-card__link { margin-top: auto; color: var(--xgo-accent); font-weight: 650; }
 @media (max-width: 48rem) { .blog-list { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { .blog-card { transition: none; } .blog-card:hover { transform: none; } }
+
+.runnable-xgo {
+  margin-block: -0.35rem 1.25rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.75rem;
+  background: var(--color-fd-card);
+}
+.runnable-xgo summary {
+  width: fit-content;
+  padding: 0.55rem 0.85rem;
+  color: var(--color-fd-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.runnable-xgo__panel { display: grid; gap: 0.65rem; padding: 0.75rem; }
+.runnable-xgo__panel label { font-size: 0.875rem; font-weight: 600; }
+.runnable-xgo textarea, .runnable-xgo pre {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  overflow: auto;
+  margin: 0;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+  font: 0.8125rem/1.55 var(--font-mono), monospace;
+  tab-size: 4;
+}
+.runnable-xgo textarea { resize: vertical; }
+.runnable-xgo pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.runnable-xgo pre[data-failed] {
+  border-color: #bb533f;
+}
+.runnable-xgo__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
+.runnable-xgo__actions p { margin: 0; color: var(--color-fd-muted-foreground); font-size: 0.8125rem; }
+.runnable-xgo button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.7rem;
+  background: var(--color-fd-accent);
+  color: var(--color-fd-accent-foreground);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.runnable-xgo button[aria-disabled="true"] { opacity: 0.6; }
+.runnable-xgo :is(summary, textarea, button):focus-visible {
+  outline: 2px solid var(--color-fd-primary);
+  outline-offset: 2px;
+}
