@@ -1,0 +1,82 @@
+---
+title: 运行包测试并分析性能
+description: 用 LLGo 运行 Go 测试，保留测试可执行文件，并采集 CPU 和内存分配数据。
+---
+
+给一个小型 Go 包编写测试，再用 LLGo 运行。请先按[安装指南](/zh-CN/docs/llgo/getting-started/installation)准备好原生编译器。
+
+## 运行测试
+
+在空目录中运行 `go mod init example.com/arith`，然后创建两个文件。
+
+在 `arith.go` 中实现加法函数。
+
+```go title="arith.go" verify="manual"
+package arith
+
+func Add(a, b int) int {
+	return a + b
+}
+```
+
+在 `arith_test.go` 中编写单元测试和基准测试。
+
+```go title="arith_test.go" verify="manual"
+package arith
+
+import "testing"
+
+func TestAdd(t *testing.T) {
+	if got := Add(19, 23); got != 42 {
+		t.Errorf("Add(19, 23) = %d, want 42", got)
+	}
+}
+
+var benchmarkSum int
+
+func BenchmarkAdd(b *testing.B) {
+	var sum int
+	for i := 0; i < b.N; i++ {
+		sum = Add(sum^i, 1)
+	}
+	benchmarkSum = sum
+}
+```
+
+```sh
+llgo test -v -run '^TestAdd$' .
+llgo test -list 'Add' .
+llgo test -run '^$' -bench '^BenchmarkAdd$' -benchtime=100x -benchmem .
+```
+
+第一条命令运行 `TestAdd`，输出中应出现 `PASS`。第二条列出 `TestAdd` 和 `BenchmarkAdd`，两者都不会执行。最后一条执行恰好 100 次基准测试迭代，并显示内存分配指标。这个小例子用于熟悉命令参数。实际比较性能时，请选择应用中真正关心的操作作为基准。
+
+运行 `llgo test ./...` 可以测试当前模块中的所有包。每个测试可执行文件的工作目录都是所属包的源码目录，因此测试可以用相对路径打开测试数据。`-run` 和 `-skip` 用于筛选测试，`-count` 指定运行次数，`-shuffle` 打乱顺序，`-parallel` 控制并行度。测试程序公开的参数也支持 `-test.` 前缀。应用自定义的测试参数放在 `-args` 之后。
+
+## 保留测试可执行文件
+
+使用 `-c` 只编译测试程序，随后可以自行调用。
+
+```sh
+llgo test -c -o arith.test .
+./arith.test -test.v -test.run '^TestAdd$'
+```
+
+在 Windows 上用 `-o arith.test.exe` 指定输出文件，再以相同参数运行 `.\arith.test.exe`。直接运行已编译的测试程序时，参数使用 `-test.` 前缀。
+
+用 `-exec` 可以指定运行测试程序的包装命令。例如，`-exec 'env TRACE=1'` 会通过 Unix 的 `env` 命令启动测试。包装命令在包目录中执行，接收测试程序路径及其原始参数。LLGo 自行拆分命令参数，整个过程无需启动 shell。
+
+## 分析本机性能
+
+在基准测试命令中加入以下参数，保留测试可执行文件，并将两份性能数据写入执行命令时的目录。
+
+```sh
+llgo test -run '^$' -bench '^BenchmarkAdd$' -benchtime=1s \
+  -cpuprofile=cpu.prof -memprofile=mem.prof .
+go tool pprof -top cpu.prof
+go tool pprof -raw mem.prof
+```
+
+每次只能为一个包采集性能数据。LLGo 默认把测试程序保存在执行命令时的目录，也可以用 `-o` 指定路径。用 `-outputdir` 可单独设置性能数据的输出目录。Linux 和 macOS 的 amd64、arm64 平台，以及 Windows 的 386、amd64、arm64 平台支持 CPU 采样。内存分配报告按分配大小类别统计累计分配次数。`-memprofilerate` 支持的值为 `1`。
+
+本机测试程序可将模糊测试的种子用例作为普通测试运行。LLGo v1.0.10 不支持模糊测试引擎的控制参数、`-cpu`、执行跟踪，以及阻塞和互斥锁性能分析。具体支持的选项与对应测试见上游[命令兼容性说明](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/command-line/compatibility.md)。如何在源码中插入覆盖率计数器，见[收集测试和应用覆盖率](/zh-CN/docs/llgo/testing/coverage)。

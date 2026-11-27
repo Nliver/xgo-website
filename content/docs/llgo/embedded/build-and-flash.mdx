@@ -1,0 +1,31 @@
+---
+title: Build, flash, and monitor firmware
+description: Run the ESP32-C3 serial example in QEMU or flash it to a board and inspect its output.
+---
+
+Run the upstream `chello` example and find `Hello World` in the serial output. Use LLGo `v1.0.10` and start in `_demo/embed/testdata/esp32-serial/chello` in the release checkout. The hardware steps also use the `hello.elf` built in the previous lesson. [Select an embedded target](/docs/llgo/embedded/targets)
+
+## Run in QEMU
+
+Install the host libraries listed by Espressif before running a prebuilt QEMU binary. On macOS with Homebrew, Espressif lists `libgcrypt`, `glib`, `pixman`, `sdl2`, and `libslirp`. [Espressif QEMU prerequisites](https://github.com/espressif/esp-idf/blob/051e4c4eb20346e043cdd47bc388fde75ff8af63/docs/en/api-guides/tools/qemu.rst#prerequisites)
+
+```sh
+llgo run -target=esp32c3-basic -emulator .
+```
+
+LLGo uses an existing QEMU on `PATH` if it supports the ESP32-C3 machine. On macOS and Linux, LLGo can also download and cache a checksum-verified Espressif QEMU release for amd64 and arm64 hosts. For an offline setup, put the compatible QEMU binary directory on `PATH` before running the command. Look for this line after any boot messages. [Upstream embedded command reference](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Embedded_Cmd.md)
+
+```text
+Hello World
+```
+
+## Flash a board and open its serial monitor
+
+Use an ESP32-C3 board compatible with `esp32c3-basic` and make sure `esptool.py` is on `PATH`. Connect the board and use its actual serial port in place of `/dev/ttyUSB0`. `llgo install` builds and flashes the example using the target profile. The separate `llgo monitor` command opens the serial port at the default baud rate of 115200.
+
+```sh
+llgo install -target=esp32c3-basic -port /dev/ttyUSB0 .
+llgo monitor -port /dev/ttyUSB0 ./hello.elf
+```
+
+Reset the board if it printed the greeting before you opened the monitor. Press Ctrl+C to close the monitor. The optional ELF operand lets the monitor resolve panic addresses. Use an ELF built from the same source and settings as the installed firmware. To let LLGo detect the serial port, pass `-target=esp32c3-basic` to `llgo monitor` in place of `-port`. [Upstream flash and monitor commands](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Embedded_Cmd.md)

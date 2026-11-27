@@ -1,0 +1,24 @@
+---
+title: Select an embedded target
+description: Inspect the ESP32-C3 target profile and build firmware in the formats it supports.
+---
+
+Build `hello.elf` and `hello.bin` for an ESP32-C3. Use LLGo `v1.0.10` and open the upstream `chello` example directory from the previous page. [Embedded LLGo development](/docs/llgo/embedded)
+
+## Inspect the profile
+
+```sh
+llgo env -target=esp32c3-basic LLGO_TARGET_LLVM_TARGET LLGO_TARGET_LIBC LLGO_TARGET_FLASH_COMMAND LLGO_TARGET_EMULATOR
+```
+
+The `esp32c3-basic` profile inherits a 32-bit RISC-V compiler target from `riscv32-esp`. It selects Espressif's newlib C library, a board-specific linker script, an `esptool.py` flash command, and a QEMU command for the `esp32c3` machine. Use `llgo env -json -target=esp32c3-basic` to inspect the full set of settings. [ESP32-C3 profile](https://github.com/xgo-dev/llgo/blob/v1.0.10/targets/esp32c3-basic.json)
+
+## Build the firmware
+
+```sh
+llgo build -target=esp32c3-basic -obin -o hello.elf .
+```
+
+The command creates `hello.elf` and `hello.bin` in the current directory. Keep the ELF for its debug information. The first build may fetch the profile's cross-compilation dependencies. QEMU is needed only when you run the emulator.
+
+Other profiles can support additional output formats such as Intel HEX (`-ohex`), firmware images (`-oimg`), UF2 (`-ouf2`), or ZIP/DFU (`-ozip`). These output flags require `-target`. Check the profile before selecting a format or flashing a device. [Upstream embedded command reference](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Embedded_Cmd.md)

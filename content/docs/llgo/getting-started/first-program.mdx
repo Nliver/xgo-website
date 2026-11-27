@@ -1,0 +1,39 @@
+---
+title: Compile your first Go program
+description: Build and run a native executable with the released compiler.
+---
+
+In a new directory, create `main.go`.
+
+```go title="main.go" verify="manual"
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, LLGo")
+}
+```
+
+Initialize a module, build it, and run the result from the same directory.
+
+```sh
+go mod init example.com/llgohello
+llgo build -o hello .
+./hello
+```
+
+If the linker reports that it cannot find `-lgc` and your Boehm GC library is installed in a custom directory, pass the directory reported by `pkg-config` to the build.
+
+```sh
+LDFLAGS="$(pkg-config --libs-only-L bdw-gc)" llgo build -o hello .
+./hello
+```
+
+On Windows, build with `llgo build -o hello.exe .` and run `.\hello.exe` from PowerShell.
+
+```text
+Hello, LLGo
+```
+
+Use `llgo run .` to build and execute the package in one step.

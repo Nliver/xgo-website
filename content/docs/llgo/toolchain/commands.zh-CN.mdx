@@ -1,0 +1,22 @@
+---
+title: LLGo 命令与选项
+description: 使用原生编译器命令，并识别交给 Go 工具链处理的操作。
+---
+
+LLGo 为编译、运行、测试、安装和检查 LLGo 产物提供独立的命令。
+
+| 命令 | 作用 |
+| --- | --- |
+| `llgo build` | 编译并链接包 |
+| `llgo run` | 构建并执行包 |
+| `llgo test` | 构建并运行测试 |
+| `llgo install` | 安装包或烧录目标 |
+| `llgo clean` | 删除支持的构建产物 |
+| `llgo version` | 输出编译器标识 |
+| `llgo env` | 查询 Go 和 LLGo 环境值 |
+| `llgo debug` | 启动目标调试会话 |
+| `llgo bug` | 创建或输出经过脱敏的问题报告 |
+
+`fmt`、`doc`、`mod` 和 `work` 会交给 Go 处理。`fix`、`generate`、`get`、`list` 和 `vet` 也交给 Go 处理，同时为它们设置 LLGo 的源码选择标签与目标平台。`llgo tool compile` 在内存中生成 LLGo IR，不会生成标准 Go 编译器 gc 的目标文件归档。
+
+产物选择和优化见[构建选项](/zh-CN/docs/llgo/toolchain/build-options)，Go 选项见 [Go 命令兼容性](/zh-CN/docs/llgo/toolchain/go-compatibility)。

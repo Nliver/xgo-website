@@ -1,0 +1,32 @@
+---
+title: WebAssembly profiles
+description: Choose a WebAssembly host and match it to LLGo's build outputs and runner.
+---
+
+Choose a profile based on the host that will load your program. Memory32 and Memory64 refer to the width of WebAssembly memory addresses.
+
+| Build selection | Profile | Host and runner in v1.0.10 |
+| --- | --- | --- |
+| `-target=wasi` or `-target=wasip1` | W32, Memory32 | Threaded WASI Preview 1 on LLGo's Wasmer fork |
+| `-target=emscripten` or `-target=wasm` | J32, Memory32 | Emscripten ES module with the LLGo Node.js runner |
+| `-target=emscripten-memory64` | J64, Memory64 | Emscripten ES module with the LLGo Memory64 runner |
+| `GOOS=js GOARCH=wasm` | J32, Memory32 | Go-compatible JavaScript APIs with LLGo's browser loader or Node.js runner |
+| `GOOS=wasip1 GOARCH=wasm` | W32, Memory32 | Go's WASI source selection with LLGo's threaded Wasmer runner |
+
+Inspect a named profile with `llgo env -json -target=wasi`. Use `-emulator` with `llgo run` or `llgo test` to select a named profile's runner. With raw `GOOS` and `GOARCH`, LLGo selects the host adapter from the environment when running the program. [Build and run a WebAssembly program](/docs/llgo/tutorials/webassembly)
+
+## JavaScript hosts
+
+The named Emscripten profiles produce an ES module and a sibling `.wasm` file. Keep the files together and use the runner for that profile. [Memory32 target definition](https://github.com/xgo-dev/llgo/blob/v1.0.10/targets/emscripten.json) · [Memory64 target definition](https://github.com/xgo-dev/llgo/blob/v1.0.10/targets/emscripten-memory64.json)
+
+A build with `GOOS=js GOARCH=wasm` selects the Go `syscall/js` API and publishes an LLGo `wasm_exec.js` loader beside the WebAssembly file. The loader exposes Go's browser API, including `new Go()`, `go.importObject`, and `go.run()`. Use the generated loader with its matching module because LLGo's binary has Emscripten-generated imports. When several builds share a directory, the loader may be named after the output stem, such as `app_wasm_exec.js`. [Upstream profile design](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-proposal.md)
+
+On Emscripten builds, `-goroutine-stack-size=2MB` sets the fixed goroutine stack and Asyncify buffer sizes. The main stack has a separate limit. `-pthread-stack-size` is an alias. Emscripten's browser runtime can opt into a bounded worker pool with `LLGO_WASM_WORKERS=2` through `16`. [Upstream runtime notes](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-proposal.md)
+
+## Threaded WASI
+
+W32 uses wasi-libc's POSIX thread startup, shared linear memory, and LLGo's threaded garbage collector. It runs without Binaryen Asyncify. The module imports shared `env.memory` and `wasi.thread-spawn` in addition to WASI Preview 1. LLGo's Wasmer fork provides the thread, exception, and compiled-module-cache support required by this profile.
+
+Each WASI goroutine uses a host thread, so host thread and memory limits constrain concurrency. The process stack, individual goroutine stacks, and Wasmer's host stack have separate budgets. A custom W32 profile can inherit `wasi` and set `wasm-initial-memory`, `wasm-max-memory`, and `wasm-stack-size` in bytes. Memory sizes must be multiples of 64 KiB. The process stack must be 16-byte aligned. [WASI thread and memory settings](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-wasi-threads.md)
+
+LLGo v1.0.10's coverage implementation supports native execution. Wasm and emulator targets reject coverage flags. [LLGo coverage](/docs/llgo/testing/coverage)

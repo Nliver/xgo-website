@@ -27,7 +27,7 @@ The exact versions depend on the XGo and LLGo installations. The compiler annota
 
 ## Generate and run the Go package
 
-Install LLGo and complete the toolchain check. [LLGo first compilation](/docs/llgo)
+Install LLGo and complete the toolchain check. [Compile your first Go program](/docs/llgo/getting-started/first-program)
 
 In the XGo package directory, generate Go source, then invoke LLGo directly.
 
@@ -42,7 +42,7 @@ On LLGo v1.0.10, the `XGO_GOCMD=llgo xgo run .` command shown in the upstream C 
 
 Import the `c` package and use a C string literal when an API expects a null-terminated C string.
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "c"
 
 c.printf c"Hello world\n"
@@ -54,7 +54,7 @@ The `c"Hello world\n"` form is an XGo literal for a C-style string. The complete
 
 LLGo exposes C++ packages through import paths such as `cpp/std`.
 
-```xgo
+```xgo title="cpphello.xgo" verify="manual"
 import "cpp/std"
 
 println std.str("Hello world").str
@@ -66,7 +66,7 @@ See the [C++ demo](/docs/llgo/examples#read-a-c-string) for the build prerequisi
 
 Import `py/std` and use a Python string literal for Python APIs.
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "py/std"
 
 std.print py"Hello world"
@@ -78,7 +78,7 @@ The complete source is available in the [Python demo](/docs/llgo/examples#call-p
 
 The `py` package represents Python values and `py/torch` exposes PyTorch bindings.
 
-```xgo
+```xgo title="tensor.xgo" verify="manual"
 import (
     "py"
     "py/std"

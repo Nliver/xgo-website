@@ -3,7 +3,7 @@ title: LLGo 示例程序
 description: 使用 LLGo 运行调用 C、C++ 和 Python 库的 XGo 示例。
 ---
 
-安装 LLGo，并确认可以从命令行调用 `llgo`。请在 XGo 源码目录中切换到各示例标注的子目录，再运行相应命令。Python 示例需要 LLGo 配置使用的 Python 运行时。有关环境配置和如何导入原生库及 Python 库，请参阅 [LLGo 初次编译](/zh-CN/docs/llgo)与 [LLGo 互操作指南](/zh-CN/docs/llgo/interoperability)。
+安装 LLGo，并确认可以从命令行调用 `llgo`。请在 XGo 源码目录中切换到各示例标注的子目录，再运行相应命令。Python 示例需要 LLGo 配置使用的 Python 运行时。有关环境配置和如何导入原生库及 Python 库，请参阅 [编译第一个 Go 程序](/zh-CN/docs/llgo/getting-started/first-program)与 [LLGo 互操作指南](/zh-CN/docs/llgo/interoperability)。
 
 这些示例共用的模块固定使用 `github.com/goplus/lib v0.2.0`。先用 `xgo go .` 生成 Go 源码，再用 `llgo run .` 运行该包。如果用 `XGO_GOCMD=llgo xgo run .` 跨工具调用，LLGo v1.0.10 会拒绝此版本 XGo 传入的链接器参数。
 
@@ -15,7 +15,7 @@ description: 使用 LLGo 运行调用 C、C++ 和 Python 库的 XGo 示例。
 
 ### hello.xgo
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 echo "Hello world"
 ```
 
@@ -32,7 +32,7 @@ llgo run .
 
 ### hello.xgo
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "c"
 
 c.printf c"Hello, llgo!\n"
@@ -59,7 +59,7 @@ Hi,    3.1
 
 ### hello.xgo
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "c"
 
 c.printf c"Hello world\n"
@@ -78,7 +78,7 @@ llgo run .
 
 ### cpphello.xgo
 
-```xgo
+```xgo title="cpphello.xgo" verify="manual"
 import "cpp/std"
 
 println std.str("Hello world").str
@@ -97,7 +97,7 @@ llgo run .
 
 ### hello.xgo
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "py/std"
 
 std.print py"Hello world"
@@ -116,7 +116,7 @@ llgo run .
 
 ### print.xgo
 
-```xgo
+```xgo title="print.xgo" verify="manual"
 import (
 	"py"
 	"py/std"
@@ -139,7 +139,7 @@ llgo run .
 
 ### pymax.xgo
 
-```xgo
+```xgo title="pymax.xgo" verify="manual"
 import (
 	"py"
 	"py/std"
@@ -166,7 +166,7 @@ llgo run .
 
 ### callpy.xgo
 
-```xgo
+```xgo title="callpy.xgo" verify="manual"
 import (
 	"c"
 	"py"
@@ -190,7 +190,7 @@ llgo run .
 
 ### matrix.xgo
 
-```xgo
+```xgo title="matrix.xgo" verify="manual"
 import (
 	"c"
 	"py"
@@ -224,7 +224,7 @@ llgo run .
 
 ### tensor.xgo
 
-```xgo
+```xgo title="tensor.xgo" verify="manual"
 import (
 	"py"
 	"py/std"
@@ -252,7 +252,7 @@ llgo run .
 
 ### statistics.xgo
 
-```xgo
+```xgo title="statistics.xgo" verify="manual"
 import (
 	"c"
 	"py"
@@ -277,7 +277,7 @@ llgo run .
 
 ### defer.xgo
 
-```xgo
+```xgo title="defer.xgo" verify="manual"
 import "c"
 
 func f(s string) bool {
@@ -308,7 +308,7 @@ llgo run .
 
 ### errors.xgo
 
-```xgo
+```xgo title="errors.xgo" verify="manual"
 import (
 	"c"
 )
@@ -345,7 +345,7 @@ llgo run .
 
 ### goroutine.xgo
 
-```xgo
+```xgo title="goroutine.xgo" verify="manual"
 import "c"
 
 done := false
@@ -371,7 +371,7 @@ llgo run .
 
 ### qsort.xgo
 
-```xgo
+```xgo title="qsort.xgo" verify="manual"
 import (
 	"c"
 	"unsafe"
@@ -399,7 +399,7 @@ llgo run .
 
 ### reflect.xgo
 
-```xgo
+```xgo title="reflect.xgo" verify="manual"
 import (
 	"c"
 	"reflect"
@@ -427,7 +427,7 @@ llgo run .
 
 ### sqlitedemo.xgo
 
-```xgo
+```xgo title="sqlitedemo.xgo" verify="manual"
 import (
 	"c"
 	"c/os"
@@ -511,7 +511,7 @@ llgo run .
 
 程序使用棋盘常量定义的尺寸初始化 raylib，并将目标帧率设为每秒 60 帧。
 
-```xgo
+```xgo title="tetris.xgo" verify="manual"
 raylib.initWindow SCREENWIDTH, SCREENHEIGHT, c"tetris (powered by raylib and XGo)"
 raylib.setTargetFPS 60
 ```
@@ -520,7 +520,7 @@ raylib.setTargetFPS 60
 
 每帧先清空背景，再按各格子保存的颜色绘制。矩形的宽、高各减一个像素，给相邻格子留出间隙。
 
-```xgo
+```xgo title="tetris.xgo" verify="manual"
 raylib.beginDrawing
 raylib.clearBackground raylib.RAYWHITE
 for y := 0; y < BOARD_HEIGHT; y++ {

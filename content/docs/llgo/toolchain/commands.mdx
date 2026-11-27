@@ -1,0 +1,22 @@
+---
+title: LLGo commands and flags
+description: Use the native compiler commands and identify delegated Go operations.
+---
+
+LLGo implements a native workflow for compiling, running, testing, installing, and inspecting LLGo artifacts.
+
+| Command | Role |
+| --- | --- |
+| `llgo build` | Compile and link a package |
+| `llgo run` | Build and execute a package |
+| `llgo test` | Build and run tests |
+| `llgo install` | Install a package or flash a target |
+| `llgo clean` | Remove supported build outputs |
+| `llgo version` | Print compiler identity |
+| `llgo env` | Query Go and LLGo environment values |
+| `llgo debug` | Start a target debugger session |
+| `llgo bug` | Create or print a sanitized issue payload |
+
+`fmt`, `doc`, `mod`, and `work` delegate to Go. `fix`, `generate`, `get`, `list`, and `vet` delegate with LLGo source tags and target selection. `llgo tool compile` produces LLGo IR in memory and does not produce gc object archives.
+
+For artifact selection and optimization, see [Build options](/docs/llgo/toolchain/build-options). For Go flags, see [Go command compatibility](/docs/llgo/toolchain/go-compatibility).

@@ -1,0 +1,34 @@
+---
+title: Configure LLGo builds
+description: Select targets, output formats, optimization controls, and compiler diagnostics.
+---
+
+LLGo accepts Go-style build flags and adds options for its LLVM backend and target profiles. The [compatibility inventory for v1.0.10](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/command-line/compatibility.md) specifies which Go flags the backend implements.
+
+## Select a target and output
+
+Use `-target` for a named profile and `-o` for the primary artifact. Embedded profiles add format flags such as `-obin`, `-ohex`, `-oimg`, `-ouf2`, and `-ozip`. Those flags require an embedded target.
+
+```sh
+llgo build -target=cortex-m-qemu -o firmware.elf .
+llgo build -target=rp2040 -obin -ouf2 .
+```
+
+The target profile supplies the LLVM triple, CPU, build tags, linker script, tool paths, emulator, and output conventions. Use `llgo env -json -target=name` to inspect the resolved values.
+
+## Control optimization and linking
+
+Use ordinary Go linker options where the compatibility manifest allows them. `-ldflags=-w` removes DWARF information. LLGo also supports its documented `-lto` and LLVM linker controls through `LDFLAGS`.
+
+```sh
+llgo build -ldflags=-w .
+llgo build -O3 -lto=full .
+```
+
+Full link-time optimization (LTO) gives LLVM access to function bodies across packages at the final link. For a comparison with ThinLTO and per-package optimization, see [cross-package inlining](/docs/llgo/compiler/inlining).
+
+## Request diagnostics
+
+Use `llgo build -gcflags=-m .` for storage-plan diagnostics and `-gcflags=-m=2` for reasons such as retention, loop lifetime, analysis limits, stack budgets, and garbage-collector restrictions. The report distinguishes `stack`, `stack-buffer`, `borrowed`, and `heap` plans. These are frontend storage decisions, not a count of final machine allocations.
+
+Diagnostics do not change generated code or cache identity. `-m` follows Go's package-list behavior. Use the compatibility page when a Go flag appears to be accepted by the surrounding command but is rejected by LLGo's native backend.

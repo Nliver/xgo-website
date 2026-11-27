@@ -1,0 +1,31 @@
+---
+title: 构建、烧录并监控固件
+description: 在 QEMU 中运行 ESP32-C3 串口示例，或将它烧录到开发板并查看输出。
+---
+
+运行上游的 `chello` 示例，在串口输出中找到 `Hello World`。使用 LLGo `v1.0.10`，并进入该版本源码中的 `_demo/embed/testdata/esp32-serial/chello` 目录。使用开发板的步骤还需要上一课构建的 `hello.elf`。 [选择嵌入式目标](/zh-CN/docs/llgo/embedded/targets)
+
+## 在 QEMU 中运行
+
+运行预编译的 QEMU 之前，先安装 Espressif 列出的宿主依赖库。在使用 Homebrew 的 macOS 上，Espressif 列出的依赖有 `libgcrypt`、`glib`、`pixman`、`sdl2` 和 `libslirp`。 [Espressif 的 QEMU 前置条件](https://github.com/espressif/esp-idf/blob/051e4c4eb20346e043cdd47bc388fde75ff8af63/docs/en/api-guides/tools/qemu.rst#prerequisites)
+
+```sh
+llgo run -target=esp32c3-basic -emulator .
+```
+
+如果 `PATH` 中已有支持 ESP32-C3 机型的 QEMU，LLGo 会直接使用它。在 amd64 和 arm64 的 macOS、Linux 宿主上，LLGo 也可以下载 Espressif 的 QEMU 发布包，校验其校验和并缓存。离线使用时，运行命令前先将兼容的 QEMU 可执行文件所在目录加入 `PATH`。启动消息之后应看到下面这行输出。 [上游嵌入式命令参考](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Embedded_Cmd.md)
+
+```text
+Hello World
+```
+
+## 烧录开发板并打开串口监视器
+
+使用与 `esp32c3-basic` 兼容的 ESP32-C3 开发板，并确保 `PATH` 中有 `esptool.py`。连接开发板，将下面的 `/dev/ttyUSB0` 替换为实际串口。`llgo install` 会按目标配置构建并烧录示例。再运行 `llgo monitor`，以默认波特率 115200 打开串口。
+
+```sh
+llgo install -target=esp32c3-basic -port /dev/ttyUSB0 .
+llgo monitor -port /dev/ttyUSB0 ./hello.elf
+```
+
+如果在打开监视器前开发板已输出问候语，请重置开发板。按 Ctrl+C 关闭监视器。可选的 ELF 参数可帮助监视器解析 panic 地址。请使用与已烧录固件来源和构建设置一致的 ELF 文件。要让 LLGo 自动检测串口，可以给 `llgo monitor` 传入 `-target=esp32c3-basic`，替代 `-port`。 [上游烧录和串口监视命令](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Embedded_Cmd.md)

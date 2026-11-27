@@ -1,128 +1,45 @@
 ---
-title: 使用 LLGo 编译第一个程序
-description: 安装 LLGo，生成本机可执行文件，并检查链接所需的依赖。
+title: LLGo 编译器
+description: 从编译第一个原生程序开始，学习如何用基于 LLVM 的 Go 编译器调用 C 和 Python 库，以及为 WebAssembly 和嵌入式设备构建程序。
 ---
 
-将输出一行问候语的 Go 程序编译成本机可执行文件。本例使用 LLGo `v1.0.10` 和 Go 1.27。
+LLGo 使用 LLVM 将 Go 源码编译为机器码，拥有独立的编译器驱动和运行时。你可以从普通的 Go 模块起步，通过 C 应用二进制接口（ABI）调用现有库，也可以为另一种宿主环境构建同一个包。
 
-## 准备工具链
+先按[安装指南](/zh-CN/docs/llgo/getting-started/installation)配置工具链，再跟着[用 LLGo 编译第一个 Go 程序](/zh-CN/docs/llgo/getting-started/first-program)编译并运行一个 Go 包。
 
-下载对应操作系统和处理器的 LLGo 发行包并解压，将其中的 `bin` 加入 `PATH`。保留发行包的目录结构，以便 LLGo 找到运行时。Go 可执行文件也需要在 `PATH` 中，以便加载模块和包。
+## 按任务选择学习路径
 
-在 macOS 或 Linux 上，独立发行包还需要本机 C 工具链、`pkg-config` 和 Boehm 垃圾回收库。
+<Cards>
+  <Card title="安装与首次编译" href="/zh-CN/docs/llgo/getting-started" description="安装已发布的工具链，检查环境，并构建原生可执行文件。" />
+  <Card title="编写原生库绑定" href="/zh-CN/docs/llgo/tutorials/native-library" description="将 Go 声明绑定到 C 或 C++ 符号，把封装代码加入构建，在 Go 中调用原生库。" />
+  <Card title="调用 Python" href="/zh-CN/docs/llgo/tutorials/python" description="通过 LLGo 的 py 绑定调用 Python 模块，并明确指定程序使用的 Python 环境。" />
+  <Card title="构建 WebAssembly 程序" href="/zh-CN/docs/llgo/tutorials/webassembly" description="选择 WebAssembly 目标配置，编译程序，再选择对应的宿主来运行。" />
+  <Card title="为嵌入式设备构建" href="/zh-CN/docs/llgo/embedded" description="选择目标并生成所需格式的固件，在设备或模拟器上运行。" />
+  <Card title="了解编译器内部机制" href="/zh-CN/docs/llgo/compiler" description="跟随一个 Go 包从选择源文件到 LLVM 优化和链接的过程，了解运行时如何执行生成的程序。" />
+  <Card title="使用工具链" href="/zh-CN/docs/llgo/toolchain" description="查阅编译命令、模块用法、与 Go 工具链的兼容范围，以及 LLGo 专用参数。" />
+</Cards>
 
-<Tabs defaultValue="macos">
-  <TabsList aria-label="按平台准备 LLGo" activateOnFocus>
-    <TabsTrigger value="macos"><PlatformLogo name="apple" />macOS</TabsTrigger>
-    <TabsTrigger value="linux"><PlatformLogo name="linux" />Linux</TabsTrigger>
-  </TabsList>
+## LLGo 提供的能力
 
-<TabsContent value="macos">
+- 使用 LLVM 为本机平台、WebAssembly 和部分嵌入式目标生成代码。
+- 在有宿主操作系统的平台上使用 BDWGC 进行保守式垃圾回收，在裸机目标上使用源自 TinyGo 的垃圾回收器。
+- 通过 `go:linkname` 按 C 或 C++ ABI 直接调用函数。普通的链接调用无需经过 cgo 的栈切换。
+- 通过 `github.com/goplus/lib/py` 系列包和 llpyg 绑定层调用 Python。
+- 沿用 Go 按包组织项目的工作方式，并明确规定各命令和参数的兼容范围。
 
-**macOS**
+文档列出的本机平台支持 Go 标准库。其他目标可用的操作系统服务和运行时能力可能不同。选择部署环境前，可先查阅[目标平台支持情况](/zh-CN/docs/llgo/reference/targets)。
 
-用 Homebrew 安装依赖时，Boehm 垃圾回收库的包名为 `bdw-gc`。也可直接用 Homebrew 安装 LLGo，再检查实际版本。
+## 版本与运行时模型
 
-```sh
-brew install llgo
-```
+本节面向稳定版的教程使用 LLGo `v1.0.10` 和 Go 1.27。LLGo 的源码兼容目标从 Go 1.20 起算。编译器运行时和命令行接口有各自的版本，独立于 Go 工具链。
 
-</TabsContent>
-<TabsContent value="linux">
+在本机平台，每个 goroutine 对应一个操作系统线程，使用原生线程栈。默认垃圾回收器为 BDWGC。只有在程序及其依赖库都能满足关闭垃圾回收后的内存管理要求时，才应使用 `nogc` 构建标签。
 
-**Linux**
+## 接下来可以做什么
 
-在 Debian 或 Ubuntu 上，Boehm 垃圾回收库的开发包名为 `libgc-dev`。
-
-</TabsContent>
-
-</Tabs>
-
-在 macOS 或 Linux 上，运行 `pkg-config --libs bdw-gc` 确认能查到链接参数。然后在终端检查 LLGo 的版本。
-
-```sh
-llgo version
-```
-
-## 编译并运行
-
-在空目录中把以下代码保存为 `main.go`。
-
-```go
-package main
-
-import "fmt"
-
-func main() {
-    fmt.Println("Hello, LLGo")
-}
-```
-
-```sh
-go mod init example.com/llgohello
-llgo build -o hello .
-./hello
-```
-
-如果链接器提示找不到 `-lgc`，且垃圾回收库装在自定义位置，可给这次构建传入它的库目录。
-
-```sh
-LDFLAGS="$(pkg-config --libs-only-L bdw-gc)" llgo build -o hello .
-./hello
-```
-
-Windows 上使用 `llgo build -o hello.exe .`，再在 PowerShell 中执行 `.\hello.exe`。预期输出如下。
-
-```text
-Hello, LLGo
-```
-
-也可以用 `llgo run .` 一次完成构建和运行。使用 XGo 调用原生库的示例见 [LLGo 互操作](/zh-CN/docs/llgo/interoperability)。
-
-## 编译本地 C 源文件
-
-在另一个空目录运行 `go mod init example.com/nativeadd`，并创建名为 `_wrap` 的子目录。将 Go 代码保存为 `main.go`，C 代码保存为 `_wrap/add.c`，然后使用前面的 LLGo 环境编译并运行。
-
-```files
-nativeadd/
-├── _wrap/
-│   └── add.c
-└── main.go
-```
-
-```go
-package main
-
-import (
-	"fmt"
-	_ "unsafe"
-)
-
-const LLGoFiles = "_wrap/add.c"
-
-//go:linkname add C.add32
-func add(a, b int32) int32
-
-func main() {
-	fmt.Println(add(19, 23))
-}
-```
-
-```c
-#include <stdint.h>
-
-int32_t add32(int32_t a, int32_t b) {
-    return a + b;
-}
-```
-
-```sh
-llgo build -o hello .
-./hello
-```
-
-```text
-42
-```
-
-LLGo 从包目录解析 `LLGoFiles` 中的相对路径，多个文件用分号分隔。`go:linkname` 将 Go 声明绑定到 C 符号。两个文件中对应的参数与返回值都使用 32 位有符号整数。
+- [安装 LLGo](/zh-CN/docs/llgo/getting-started/installation)
+- [编译第一个 Go 程序](/zh-CN/docs/llgo/getting-started/first-program)
+- [调用 C、C++ 和 Python](/zh-CN/docs/llgo/interoperability)
+- [查阅命令参考](/zh-CN/docs/llgo/toolchain/commands)
+- [运行测试并收集覆盖率](/zh-CN/docs/llgo/testing)
+- [参与 LLGo 开发](/zh-CN/docs/llgo/contributing)

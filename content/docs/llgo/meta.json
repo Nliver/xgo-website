@@ -1,11 +1,21 @@
 {
   "title": "LLGo",
-  "description": "Compile Go with LLVM and call native libraries.",
+  "description": "Compile Go to native code with LLVM.",
   "root": true,
   "icon": "Cpu",
   "pages": [
     "index",
+    "getting-started",
+    "tutorials",
+    "reference",
+    "compiler",
+    "native-files",
     "interoperability",
-    "examples"
+    "toolchain",
+    "debugging",
+    "testing",
+    "embedded",
+    "examples",
+    "contributing"
   ]
 }

@@ -3,7 +3,7 @@ title: "LLGo demo programs"
 description: "Use LLGo to run XGo examples that call C, C++, and Python libraries."
 ---
 
-Install LLGo and place `llgo` on your command path. Run each command from its listed directory in the XGo checkout. Python demos need the Python runtime that LLGo is configured to use. See [LLGo first compilation](/docs/llgo) for setup and the [LLGo interoperability guide](/docs/llgo/interoperability) for native and Python imports.
+Install LLGo and place `llgo` on your command path. Run each command from its listed directory in the XGo checkout. Python demos need the Python runtime that LLGo is configured to use. See [Compile your first Go program](/docs/llgo/getting-started/first-program) for setup and the [LLGo interoperability guide](/docs/llgo/interoperability) for native and Python imports.
 
 The shared module pins `github.com/goplus/lib v0.2.0`. Generate Go source with `xgo go .`, then run that package with `llgo run .`. LLGo v1.0.10 rejects the linker flags that this XGo revision passes when invoked through `XGO_GOCMD=llgo xgo run .`.
 
@@ -15,7 +15,7 @@ Print a line using the XGo `echo` builtin.
 
 ### hello.xgo
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 echo "Hello world"
 ```
 
@@ -32,7 +32,7 @@ Import libc using `import "c"`, the abbreviated spelling of `import "github.com/
 
 ### hello.xgo
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "c"
 
 c.printf c"Hello, llgo!\n"
@@ -59,7 +59,7 @@ Print a C string through libc.
 
 ### hello.xgo
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "c"
 
 c.printf c"Hello world\n"
@@ -78,7 +78,7 @@ Construct a C++ standard-library string using the `cpp/std` binding.
 
 ### cpphello.xgo
 
-```xgo
+```xgo title="cpphello.xgo" verify="manual"
 import "cpp/std"
 
 println std.str("Hello world").str
@@ -97,7 +97,7 @@ Pass a Python string literal to the Python printing function.
 
 ### hello.xgo
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "py/std"
 
 std.print py"Hello world"
@@ -116,7 +116,7 @@ Wrap a floating-point number as a Python object and print it.
 
 ### print.xgo
 
-```xgo
+```xgo title="print.xgo" verify="manual"
 import (
 	"py"
 	"py/std"
@@ -139,7 +139,7 @@ Find the maximum first from positional Python arguments and then from a Python l
 
 ### pymax.xgo
 
-```xgo
+```xgo title="pymax.xgo" verify="manual"
 import (
 	"py"
 	"py/std"
@@ -166,7 +166,7 @@ Compute the square root of two with Python and format the result using libc.
 
 ### callpy.xgo
 
-```xgo
+```xgo title="callpy.xgo" verify="manual"
 import (
 	"c"
 	"py"
@@ -190,7 +190,7 @@ Install NumPy in the Python environment that LLGo uses. The sample passes nested
 
 ### matrix.xgo
 
-```xgo
+```xgo title="matrix.xgo" verify="manual"
 import (
 	"c"
 	"py"
@@ -224,7 +224,7 @@ Install PyTorch in the Python environment that LLGo uses. The sample converts ne
 
 ### tensor.xgo
 
-```xgo
+```xgo title="tensor.xgo" verify="manual"
 import (
 	"py"
 	"py/std"
@@ -252,7 +252,7 @@ Compute the arithmetic mean of a Python list and print it through libc.
 
 ### statistics.xgo
 
-```xgo
+```xgo title="statistics.xgo" verify="manual"
 import (
 	"c"
 	"py"
@@ -277,7 +277,7 @@ Observe the deferred calls execute in reverse order before the program exits.
 
 ### defer.xgo
 
-```xgo
+```xgo title="defer.xgo" verify="manual"
 import "c"
 
 func f(s string) bool {
@@ -308,7 +308,7 @@ Implement Go’s `error` interface and pass the formatted error to C.
 
 ### errors.xgo
 
-```xgo
+```xgo title="errors.xgo" verify="manual"
 import (
 	"c"
 )
@@ -345,7 +345,7 @@ Read the sample as a demonstration of goroutine syntax. The shared `done` flag i
 
 ### goroutine.xgo
 
-```xgo
+```xgo title="goroutine.xgo" verify="manual"
 import "c"
 
 done := false
@@ -371,7 +371,7 @@ Use a lambda as the comparison callback for libc’s `qsort`.
 
 ### qsort.xgo
 
-```xgo
+```xgo title="qsort.xgo" verify="manual"
 import (
 	"c"
 	"unsafe"
@@ -399,7 +399,7 @@ Build a slice type, append integers, and print the reflected values.
 
 ### reflect.xgo
 
-```xgo
+```xgo title="reflect.xgo" verify="manual"
 import (
 	"c"
 	"reflect"
@@ -427,7 +427,7 @@ Install SQLite for the LLGo target. Run this in a scratch directory because the 
 
 ### sqlitedemo.xgo
 
-```xgo
+```xgo title="sqlitedemo.xgo" verify="manual"
 import (
 	"c"
 	"c/os"
@@ -511,7 +511,7 @@ Read `checkCollision` and `clearLines` first to see how the grid state changes. 
 
 The demo initializes raylib with the dimensions defined by the board constants and requests 60 frames per second.
 
-```xgo
+```xgo title="tetris.xgo" verify="manual"
 raylib.initWindow SCREENWIDTH, SCREENHEIGHT, c"tetris (powered by raylib and XGo)"
 raylib.setTargetFPS 60
 ```
@@ -520,7 +520,7 @@ raylib.setTargetFPS 60
 
 Inside the frame loop, the program clears the background and draws the color stored in each grid cell. Subtracting one from the rectangle dimensions leaves a gap between adjacent cells.
 
-```xgo
+```xgo title="tetris.xgo" verify="manual"
 raylib.beginDrawing
 raylib.clearBackground raylib.RAYWHITE
 for y := 0; y < BOARD_HEIGHT; y++ {

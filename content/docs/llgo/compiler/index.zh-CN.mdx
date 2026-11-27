@@ -1,0 +1,10 @@
+---
+title: LLGo 编译器内部实现
+description: 跟踪 Go 源码在 LLVM 构建流程中的转换，了解运行时和内联如何影响生成的程序。
+---
+
+LLGo 使用自己的前端、LLVM 后端和目标运行时编译 Go 源码。本组页面以 LLGo v1.0.10 的实现为依据。
+
+- [编译流程](/zh-CN/docs/llgo/compiler/pipeline) 跟踪一个包从源码选择到链接产物的过程，并说明如何阅读分配诊断。
+- [运行时模型](/zh-CN/docs/llgo/compiler/runtime) 解释本机、Wasm 和嵌入式目标上的 goroutine、垃圾回收和可调用值差异。
+- [跨包内联](/zh-CN/docs/llgo/compiler/inlining) 说明函数体如何进入 LLVM，以及链接时优化如何改变这一过程。

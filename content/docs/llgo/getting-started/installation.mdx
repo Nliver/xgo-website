@@ -1,0 +1,60 @@
+---
+title: Install LLGo
+description: Prepare the released compiler, its package loader, and the native linker.
+---
+
+The example uses LLGo `v1.0.10` and Go 1.27. Download the [v1.0.10 release archive](https://github.com/xgo-dev/llgo/releases/tag/v1.0.10) for your operating system and processor, extract it, and add its `bin` directory to `PATH`. Keep the surrounding distribution directory intact so LLGo can find the runtime. Keep the Go toolchain on `PATH` for module and package loading.
+
+On macOS and Linux, the standalone archive also needs a native C toolchain, `pkg-config`, and BDWGC (the Boehm garbage collector) 8.2 or later.
+
+<Tabs defaultValue="macos">
+  <TabsList aria-label="LLGo by platform" activateOnFocus>
+    <TabsTrigger value="macos"><PlatformLogo name="apple" />macOS</TabsTrigger>
+    <TabsTrigger value="linux"><PlatformLogo name="linux" />Linux</TabsTrigger>
+    <TabsTrigger value="windows"><PlatformLogo name="windows" />Windows</TabsTrigger>
+  </TabsList>
+
+<TabsContent value="macos">
+
+**macOS**
+
+Homebrew provides the Boehm garbage collector as `bdw-gc`. To install LLGo through Homebrew, use the command below and check the actual version. The package can advance independently of this guide.
+
+```sh
+brew install llgo
+```
+
+</TabsContent>
+<TabsContent value="linux">
+
+**Linux**
+
+On Debian or Ubuntu, install `libgc-dev` and `pkg-config`. The standalone LLGo archive also needs Clang and a native linker.
+
+```sh
+sudo apt-get install libgc-dev pkg-config
+```
+
+</TabsContent>
+
+<TabsContent value="windows">
+
+Extract the ZIP matching your host (`386`, `amd64`, or `arm64`) and add its `bin` directory to `PATH`. The ZIP supports both MSVC and MinGW. For MSVC, use the Visual Studio developer shell with the matching Windows SDK and vcpkg libraries. For MinGW, select the matching LLVM toolchain and libraries. Keep headers, import libraries, runtime DLLs, and pkg-config metadata in the same ABI and architecture. [Windows setup in v1.0.10](https://github.com/xgo-dev/llgo/blob/v1.0.10/WINDOWS.md)
+
+```powershell
+clang -dumpmachine
+pkg-config --modversion bdw-gc libffi
+llgo version
+```
+
+</TabsContent>
+
+</Tabs>
+
+On macOS or Linux, run `pkg-config --libs bdw-gc` to check the linker flags. Then check the LLGo version in your terminal.
+
+```sh
+llgo version
+```
+
+Continue with [your first native executable](/docs/llgo/getting-started/first-program).

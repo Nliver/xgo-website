@@ -1,0 +1,34 @@
+---
+title: 配置 LLGo 构建
+description: 选择目标、输出格式、优化设置和编译器诊断。
+---
+
+LLGo 接受 Go 风格的构建选项，并为 LLVM 后端和目标配置提供专用选项。[v1.0.10 兼容性清单](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/command-line/compatibility.md)规定后端实现了哪些 Go 选项。
+
+## 选择目标和输出
+
+使用 `-target` 选择具名目标配置，使用 `-o` 指定主要产物。嵌入式配置增加 `-obin`、`-ohex`、`-oimg`、`-ouf2` 和 `-ozip` 等格式选项。这些选项要求同时指定嵌入式目标。
+
+```sh
+llgo build -target=cortex-m-qemu -o firmware.elf .
+llgo build -target=rp2040 -obin -ouf2 .
+```
+
+目标配置提供 LLVM 目标三元组、CPU、构建标签、链接脚本、工具路径、模拟器和输出约定。使用 `llgo env -json -target=name` 查看解析后的值。
+
+## 控制优化和链接
+
+在兼容性清单允许时使用普通 Go 链接器选项。`-ldflags=-w` 会删除 DWARF 信息。LLGo 还支持文档列出的 `-lto` 选项，并可通过 `LDFLAGS` 向 LLVM 链接器传参。
+
+```sh
+llgo build -ldflags=-w .
+llgo build -O3 -lto=full .
+```
+
+完整链接时优化（Full LTO）让 LLVM 在最终链接时访问跨包函数体。ThinLTO 与按包优化的比较见[跨包内联](/zh-CN/docs/llgo/compiler/inlining)。
+
+## 查看诊断信息
+
+使用 `llgo build -gcflags=-m .` 查看存储位置的诊断，使用 `-gcflags=-m=2` 查看保留关系、循环生命周期、分析限制、栈预算和垃圾回收限制等原因。报告记录前端的存储决策，包括 `stack`、`stack-buffer`、`borrowed` 和 `heap`。最终机器代码的实际分配次数需要另行测量。
+
+诊断不会改变生成代码或缓存标识。`-m` 遵循 Go 的包列表规则。当 Go 选项看似被外层命令接受但被 LLGo 本机后端拒绝时，请查阅兼容性页面。

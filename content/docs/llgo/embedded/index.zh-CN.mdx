@@ -1,0 +1,16 @@
+---
+title: 使用 LLGo 开发嵌入式程序
+description: 为 ESP32-C3 构建固件，并在 QEMU 或开发板上检查串口输出。
+---
+
+使用 LLGo `v1.0.10` 构建上游的 ESP32-C3 串口示例，确认它输出 `Hello World`。连接开发板前，可以先用 QEMU 运行示例。请先安装 LLGo 和宿主机所需的工具。[安装 LLGo](/zh-CN/docs/llgo/getting-started/installation)
+
+使用标记为该版本的上游源码中的示例。其中的 `main.go` 通过 `github.com/goplus/lib/c` 绑定调用 C 的 `printf`。依赖版本由外层目录中的 `_demo/embed/go.mod` 指定。
+
+```sh
+git clone --depth 1 --branch v1.0.10 https://github.com/xgo-dev/llgo.git
+cd llgo/_demo/embed/testdata/esp32-serial/chello
+```
+
+- 查看 `esp32c3-basic` 目标配置，构建 ELF 和二进制文件。[选择嵌入式目标](/zh-CN/docs/llgo/embedded/targets)
+- 在 QEMU 中运行示例，或将固件烧录到兼容的开发板并打开串口监视器。[构建、烧录并监控固件](/zh-CN/docs/llgo/embedded/build-and-flash)

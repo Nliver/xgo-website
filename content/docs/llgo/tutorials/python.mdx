@@ -1,0 +1,90 @@
+---
+title: Call Python from Go
+description: Use LLGo's Python bindings with an explicit CPython environment.
+---
+
+Call Python's `math.sqrt` from a Go program, then add two matrices with NumPy. The compiled program embeds CPython and loads Python modules at run time.
+
+Use a Unix shell with LLGo `v1.0.10`, CPython 3.12 or newer, the matching Python development libraries, and `pkg-config`. Use the same Python installation for the embedding library and the modules you import. [Install LLGo](/docs/llgo/getting-started/installation)
+
+## Call Python's standard library
+
+Clone the tagged upstream repository. Check that `python3` and `pkg-config` report the same Python major and minor version. The upstream example uses `github.com/goplus/lib` at `v0.5.1`, pinned in `doc/_readme/go.mod`.
+
+```sh
+git clone --depth 1 --branch v1.0.10 https://github.com/xgo-dev/llgo.git
+cd llgo/doc/_readme/llgo_call_py
+python3 --version
+pkg-config --modversion python3-embed
+pkg-config --libs python3-embed
+```
+
+If `pkg-config` cannot find `python3-embed`, install the development package for the interpreter you selected. For a custom installation, add the directory containing its `python3-embed.pc` file to `PKG_CONFIG_PATH`. Check that `pkg-config --libs python3-embed` points to the same CPython installation before proceeding.
+
+Open `call_py.go` in the example directory. [Upstream example](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/_readme/llgo_call_py/call_py.go)
+
+```go title="call_py.go" verify="manual"
+package main
+
+import (
+	"github.com/goplus/lib/py"
+	"github.com/goplus/lib/py/math"
+	"github.com/goplus/lib/py/std"
+)
+
+func main() {
+	x := math.Sqrt(py.Float(2))
+	std.Print(py.Str("sqrt(2) ="), x)
+}
+```
+
+Run the Go package with LLGo.
+
+```sh
+llgo run .
+```
+
+```text
+sqrt(2) = 1.4142135623730951
+```
+
+`py.Float(2)` creates a Python object. `math.Sqrt` refers to `sqrt` in Python's `math` module. `std.Print` calls Python's built-in `print`. The Go package declares these operations and LLGo supplies the Python-aware linknames.
+
+Change the input to `py.Float(9)` and the label to `sqrt(9) =`, then run `llgo run .` again. The result is `sqrt(9) = 3.0`.
+
+## Add NumPy from a virtual environment
+
+From `llgo/doc/_readme/llgo_call_py`, return to the checkout root. Create a virtual environment with the same base interpreter that provides `python3-embed`. Pass the environment's module search path to the embedded interpreter, following the upstream example runner. [Upstream runner](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/_readme/scripts/run.sh)
+
+```sh
+cd ../../..
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install numpy
+python -c 'import numpy; print(numpy.__version__)'
+export PYTHONPATH="$(python -c 'import os, sys; print(os.pathsep.join(sys.path))')"
+(cd _demo/py/matrix && llgo run .)
+```
+
+The matrix example imports `github.com/goplus/lib/py/numpy`, adds two 3-by-3 arrays with `numpy.Add`, and checks that each element is `10`. [Upstream matrix example](https://github.com/xgo-dev/llgo/blob/v1.0.10/_demo/py/matrix/matrix.go)
+
+```text
+a+b = [[10. 10. 10.]
+ [10. 10. 10.]
+ [10. 10. 10.]]
+```
+
+These examples were verified on Intel macOS with Go 1.27.4 and CPython 3.15.2. The matrix example used NumPy 2.5.5. The pinned binding may print a compile-time deprecation warning for `//llgo:type C`.
+
+Run `deactivate` and `unset PYTHONPATH` when finished.
+
+The binding layers have different roles. `py` contains object conversion, `py/std` exposes Python built-ins, and packages such as `py/math`, `py/numpy`, and `py/torch` describe modules. Installing a Go binding does not install the corresponding Python package.
+
+## Classify failures
+
+- A Go compiler error points to a declaration, package, or LLGo binding issue.
+- A linker error about Python or `-lpython` points to the CPython development installation or `pkg-config` output.
+- `ModuleNotFoundError` happens after startup. Check `PYTHONPATH`, the Python version, and the module installation.
+- A dynamic-library loader error means the executable cannot find the CPython shared library. Check the platform's runtime library search path.
+
+For the `LLGoPackage` and `py.` linkname rules, read [linkname reference](/docs/llgo/reference/linknames).

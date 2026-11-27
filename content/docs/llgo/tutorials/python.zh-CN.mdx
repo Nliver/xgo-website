@@ -1,0 +1,90 @@
+---
+title: 从 Go 调用 Python
+description: 指定 CPython 环境，通过 LLGo 的 Python 绑定调用标准库和 NumPy。
+---
+
+先从 Go 程序调用 Python 的 `math.sqrt`，再用 NumPy 将两个矩阵相加。编译后的程序会嵌入 CPython，并在运行时加载 Python 模块。
+
+请准备 Unix shell、LLGo `v1.0.10`、CPython 3.12 或更高版本、与之匹配的 Python 开发库，以及 `pkg-config`。嵌入程序所链接的 Python 库和运行时导入的模块应来自同一套 Python 安装。[安装 LLGo](/zh-CN/docs/llgo/getting-started/installation)
+
+## 调用 Python 标准库
+
+克隆上游仓库并检出指定标签。检查 `python3` 和 `pkg-config` 报告的 Python 主版本号和次版本号是否一致。示例在 `doc/_readme/go.mod` 中将 `github.com/goplus/lib` 固定为 `v0.5.1`。
+
+```sh
+git clone --depth 1 --branch v1.0.10 https://github.com/xgo-dev/llgo.git
+cd llgo/doc/_readme/llgo_call_py
+python3 --version
+pkg-config --modversion python3-embed
+pkg-config --libs python3-embed
+```
+
+如果 `pkg-config` 找不到 `python3-embed`，请安装与所选解释器匹配的开发包。对于自定义安装，将 `python3-embed.pc` 所在的目录加入 `PKG_CONFIG_PATH`。继续之前，用 `pkg-config --libs python3-embed` 确认链接参数指向同一套 CPython。
+
+打开示例目录中的 `call_py.go`。[上游示例源码](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/_readme/llgo_call_py/call_py.go)
+
+```go title="call_py.go" verify="manual"
+package main
+
+import (
+	"github.com/goplus/lib/py"
+	"github.com/goplus/lib/py/math"
+	"github.com/goplus/lib/py/std"
+)
+
+func main() {
+	x := math.Sqrt(py.Float(2))
+	std.Print(py.Str("sqrt(2) ="), x)
+}
+```
+
+用 LLGo 运行这个 Go 包。
+
+```sh
+llgo run .
+```
+
+```text
+sqrt(2) = 1.4142135623730951
+```
+
+`py.Float(2)` 创建一个 Python 对象，`math.Sqrt` 对应 Python 的 `math.sqrt`，而 `std.Print` 调用 Python 内置的 `print` 函数。Go 包提供这些操作的声明，LLGo 通过面向 Python 的链接名将声明绑定到具体操作。
+
+将输入改为 `py.Float(9)`，并把输出标签改为 `sqrt(9) =`，再次执行 `llgo run .`，会看到 `sqrt(9) = 3.0`。
+
+## 从虚拟环境加载 NumPy
+
+从 `llgo/doc/_readme/llgo_call_py` 返回仓库根目录，使用提供 `python3-embed` 的同一基础解释器创建虚拟环境。参照上游示例的运行脚本，把虚拟环境的模块搜索路径传给嵌入的解释器。[上游运行脚本](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/_readme/scripts/run.sh)
+
+```sh
+cd ../../..
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install numpy
+python -c 'import numpy; print(numpy.__version__)'
+export PYTHONPATH="$(python -c 'import os, sys; print(os.pathsep.join(sys.path))')"
+(cd _demo/py/matrix && llgo run .)
+```
+
+矩阵示例导入 `github.com/goplus/lib/py/numpy`，通过 `numpy.Add` 将两个 3×3 数组逐元素相加，并检查结果中的每个元素都等于 `10`。[上游矩阵示例](https://github.com/xgo-dev/llgo/blob/v1.0.10/_demo/py/matrix/matrix.go)
+
+```text
+a+b = [[10. 10. 10.]
+ [10. 10. 10.]
+ [10. 10. 10.]]
+```
+
+示例的验证环境为 Intel Mac、Go 1.27.4 和 CPython 3.15.2，矩阵示例使用 NumPy 2.5.5。编译此版本的绑定时，可能会看到关于 `//llgo:type C` 已弃用的警告。
+
+完成后依次运行 `deactivate` 和 `unset PYTHONPATH`。
+
+各绑定包分工不同。`py` 提供对象转换，`py/std` 提供 Python 的内置函数，`py/math`、`py/numpy` 和 `py/torch` 等包描述相应 Python 模块的接口。安装 Go 绑定后，仍需在 Python 环境中安装所依赖的第三方包。
+
+## 按出错阶段定位问题
+
+- Go 编译器报错时，检查函数声明、Go 包或 LLGo 绑定。
+- 链接器报告找不到 Python 或 `-lpython` 时，检查 CPython 开发库以及 `pkg-config` 给出的链接参数。
+- 程序启动后出现 `ModuleNotFoundError` 时，检查 `PYTHONPATH`、Python 版本以及目标模块的安装位置。
+- 动态库加载器报错时，可执行文件可能找不到 CPython 共享库。请检查该平台运行时的动态库搜索路径。
+
+`LLGoPackage` 和 `py.` 链接名的规则见[链接名参考](/zh-CN/docs/llgo/reference/linknames)。

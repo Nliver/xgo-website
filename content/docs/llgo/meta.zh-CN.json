@@ -1,11 +1,21 @@
 {
   "title": "LLGo",
-  "description": "使用 LLVM 编译 Go 并调用原生库。",
+  "description": "用 LLVM 将 Go 编译为原生代码。",
   "root": true,
   "icon": "Cpu",
   "pages": [
     "index",
+    "getting-started",
+    "tutorials",
+    "reference",
+    "compiler",
+    "native-files",
     "interoperability",
-    "examples"
+    "toolchain",
+    "debugging",
+    "testing",
+    "embedded",
+    "examples",
+    "contributing"
   ]
 }

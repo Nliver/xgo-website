@@ -1,0 +1,18 @@
+---
+title: Manage modules with LLGo
+description: Use Go modules and package selection while keeping the LLGo compiler on the build path.
+---
+
+LLGo uses the Go module graph and delegates module commands to the Go toolchain.
+
+```sh
+llgo mod init example.com/project
+llgo mod tidy
+llgo mod vendor
+```
+
+Keep a real Go executable in an absolute `PATH` directory. The module driver skips links that point back to LLGo so a delegated operation cannot recurse into itself.
+
+Use `-mod` and `-modfile` to choose the source module graph. Native build commands also support the documented `-overlay` JSON format for Go source replacement. Relative paths are resolved from the command's `-C` directory.
+
+The compiler still resolves native files and runtime inputs from the ordinary filesystem. Non-Go overlay replacements are rejected in the v1.0.10 contract when a native consumer cannot use them.

@@ -1,0 +1,37 @@
+---
+title: Cross-package inlining in LLGo
+description: Understand when LLGo imports Go function bodies into callers and how LLVM chooses which calls to inline.
+---
+
+LLVM needs a function body to inline a call. When a direct call crosses a Go package boundary, LLGo can lower an eligible callee's Go SSA body into the caller's LLVM module. The copy uses LLVM's `available_externally` linkage, which makes the body available for optimization without emitting an extra real definition. Calls and function values still refer to the symbol owned by the defining package. [Inlining design](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Inlining.md#llvm-representation)
+
+## How LTO changes body visibility
+
+| Build mode | Where LLVM sees dependency bodies |
+| --- | --- |
+| `-lto=off` | LLGo supplies eligible bodies to the caller's module before package optimization. |
+| `-lto=thin` | The same frontend import policy applies. The linker also has access to ThinLTO bitcode. |
+| `-lto=full` | LLGo skips frontend body imports. LLVM sees the defining packages' bodies during the final link. |
+
+An import makes a body available. LLVM still applies its own optimization level, target, and call-site cost rules when deciding whether to inline. A cache hit on a dependency archive can still supply imported bodies. When frontend caching is enabled and supported, LLGo validates dependency facts and materializes eligible bodies as needed. [Inlining modes](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Inlining.md) · [Build regression tests](https://github.com/xgo-dev/llgo/blob/v1.0.10/internal/build/cross_inline_test.go)
+
+## What the frontend can import
+
+LLGo v1.0.10 limits each candidate to 80 SSA cost units, each importing module to 1,024 units, and the discovery depth to five. These are frontend estimates. In particular, a call to an importable candidate contributes that body's cost, while a non-importable call adds a separate cost. Ordinary functions and value or pointer receiver methods use the same import policy.
+
+The policy excludes bodies with loops, recursion, closures that carry an environment, goroutines, defer or recover, and generic declarations and instances. It also excludes bodies that need a real runtime caller frame and bodies from declaration-only packages. An LLGo source patch can supply a replacement body when the symbol and mapped signature match, including the receiver type for methods. At `-O0` and in shadow-stack or debugger-frame instrumented builds, LLGo disables frontend body imports.
+
+Use `//go:noinline` on the defining function when it must retain its call boundary. LLGo suppresses the import and marks the LLVM definition and importing declarations `noinline`, so the directive also applies when the final link sees the body. [Candidate limits](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Inlining.md#candidate-and-import-limits) · [Body import implementation](https://github.com/xgo-dev/llgo/blob/v1.0.10/cl/inline.go)
+
+## Reproduce the output comparison
+
+Run this from the LLGo source checkout with a working `llgo` on `PATH`. The upstream fixture decodes, updates, and encodes 64 JSON records. The commands capture both output streams because the Go built-ins used by the fixture can write to standard error.
+
+```sh
+go run ./benchmark/crossinline/json > go.out 2>&1 &&
+  llgo run -Os ./benchmark/crossinline/json > llgo.out 2>&1 &&
+  test -s go.out &&
+  cmp go.out llgo.out
+```
+
+Success means the reference output contains data and `cmp` finds matching bytes. This checks the fixture's behavior. The upstream compiler tests separately inspect which bodies appear in the caller module and exercise cold and warm dependency archives across LTO modes. [Comparison procedure](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/Inlining.md#validation) · [JSON fixture](https://github.com/xgo-dev/llgo/tree/v1.0.10/benchmark/crossinline/json) · [Body import tests](https://github.com/xgo-dev/llgo/blob/v1.0.10/internal/build/cross_inline_test.go)

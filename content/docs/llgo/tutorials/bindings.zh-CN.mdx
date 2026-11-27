@@ -1,0 +1,62 @@
+---
+title: 使用 LLGo 绑定
+description: 通过现有绑定在 Go 中调用 C 库，并检查其原生依赖。
+---
+
+在 Go 模块中调用 C 数学库的 `sqrt` 函数，打印 2 的平方根。你会导入一个绑定包，也就是声明 LLGo 如何调用原生库函数的 Go 包。请使用 LLGo `v1.0.10` 和可用的本机工具链。 [安装 LLGo](/zh-CN/docs/llgo/getting-started/installation)
+
+## 调用 C 数学库
+
+在空目录中初始化 Go 模块。
+
+```sh
+go mod init example.com/native-math
+```
+
+将上游示例保存为 `main.go`。 [上游示例](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/_readme/llgo_call_cmath/call_cmath.go)
+
+```go title="main.go" verify="manual"
+package main
+
+import "github.com/goplus/lib/c/math"
+
+func main() {
+	println("sqrt(2) =", math.Sqrt(2))
+}
+```
+
+按上游示例模块指定的版本添加绑定，然后运行程序。 [上游示例模块](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/_readme/go.mod)
+
+```sh
+go get github.com/goplus/lib/c/math@v0.5.1
+llgo run .
+```
+
+```text
+sqrt(2) = 1.41421
+```
+
+这个 Go 包提供 `math.Sqrt`。LLGo 会将调用解析到 C 符号 `sqrt`，并将本机实现链接进来。要保留可执行文件，运行 `llgo build -o native-math .`，再用 `./native-math` 启动它。
+
+## 查找其他库的绑定
+
+LLAR Hub 提供 cJSON、libuv、OpenSSL、raylib、SQLite 和 zlib 等库的绑定。其中大多数 C 和 C++ 绑定包由 `llcppg` 生成。选定库后，按绑定包的 README 安装受支持的原生库版本和所需工具。再用 `go get` 添加绑定，在源码中导入它，并用 LLGo 构建。 [上游 LLGo 绑定目录](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/LLGo-Bindings.md)
+
+Go 模块提供绑定声明。本机头文件描述 C 或 C++ API，编译包含这些头文件的本机代码时需要它们。链接器从已编译的库中解析符号。如果绑定使用 `pkg-config`，它会读取已安装库的元数据，取得编译器和链接器选项。
+
+## 检查原生依赖
+
+如果绑定依赖 `pkg-config`，请使用该绑定 README 给出的包名。下面以已经安装 libffi 的机器为例，检查库的版本、构建选项和 LLGo 的目标架构。
+
+```sh
+pkg-config --modversion libffi
+pkg-config --cflags libffi
+pkg-config --libs libffi
+llgo env GOOS GOARCH
+```
+
+如果 `pkg-config` 找不到该包，请检查已安装的开发包是否包含相应的元数据，以及 `pkg-config` 是否能找到元数据文件。使用 `llgo build -x .` 查看构建命令。如果仍有符号无法解析，请核对所选原生库的版本和架构是否符合绑定要求和 LLGo 构建目标。
+
+需要编写小型适配器，或调用绑定包还未公开的函数时，可以将自己的 C 或 C++ 源文件加入 Go 包。 [链接本地 C 函数](/zh-CN/docs/llgo/tutorials/native-library)
+
+要通过 `github.com/goplus/lib/py` 导入 Python 模块，可以按 Python 教程操作。 [从 Go 调用 Python](/zh-CN/docs/llgo/tutorials/python)

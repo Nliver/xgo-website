@@ -1,0 +1,16 @@
+---
+title: 选择 LLGo 目标
+description: 构建前比较本机、WebAssembly 和嵌入式目标配置。
+---
+
+在 LLGo 中，目标决定运行时、链接器、输出格式和运行程序所用的工具。
+
+| 类别 | 示例 | 常见输出或宿主 |
+| --- | --- | --- |
+| 本机 | Linux amd64/arm64、macOS amd64/arm64、Windows 386/amd64/arm64 | 桌面可执行文件 |
+| WebAssembly | `wasi`、`emscripten`、`emscripten-memory64`、`js/wasm` | 在 WASI、Node.js 或浏览器中运行的 Wasm 模块 |
+| 嵌入式 | `esp32`、`rp2040`、`cortex-m-qemu` | 固件镜像、开发板或模拟器 |
+
+使用 `llgo env -target=name` 查看目标配置。本机构建默认使用 BDWGC 垃圾回收器。裸机目标使用目标配置指定的垃圾回收器和运行时。
+
+WebAssembly 命令见[构建 WebAssembly 程序](/zh-CN/docs/llgo/tutorials/webassembly)。固件格式及设备运行方式见[嵌入式开发](/zh-CN/docs/llgo/embedded)。

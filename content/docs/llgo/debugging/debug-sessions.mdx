@@ -1,0 +1,48 @@
+---
+title: Set a breakpoint and inspect variables
+description: Debug a Go package with LLDB and choose the right transport for embedded and WebAssembly targets.
+---
+
+Build the native first program from [Compile your first Go program](/docs/llgo/getting-started/first-program) under a debugger. LLGo needs a working LLDB installation for this workflow. On macOS, use the LLDB shipped with Xcode Command Line Tools.
+
+## Start a native session
+
+From the directory containing `main.go`, build the package and open a session.
+
+```sh
+llgo debug .
+```
+
+At the LLDB prompt, set a breakpoint on the line containing `fmt.Println`. In the first-program example, this is line 6 of `main.go`.
+
+```text
+breakpoint set --file main.go --line 6
+run
+frame info
+bt
+continue
+quit
+```
+
+LLDB stops in `main` and reports the Go source location. After `continue`, the program prints `Hello, LLGo` and exits. Add a local variable, assign it the string before the print call, and use `next` and `frame variable` to inspect its value.
+
+`llgo debug` builds one executable package with DWARF source information and defaults to `-O0` unless you select an optimization level. It cleans up its temporary artifacts and any local debug server. Use `-o app` to keep the binary. Pass optional debugger arguments after `--`. To open an existing binary directly, use `llgo lldb ./app`.
+
+## Choose a target debugger
+
+| Build target | Automatic backend | Session requirements |
+| --- | --- | --- |
+| Native Linux, macOS, or Windows | LLDB | A supported LLDB executable on the host |
+| Embedded board or emulator | GDB | The target's debug-server command, OpenOCD configuration, or an existing remote server |
+| Emscripten or GoJS | Chrome DevTools | Chrome for Testing or Chromium with unpacked extensions enabled |
+| WASI | LLDB with `llgo-wasi-debug` | An LLGo WASI debugger host and LLDB |
+
+For a board with OpenOCD configured, start the session with `llgo debug -target=rp2040 .`. LLGo's automatically started OpenOCD session resets the device, loads the image, and halts it. To connect to an existing OpenOCD server, use `llgo debug -target=rp2040 -remote=:3333 .` and preload the matching image. Add `-load` to request a reset and download through that remote server. Use `-backend=lldb` to select LLDB for a compatible remote target.
+
+For a browser build, run `llgo debug -target=emscripten -chrome /path/to/chrome .` with the Emscripten toolchain from the [WebAssembly tutorial](/docs/llgo/tutorials/webassembly). LLGo opens an isolated browser profile and serves the session over loopback. Set the breakpoint in DevTools **Sources**, then run from the session page.
+
+For WASI, build the optional `llgo-wasi-debug` host with Rust 1.97 or newer. Run `llgo debug -target=wasi -wasi-host=/path/to/llgo-wasi-debug .`, then set `breakpoint set --name main.main` before running the guest. The debugger host provides the WASI threads interface and is selected independently of the Wasmer runner used by `llgo run -target=wasi`. [WASI debugger host setup](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/test/debug/wasi/host/README.md)
+
+## Keep source information in deployment builds
+
+`llgo debug` requires DWARF and rejects `-ldflags=-w` and `-debug-artifact=none`. Explicit native builds can preserve DWARF with `-ldflags=-w=false`. On macOS, keep any associated debug objects or the matching `.dSYM` bundle with the executable. For WebAssembly, `-debug-artifact=embedded` keeps DWARF in the module, and `-debug-artifact=external` writes a matching sibling `.debug.wasm`. For a supported firmware target, `-debug-artifact=host` keeps DWARF in the host ELF while the deployment image stays separate. [Upstream debugger options and target support](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/doc/debugging.md)

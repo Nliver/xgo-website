@@ -1,0 +1,12 @@
+---
+title: Go 命令兼容性
+description: 了解 LLGo 与标准 Go 命令之间兼容性范围。
+---
+
+LLGo 支持 Go 源码与模块工作流程，使用独立的编译器与运行时。LLGo 对 Go 命令行选项的支持范围以兼容性清单为准。
+
+v1.0.10 兼容性清单记录每个对外命令和选项的状态。LLGo 自行实现的 `build`、`run`、`test` 和 `install` 支持清单中规定的子集。`fmt`、`doc`、`mod` 和 `work` 原样交给 Go 执行。遇到不支持的选项时，LLGo 会在加载包之前报错。
+
+LLGo v1.0.10 后端不支持的选项包括 `-race`、`-msan`、`-asan`、`-pgo`、`-linkshared`、`-n`、`-work`、`-trimpath` 和 `-buildvcs`。`-buildmode` 支持 `exe`、`c-archive` 和 `c-shared`。
+
+将 Go 命令行复制到 LLGo 构建前，请阅读[命令参考](/zh-CN/docs/llgo/toolchain/commands)。如果收到不支持某个选项的错误，可据此判断该操作是否在 LLGo 的兼容范围内。

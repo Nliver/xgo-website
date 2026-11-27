@@ -1,0 +1,126 @@
+---
+title: 将现有 Go 项目迁移到 LLGo
+description: 对同一个 Go 模块分别使用标准 Go 工具链和 LLGo 构建、测试、运行和安装，了解迁移时需要检查的差异。
+---
+
+本教程用 Go 和 LLGo 分别编译同一个命令行程序及其依赖的库，再运行各自安装的可执行文件。你需要 Go 1.27、LLGo v1.0.10，以及适用于本机的原生工具链和库。下面的命令使用 POSIX shell 语法。[安装 LLGo](/zh-CN/docs/llgo/getting-started/installation)
+
+## 创建 Go 模块
+
+在模块根目录编写命令行程序，在 `greeting` 子目录中编写库包。
+
+```sh
+mkdir llgo-migration
+cd llgo-migration
+go mod init example.com/llgo-migration
+mkdir greeting
+```
+
+将库函数保存到 `greeting/greeting.go`。
+
+```go title="greeting/greeting.go" verify="manual"
+package greeting
+
+func Format(name string) string {
+	return "Hello, " + name + "!"
+}
+```
+
+将对应的测试保存到 `greeting/greeting_test.go`。
+
+```go title="greeting/greeting_test.go" verify="manual"
+package greeting
+
+import "testing"
+
+func TestFormat(t *testing.T) {
+	got := Format("LLGo")
+	want := "Hello, LLGo!"
+	if got != want {
+		t.Fatalf("Format(%q) = %q, want %q", "LLGo", got, want)
+	}
+}
+```
+
+将命令行程序保存到 `main.go`。传入参数时，程序向第一个参数指定的人问好，否则使用默认名字。
+
+```go title="main.go" verify="manual"
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"example.com/llgo-migration/greeting"
+)
+
+func main() {
+	name := "LLGo"
+	if len(os.Args) > 1 {
+		name = os.Args[1]
+	}
+	fmt.Println(greeting.Format(name))
+}
+```
+
+## 比较两个工具链选中的包、测试结果和构建结果
+
+在模块根目录运行以下命令，查看两个编译器驱动分别选中了哪些包。
+
+```sh
+go list ./...
+llgo list ./...
+```
+
+两条命令都会输出这两个导入路径。
+
+```text
+example.com/llgo-migration
+example.com/llgo-migration/greeting
+```
+
+`./...` 用于选择当前目录及其子目录中的包。LLGo 调用 Go 列出包，同时应用 LLGo 的源文件选择规则。如果项目使用编译器专用的构建标签，或按目标平台选择源文件，这些规则会影响结果。在原生目标上，两套工具链都通过模块依赖图解析导入路径。[Go 命令兼容性](/zh-CN/docs/llgo/toolchain/go-compatibility)
+
+运行已有测试，并检查两个编译器能否分别构建这两个包。
+
+```sh
+go test ./...
+llgo test ./...
+go build ./...
+llgo build ./...
+```
+
+两个测试命令都应在 `example.com/llgo-migration/greeting` 一行显示 `ok`。两次构建都应成功完成。接下来可以直接运行根目录中的命令行程序。
+
+## 运行并安装命令行程序
+
+用 `.` 选择根目录中的包。包名之后的参数会传给编译好的程序。
+
+```sh
+go run .
+llgo run .
+go run . Ada
+llgo run . Ada
+```
+
+两套工具链在没有参数时都输出 `Hello, LLGo!`，传入 `Ada` 时都输出 `Hello, Ada!`。
+
+分别将 `GOBIN` 设为两个目录的绝对路径。这样可以按路径分别运行两个版本，也不会占用平时用于安装 Go 命令的目录。
+
+```sh
+mkdir -p bin/go bin/llgo
+GOBIN="$PWD/bin/go" go install ./...
+GOBIN="$PWD/bin/llgo" llgo install ./...
+./bin/go/llgo-migration
+./bin/llgo/llgo-migration
+```
+
+两个可执行文件都输出 `Hello, LLGo!`。LLGo 根据当前模块的依赖图安装程序。若要安装其他模块中的命令，请在当前模块中固定依赖版本，或检出所需的源码版本再构建。LLGo v1.0.10 的 `run` 和 `install` 均不接受 `package@version` 形式的参数。[使用 LLGo 管理模块](/zh-CN/docs/llgo/toolchain/modules)
+
+## 检查自己的模块
+
+在自己的模块根目录重复执行上述列包、测试和构建命令。遇到构建标签或平台专用文件时，用 `llgo list -json ./...` 查看实际选中的文件。检查构建脚本和 `GOFLAGS` 使用的选项。LLGo v1.0.10 不支持 `-race`、`-msan`、`-asan`、`-pgo`、`-linkshared`、`-trimpath` 和 `-buildvcs` 等参数。依赖这些功能的步骤可以继续使用标准 Go 工具链。[Go 命令兼容性](/zh-CN/docs/llgo/toolchain/go-compatibility)
+
+包测试通过后，再运行能代表实际使用场景的负载。LLGo 的本机 goroutine 与操作系统线程一一对应，使用固定大小的原生栈。在有宿主操作系统的平台上，默认使用 Boehm 保守式垃圾回收器。如果应用依赖高并发或深层递归，请检查并发峰值、递归深度和内存用量。[LLGo 运行时](/zh-CN/docs/llgo/compiler/runtime)
+
+如果包依赖原生库，请确认库和头文件与构建目标匹配。遇到找不到 `-lgc` 的错误时，检查库的搜索路径。如果链接器找不到原生符号，检查库的架构和实际导出的符号。[检查构建环境](/zh-CN/docs/llgo/getting-started/environment) · [调用原生库](/zh-CN/docs/llgo/tutorials/native-library)

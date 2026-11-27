@@ -1,0 +1,55 @@
+---
+title: Use LLGo linkname namespaces
+description: Bind C, Windows, Python, LLVM, and compiler symbols with LLGo's linkname rules.
+---
+
+LLGo extends `go:linkname` with namespaces that identify the ABI or compiler service behind a declaration.
+
+| Namespace | Purpose |
+| --- | --- |
+| `C.` | C and C++ ABI symbols |
+| `stdcall.` | Windows stdcall symbols |
+| `py.` | Python functions and values |
+| `llgo.` | LLGo compiler instructions |
+| `llvm.` | Checked LLVM intrinsics |
+
+## Import a native symbol
+
+An external C function uses a Go prototype with no body. Use the C identifier or, for a C++ function, the symbol’s mangled name as it appears in the object file.
+
+```go title="linkname.go" verify="manual"
+import _ "unsafe"
+
+//go:linkname Sqrt C.sqrt
+func Sqrt(x float64) float64
+```
+
+## Export a Go implementation to C
+
+Giving a `C.` declaration a body defines the C entry point. LLGo generates the runtime boundary a native thread needs when it enters Go. Here, C callers see a function named `add_ints` that accepts and returns signed 32-bit integers.
+
+```go title="linkname.go" verify="manual"
+//go:linkname addInts C.add_ints
+func addInts(a, b int32) int32 { return a + b }
+```
+
+For a variable, `C.` selects storage owned by the native library. The Go declaration specifies its type and must omit the initializer. To expose Go-owned state to C, export an accessor function.
+
+## Bind a method or a Python function
+
+Use `//llgo:link T.Method C.symbol` to bind a Go method. The C function receives the receiver as its first argument. Supply a Go body for this directive. LLGo calls the linked symbol, and a build with the standard Go compiler can use the body.
+
+A Python binding names its module once per package, for example with `const LLGoPackage = "py.math"`. A prototype bound to `py.sqrt` resolves the `sqrt` attribute in that module. See the [Python tutorial](/docs/llgo/tutorials/python) for a complete program.
+
+## Bind an LLVM operation
+
+In the fragment below, `llvm.ctlz` counts leading zero bits. The Go prototype selects the 32-bit overload. LLVM requires a constant for the second argument. Passing `false` gives a defined result of 32 for an input of zero.
+
+```go title="linkname.go" verify="manual"
+//go:linkname ctlz32 llvm.ctlz
+func ctlz32(x uint32, zeroIsPoison bool) uint32
+
+func LeadingZeros32(x uint32) uint32 { return ctlz32(x, false) }
+```
+
+Use the ordinary Go wrapper as a function value or in a `go` or `defer` statement. It supplies the required constant at the intrinsic call site. LLGo accepts selected intrinsic families and validates their signatures against the LLVM version used to build the compiler.

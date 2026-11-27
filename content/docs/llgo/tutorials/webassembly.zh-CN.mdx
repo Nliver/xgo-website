@@ -1,0 +1,89 @@
+---
+title: 构建并运行 WebAssembly 程序
+description: 为 WASI 或 Emscripten 选择目标配置，在对应宿主环境中运行 LLGo 生成的程序。
+---
+
+用 LLGo `v1.0.10` 为两种宿主编译同一个 Go 程序。WASI 版本使用 LLGo 维护的 Wasmer 分支运行，Emscripten 版本使用 Node.js 运行。两者都应输出 `Hello, LLGo`。下文使用 Unix shell 语法。[安装 LLGo](/zh-CN/docs/llgo/getting-started/installation)
+
+## 准备 Go 包
+
+可以复用入门教程中的 Go 包，也可以用以下命令创建新模块，并将示例代码保存为 `main.go`。[编译第一个 Go 程序](/zh-CN/docs/llgo/getting-started/first-program)
+
+```sh
+mkdir llgo-wasm-hello
+cd llgo-wasm-hello
+go mod init example.com/llgohello
+```
+
+```go title="main.go" verify="manual"
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello, LLGo")
+}
+```
+
+后续命令都在这个目录中执行。先查看每个目标的 WebAssembly 配置类型（profile）和实现（provider）。
+
+```sh
+llgo env -target=wasi LLGO_TARGET_WASM_PROFILE LLGO_TARGET_WASM_PROVIDER
+llgo env -target=emscripten LLGO_TARGET_WASM_PROFILE LLGO_TARGET_WASM_PROVIDER
+```
+
+第一条命令输出 `w32` 和 `wasi`，第二条输出 `j32` 和 `emscripten`。用 `llgo env -json -target=wasi` 或 `llgo env -json -target=emscripten` 查看完整配置。关注 `LLGO_TARGET_LLVM_TARGET`、`LLGO_TARGET_GOOS`、`LLGO_TARGET_GOARCH` 和 `LLGO_TARGET_EMULATOR`。没有前缀的 `GOOS` 和 `GOARCH` 描述的是当前 Go 环境。[WebAssembly 目标配置](/zh-CN/docs/llgo/reference/webassembly)
+
+克隆对应版本的 LLGo 源码。后面会用到其中的 WASI 运行器安装脚本，以及 Emscripten 的配套文件。
+
+```sh
+git clone --depth 1 --branch v1.0.10 https://github.com/xgo-dev/llgo.git ../llgo-v1.0.10
+export LLGO_SOURCE="$(cd ../llgo-v1.0.10 && pwd)"
+```
+
+## 为 WASI 构建
+
+LLGo `v1.0.10` 的 WASI 目标使用支持线程的 WASI Preview 1 接口。首次构建时可能会下载 WASI SDK。用上游脚本安装 LLGo 维护的 Wasmer 分支。如果当前平台没有预编译包（例如 Intel Mac），可以从源码编译该分支，或在有预编译包的平台上运行。[WASI 运行器要求](https://github.com/xgo-dev/llgo/blob/v1.0.10/doc/wasm-wasi-threads.md)
+
+```sh
+bash "$LLGO_SOURCE/dev/install_wasmer.sh"
+```
+
+将安装脚本打印的 `bin` 目录加入 `PATH`，然后构建并运行 Go 包。
+
+```sh
+llgo build -target=wasi -o hello-wasi.wasm .
+wasmer run --enable-exceptions --enable-simd --stack-size=1048576 hello-wasi.wasm
+```
+
+```text
+Hello, LLGo
+```
+
+也可以执行 `llgo run -target=wasi -emulator .`，一次完成编译，并交给目标配置中指定的运行器执行。
+
+## 使用 Emscripten 构建并在 Node.js 中运行
+
+准备 Emscripten SDK 6.0.8 和 Node.js 24，并将它们加入 `PATH`，与该上游版本的持续集成环境一致。下载适用于当前平台、包含 LLGo 补丁的 Binaryen `llgo-v132.3` 压缩包并解压。将下方的 `/path/to/binaryen-llgo-v132.3` 替换为解压目录的绝对路径。[上游 WebAssembly 持续集成配置](https://github.com/xgo-dev/llgo/blob/v1.0.10/.github/workflows/llgo.yml) · [Binaryen 安装配置](https://github.com/xgo-dev/llgo/blob/v1.0.10/.github/actions/setup-binaryen/action.yml)
+
+将 `LLGO_ROOT` 指向对应版本的 LLGo 源码目录。其中包含 JavaScript 运行器和链接器所需的配套文件。
+
+```sh
+export EM_BINARYEN_ROOT=/path/to/binaryen-llgo-v132.3
+export WASMOPT="$EM_BINARYEN_ROOT/bin/wasm-opt"
+export LLGO_ROOT="$LLGO_SOURCE"
+llgo build -target=emscripten -o hello.mjs .
+node "$LLGO_ROOT/targets/emscripten-runner.mjs" ./hello.mjs
+```
+
+```text
+Hello, LLGo
+```
+
+将 `hello.mjs`、`hello.wasm` 与生成的 `wasm_fs.js` 等配套文件放在同一目录。Node.js 运行器会加载 ES 模块，并在该目录查找其余文件。
+
+## 选择适合的 JavaScript 接口
+
+设置 `GOOS=js GOARCH=wasm` 会选用与 Go 兼容的 JavaScript 接口，并生成 LLGo 自带的 `wasm_exec.js` 加载器。运行时要使用与二进制文件配套的加载器。若需使用 Memory64，请选择 `-target=emscripten-memory64` 和对应的 Memory64 运行器。宿主导入项与栈设置见 [WebAssembly 目标配置](/zh-CN/docs/llgo/reference/webassembly)。
+
+首次构建成功后，可继续查阅[目标平台参考](/zh-CN/docs/llgo/reference/targets)、[WebAssembly 目标配置](/zh-CN/docs/llgo/reference/webassembly)和 [LLGo 命令兼容性](/zh-CN/docs/llgo/toolchain/go-compatibility)。

@@ -1,0 +1,16 @@
+---
+title: Choose an LLGo target
+description: Compare hosted native, WebAssembly, and embedded target profiles before building.
+---
+
+LLGo target selection changes the runtime, linker, output format, and runner.
+
+| Family | Examples | Typical output or host |
+| --- | --- | --- |
+| Native | Linux amd64/arm64, macOS amd64/arm64, Windows 386/amd64/arm64 | Desktop executable |
+| WebAssembly | `wasi`, `emscripten`, `emscripten-memory64`, `js/wasm` | Wasm module with a WASI, Node, or browser host |
+| Embedded | `esp32`, `rp2040`, `cortex-m-qemu` | Firmware image, board, or emulator |
+
+Use `llgo env -target=name` to inspect a profile. Native builds use BDWGC by default. Bare-metal profiles use the collector and runtime selected by the target configuration.
+
+For WebAssembly commands, see [Build a WebAssembly program](/docs/llgo/tutorials/webassembly). For firmware formats and device runners, see [embedded development](/docs/llgo/embedded).

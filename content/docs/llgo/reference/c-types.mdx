@@ -1,0 +1,30 @@
+---
+title: Map C types to Go types
+description: Choose Go declarations that match the C ABI and preserve pointer and aggregate layout.
+---
+
+LLGo's C bindings use Go declarations that represent the C ABI. Match the width and signedness of values crossing the boundary.
+
+| C type | Go type |
+| --- | --- |
+| `char` | `c.Char` or `int8` |
+| `short` | `int16` |
+| `int` | `c.Int` |
+| `long` | `c.Long` |
+| `unsigned int` | `c.Uint` |
+| `unsigned long` | `c.Ulong` |
+| `long long` | `int64` |
+| `unsigned char` | `byte` |
+| `unsigned long long` | `uint64` |
+| `size_t` | `uintptr` |
+| `float` | `float32` |
+| `double` | `float64` |
+| `void*` | `c.Pointer` |
+| `T*` | `*T` |
+| C function pointer parameter | `func` |
+
+Use the `c` types from `github.com/goplus/lib/c` when the native header uses platform-defined C widths. A C function pointer stored in a struct is represented as a C pointer, while a function pointer parameter can use a Go function type.
+
+In a C parameter list, `T[N]` decays to a pointer, so declare the Go parameter as `*T`. As a struct member the same spelling reserves inline storage for N elements, so use `[N]T`. When crossing a Wasm host boundary, check the [profile’s pointer widths](/docs/llgo/reference/webassembly).
+
+For native structs, see [calling conventions and host layout](/docs/llgo/reference/calling-conventions).

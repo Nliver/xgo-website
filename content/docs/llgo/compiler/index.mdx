@@ -1,0 +1,10 @@
+---
+title: LLGo compiler internals
+description: Follow Go source through the LLVM build pipeline and understand the runtime and inlining decisions behind the resulting program.
+---
+
+LLGo compiles Go source through its own frontend, LLVM backend, and target runtime. These pages describe the implementation in LLGo v1.0.10.
+
+- [Compiler pipeline](/docs/llgo/compiler/pipeline) follows a package from source selection to the linked artifact and shows how to read allocation diagnostics.
+- [Runtime model](/docs/llgo/compiler/runtime) explains how goroutines, garbage collection, and callable values differ across native, Wasm, and embedded targets.
+- [Cross-package inlining](/docs/llgo/compiler/inlining) explains how function bodies reach LLVM and how link-time optimization changes that process.

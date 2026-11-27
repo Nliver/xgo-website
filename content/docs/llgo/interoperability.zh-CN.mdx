@@ -27,7 +27,7 @@ require github.com/goplus/lib v0.7.0
 
 ## 生成并运行 Go 包
 
-安装 LLGo 并完成工具链检查。参阅 [LLGo 初次编译](/zh-CN/docs/llgo)。
+安装 LLGo 并完成工具链检查。参阅 [编译第一个 Go 程序](/zh-CN/docs/llgo/getting-started/first-program)。
 
 在 XGo 包目录中先生成 Go 源码，再直接调用 LLGo。
 
@@ -42,7 +42,7 @@ llgo run .
 
 导入 `c` 包。当 API 需要以空字符结尾的 C 字符串时，使用 C 字符串字面量。
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "c"
 
 c.printf c"Hello world\n"
@@ -54,7 +54,7 @@ c.printf c"Hello world\n"
 
 LLGo 通过 `cpp/std` 等导入路径提供 C++ 包。
 
-```xgo
+```xgo title="cpphello.xgo" verify="manual"
 import "cpp/std"
 
 println std.str("Hello world").str
@@ -66,7 +66,7 @@ println std.str("Hello world").str
 
 导入 `py/std`，使用 Python 字符串字面量调用 Python API。
 
-```xgo
+```xgo title="hello.xgo" verify="manual"
 import "py/std"
 
 std.print py"Hello world"
@@ -78,7 +78,7 @@ std.print py"Hello world"
 
 `py` 包表示 Python 的值，`py/torch` 提供 PyTorch 绑定。
 
-```xgo
+```xgo title="tensor.xgo" verify="manual"
 import (
     "py"
     "py/std"
