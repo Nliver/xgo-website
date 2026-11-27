@@ -1,6 +1,6 @@
 {
   "title": "Cobra xcmd",
-  "description": "使用 XGo 类文件构建命令行工具。",
+  "description": "用 XGo 开发命令行工具。",
   "root": true,
   "icon": "SquareTerminal",
   "pages": [

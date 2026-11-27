@@ -1,12 +1,13 @@
 {
   "title": "SPX",
-  "description": "创建和运行精灵游戏。",
+  "description": "创建并运行精灵游戏。",
   "root": true,
   "icon": "Gamepad2",
   "pages": [
     "index",
     "cli",
     "animation-audio",
+    "coordinate-systems",
     "examples"
   ]
 }

@@ -18,7 +18,7 @@ ixgo version
 
 Save the program as `squares.xgo` in a new directory.
 
-```xgo
+```xgo title="squares.xgo"
 values := [2, 3, 5]
 echo [n*n for n in values]
 ```
@@ -48,7 +48,7 @@ go get github.com/goplus/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
 
 Save this program as `main.go`. The blank import registers the XGo builder so `RunFile` can process the `.xgo` source.
 
-```go
+```go title="main.go"
 package main
 
 import (

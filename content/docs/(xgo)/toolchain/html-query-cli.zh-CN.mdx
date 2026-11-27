@@ -50,7 +50,7 @@ go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
 
 将以下程序保存为 `main.go`。转换函数接收字符串输入和解析后的 `html.NodeSet`。`Text__1` 读取第一个匹配标题的文本，并报告解析或筛选错误。
 
-```go
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (

@@ -1,6 +1,6 @@
 {
   "title": "Cobra xcmd",
-  "description": "Build command-line tools with XGo classfiles.",
+  "description": "Build command-line tools with XGo.",
   "root": true,
   "icon": "SquareTerminal",
   "pages": [

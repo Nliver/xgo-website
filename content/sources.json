@@ -1187,7 +1187,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/ixgo",
@@ -1237,7 +1237,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/builder",
@@ -1327,7 +1327,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "v4.0.2",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/spx",
@@ -1921,7 +1921,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/ixgo",
@@ -2046,7 +2046,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/ixgo",
@@ -2246,7 +2246,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/ixgo",
@@ -2298,7 +2298,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "source-snapshot",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/builder",
@@ -2400,7 +2400,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "v4.0.2",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/spx",
@@ -2472,7 +2472,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "v4.0.2",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/spx",
@@ -2594,7 +2594,7 @@
       "sourceStatus": "editorial",
       "reviewStatus": "technical-review",
       "applicableVersion": "v4.0.2",
-      "sourceCheckedAt": "2026-11-26",
+      "sourceCheckedAt": "2026-11-27",
       "externalSources": [
         {
           "repository": "goplus/spx",
@@ -3843,6 +3843,161 @@
         }
       ]
     },
+    "content/docs/ixgo/adapters.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "directcall/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "directfunc/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "memo/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "context.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "direct_func.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/spx/coordinate-systems.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v4.0.2",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/en/dev/engine/coordinate_system.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "camera.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "sprite_transform.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "input.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "LICENSE"
+        }
+      ]
+    },
+    "content/docs/xbuilder/project-model.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/index.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/code-editor.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/camera.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/project-type.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/tutorial.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/animation.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/physics.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/widget.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/models/common/xbp.ts"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/models/common/xbp.test.ts"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/apis/project.ts"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/components/editor/navbar/EditorNavbar.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/models/spx/project.ts"
+        }
+      ]
+    },
     "content/docs/llgo/getting-started/index.mdx": {
       "sourcePath": "README.md",
       "contentType": "guide",
@@ -5082,6 +5237,170 @@
           "path": "doc/LLGo-Bindings.md"
         }
       ]
+    },
+    "content/docs/ixgo/adapters.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "directcall/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "directfunc/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "memo/README.md"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "context.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "direct_func.go"
+        },
+        {
+          "repository": "goplus/ixgo",
+          "commit": "c1fd3c27cd8d0241825b7b9fdd81514edbbb434f",
+          "path": "LICENSE"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/ixgo/adapters.mdx"
+    },
+    "content/docs/spx/coordinate-systems.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v4.0.2",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "docs/en/dev/engine/coordinate_system.md"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "camera.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "sprite_transform.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "input.go"
+        },
+        {
+          "repository": "goplus/spx",
+          "commit": "f9af8b87b54c43ee8e3951bf5029310021db7dd1",
+          "path": "LICENSE"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/spx/coordinate-systems.mdx"
+    },
+    "content/docs/xbuilder/project-model.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "externalSources": [
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/index.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/code-editor.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/camera.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/project-type.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/tutorial.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/animation.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/physics.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "docs/product/widget.md"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/models/common/xbp.ts"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/models/common/xbp.test.ts"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/apis/project.ts"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/components/editor/navbar/EditorNavbar.vue"
+        },
+        {
+          "repository": "goplus/builder",
+          "commit": "92c702b93c8bd29f4af279872a7593a16ef2f48f",
+          "path": "gui/src/models/spx/project.ts"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationReviewStatus": "pending",
+      "translationOf": "content/docs/xbuilder/project-model.mdx"
     },
     "content/docs/llgo/compiler/index.zh-CN.mdx": {
       "sourcePath": "README.md",

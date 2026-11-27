@@ -6,13 +6,27 @@ description: 安装 XGo，编写第一个程序，并学习它的语言特性。
 import { Cpu, Terminal, Gamepad2 } from 'lucide-react';
 import { XBuilderLogo } from '@/components/xgo-logo';
 
-XGo 是一种兼容 Go 的编程语言，面向工程、STEM 教育和数据科学。它支持命令式函数调用、字符串插值和简洁的集合字面量。
+XGo 是一门读起来像日常英语的编程语言。它希望打通 C/C++、Go、Python 和 JavaScript/TypeScript 的软件生态，让开发者能在同一个工程中复用这些语言已有的代码和库。
+
+```text
+XGo := C * Go * Python * JavaScript + Scratch
+```
+
+我们的愿景是**让每个人都能成为世界的构建者**。
 
 <Cards>
   <Card title="从这里开始" href="/zh-CN/docs/getting-started/installation" description="安装 XGo 并运行第一个程序。" />
   <Card title="跟着教程学习" href="/zh-CN/docs/tutorials/first-program" description="编写打印问候语的程序，然后定义并调用函数。" />
   <Card title="查阅语言参考" href="/zh-CN/docs/reference/language" description="查找语法说明和上游规范。" />
 </Cards>
+
+## 从第一个程序到大型项目
+
+初学者只需一行 `echo "Hello world"` 就能写出一个完整的程序。在 [SPX 游戏](/zh-CN/docs/spx)中也可以这样调用函数。用过 Scratch 的孩子可以从熟悉的角色和事件入手，让角色移动或响应消息。在 STEM 教育中，学生可以从这些熟悉的概念起步，学到的语言将来也能用于实际工作。
+
+对于软件工程师，XGo 沿用了 Go 支撑大型项目的工程基础。开发者可以直接导入已有的 Go 包，也可以[在同一个包中混合编写 Go 和 XGo 代码](/zh-CN/docs/interoperability/go)。数据科学家和工程师可以用同一种语言协作，通过 [LLGo](/zh-CN/docs/llgo/interoperability) 调用 C/C++ 和 Python 库。
+
+XGo 把面向特定领域提供便利的设计称为“领域友好”（Specific Domain Friendliness）。例如，游戏框架可以为每个角色提供一个[类文件](/zh-CN/docs/toolchain/classfiles)，让游戏作者直接用 XGo 描述角色的行为。更多设计背景见 [XGo 与 Go](/zh-CN/docs/concepts/xgo-and-go)。
 
 ## 生态项目
 

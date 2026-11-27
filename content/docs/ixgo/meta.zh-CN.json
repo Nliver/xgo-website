@@ -1,10 +1,11 @@
 {
   "title": "iXGo",
-  "description": "运行脚本、使用交互式解释器并嵌入 Go 程序。",
+  "description": "交互式运行 Go 和 XGo 脚本。",
   "root": true,
   "icon": "Terminal",
   "pages": [
     "index",
-    "embedding"
+    "embedding",
+    "adapters"
   ]
 }

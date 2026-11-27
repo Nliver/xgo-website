@@ -6,13 +6,27 @@ description: Install XGo, write your first program, and learn its language featu
 import { Cpu, Terminal, Gamepad2 } from 'lucide-react';
 import { XBuilderLogo } from '@/components/xgo-logo';
 
-XGo is a Go-compatible programming language designed for engineering, STEM education, and data science. Its syntax includes command-style function calls, string interpolation, and concise collection literals.
+XGo is a programming language that reads like plain English. Its design brings existing code and libraries from C/C++, Go, Python, and JavaScript/TypeScript into a common software engineering ecosystem.
+
+```text
+XGo := C * Go * Python * JavaScript + Scratch
+```
+
+Our vision is to **enable everyone to become a builder of the world**.
 
 <Cards>
   <Card title="Start here" href="/docs/getting-started/installation" description="Install XGo and run your first program." />
   <Card title="Follow the tutorial" href="/docs/tutorials/first-program" description="Write a greeting, then define and call functions." />
   <Card title="Read the reference" href="/docs/reference/language" description="Find syntax guides and the upstream specifications." />
 </Cards>
+
+## From a first program to a large project
+
+A beginner can write a complete program in one line, `echo "Hello world"`. The same command-style calls appear in [SPX games](/docs/spx), where children familiar with Scratch can make sprites move and respond to events. In STEM education, students can start with those familiar ideas and learn a language they can later use at work.
+
+For software engineers, XGo builds on Go's support for large projects. You can import existing Go packages and [write Go and XGo files in the same package](/docs/interoperability/go). Data scientists and engineers can work in the same language, using [LLGo](/docs/llgo/interoperability) to call C/C++ and Python libraries.
+
+XGo calls its approach to specialized work *Specific Domain Friendliness*. For example, a game framework can give each sprite its own [classfile](/docs/toolchain/classfiles), so a game author can write the sprite's behavior directly in XGo. See [XGo versus Go](/docs/concepts/xgo-and-go) for more on the language's design.
 
 ## Ecosystem projects
 

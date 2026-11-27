@@ -18,13 +18,13 @@ In `go.mod`, replace the comment on the YAP dependency with `//xgo:class` so XGo
 
 Save the home page handler as `get.yap`, which maps to `GET /`.
 
-```xgo
+```xgo title="get.yap"
 html `<html><body>Hello, YAP!</body></html>`
 ```
 
 Save the parameterized handler as `get_p_#id.yap`, which maps to `GET /p/:id`. YAP makes the route parameter available as `${id}`.
 
-```xgo
+```xgo title="get_p_#id.yap"
 json {
     "id": ${id},
 }
@@ -50,7 +50,7 @@ The first response contains `Hello, YAP!` and the second contains `{"id":"123"}`
 
 Add a file named `routes_ytest.gox` in the same project.
 
-```xgo
+```xgo title="routes_ytest.gox"
 mock "foo.com", new(AppV2)
 
 get "http://foo.com/p/123"
@@ -77,7 +77,7 @@ go get github.com/goplus/yap@1caa1d123c9ab24ffec95d0d8cbb472d6c87862d
 
 In `go.mod`, mark the YAP dependency as `//xgo:class`. Save the following as `books_ydb.gox`.
 
-```xgo
+```xgo title="books_ydb.gox"
 import _ "github.com/goplus/yap/ydb/sqlite3"
 
 type Book struct {

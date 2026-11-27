@@ -1,8 +1,10 @@
 {
   "title": "XBuilder",
-  "description": "Build and preview SPX games in the browser.",
+  "description": "Build SPX games in your browser.",
   "root": true,
+  "icon": "XBuilderMark",
   "pages": [
-    "index"
+    "index",
+    "project-model"
   ]
 }

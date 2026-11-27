@@ -12,7 +12,7 @@ go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
 
 将以下程序保存为 `main.go`。`tpl.New` 编译一次文法，随后两次解析都使用这份文法。`IDENT % ","` 匹配一个或多个以逗号分隔的标识符。`tpl.List` 把匹配树展开为列表，以便逐个读取标识符的原文。
 
-```go
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (
@@ -63,7 +63,7 @@ names.txt:1:7: unexpected token: 7
 
 `listScanner` 嵌入 `scanner.Scanner`，复用它的 `Init` 方法和词法单元位置信息。`Scan` 跳过字面文本为 `"\n"` 的分号。这类分号由默认扫描器在换行处和输入结束时插入。源码中显式写出的分号仍会交给文法处理，因此仍会导致语法错误。
 
-```go
+```go title="main.go" verify="go run ."
 package main
 
 import (

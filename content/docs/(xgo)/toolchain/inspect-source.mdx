@@ -12,7 +12,7 @@ go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
 
 Save the following program as `main.go`.
 
-```go
+```go title="main.go"
 package main
 
 import (
@@ -67,7 +67,7 @@ The two positions identify occurrences of the same spelling. To distinguish defi
 
 In the same module, replace `main.go` with the program below, then run `go mod tidy` and `go run .`. BuildFile compiles the in-memory XGo program to Go source. The example parses the result with the Go standard library and prints the package and function names.
 
-```go verify="go mod tidy && go run ."
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (
@@ -107,7 +107,7 @@ To convert existing declaration trees, use the `ASTFile` functions in `ast/fromg
 
 Replace `main.go` in the same module with the following program. It reads two editor buffers as one package. `memfs.TwoFiles` provides the directory and its two files to `parser.ParseFSDir`. With `parser.ImportsOnly` the parsers stop after the import declarations.
 
-```go
+```go title="main.go"
 package main
 
 import (

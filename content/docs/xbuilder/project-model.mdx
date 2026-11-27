@@ -1,0 +1,32 @@
+---
+title: Understand XBuilder projects
+description: Work with stages, sprites, assets, previews, cloud saves, and XBP import and export.
+---
+
+An XBuilder project is a runnable SPX game. It has project metadata and game content. The game content contains one stage, zero or more sprites, sounds, a z-order, and project configuration such as camera behavior.
+
+## Work with the project parts
+
+- A **stage** owns global logic, backdrops, and stage configuration.
+- A **sprite** owns its script, costumes, initial transform, and visibility settings.
+- A **sound** is reusable by the stage or any sprite.
+- The **z-order** controls the rendering order of sprites and other stage content.
+- An **asset** is reusable project content such as a sprite, sound, or backdrop.
+
+Create stage behavior in the stage editor. Create character behavior in the selected sprite editor. Run the preview to see the current project state in the browser.
+
+## Save and share
+
+Saving writes the current project to the cloud. Unsaved edits can remain in the browser temporarily, which lets you continue after reopening a project. That local state can expire when storage is full, the account changes, or another project is opened. Save important work before switching projects.
+
+A saved project can be public or private. Public projects can be viewed and remixed according to the account and community rules.
+
+## Import and export
+
+Export produces an XBP file containing the game's content and metadata such as its project type, display name, description, and instructions. The editor uses the internal project name for the export filename. Import replaces the open project's game content and applies metadata from the package. The open project keeps its internal name and visibility.
+
+Export the current content before importing when you need to preserve both versions. Historical XBP files without an explicit project type are treated as `game`, the type used by SPX projects.
+
+## Use the editor as a learning environment
+
+XBuilder's code editor provides hover information, navigation, context actions, API reference snippets, runtime output, formatting, and Copilot assistance. Preview changes frequently so the visible result guides the next edit. For a first guided exercise, follow [XBuilder first game preview](/docs/xbuilder).

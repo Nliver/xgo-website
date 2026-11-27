@@ -11,7 +11,7 @@ Create a project, add a sprite, and make it speak when the game starts. XBuilder
 2. In the sprite panel, add a sprite from the asset library. Select the sprite and open its script in the code editor.
 3. Add the following start handler to the sprite script. If a start handler already exists, add the `say` line inside it.
 
-```xgo
+```xgo title="sprite.spx"
 onStart => {
     say "Hello from XBuilder", 2
 }
@@ -29,7 +29,7 @@ Use the preview to test current edits. Use the project save action to save chang
 
 Use the first project above and keep its sprite near the center of the stage. In the editor toolbar, switch to **Map edit mode** and set **Map size** to 1000 wide by 1000 high. Switch back to **Default mode**, select the stage, and open **Code**. Add the following stage script. If the stage already has an `onStart` handler, add the two camera calls inside it.
 
-```xgo
+```xgo title="stage.spx"
 onStart => {
     Camera.setXYpos 0, 0
     Camera.setZoom 2

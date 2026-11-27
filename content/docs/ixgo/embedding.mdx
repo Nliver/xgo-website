@@ -16,7 +16,7 @@ go get github.com/goplus/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
 
 Save the following program as `main.go`. It loads a Go script from a string. The host reads the interpreted `Label` result and calls the interpreted `Counter` closure twice.
 
-```go
+```go title="main.go"
 package main
 
 import (
@@ -104,7 +104,7 @@ Memoization stores results or supported state changes so a later call can reuse 
 
 Replace `main.go` with this program, then run `go mod tidy` and `go run .` again.
 
-```go verify="go mod tidy && go run ."
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (

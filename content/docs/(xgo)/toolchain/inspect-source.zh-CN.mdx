@@ -12,7 +12,7 @@ go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
 
 将以下程序保存为 `main.go`。
 
-```go
+```go title="main.go"
 package main
 
 import (
@@ -67,7 +67,7 @@ echo scores
 
 在同一个模块中，用以下内容替换 `main.go`，然后运行 `go mod tidy` 和 `go run .`。BuildFile 将内存中的 XGo 程序编译为 Go 源码。示例用 Go 标准库解析结果，并打印包名和函数名。
 
-```go verify="go mod tidy && go run ."
+```go title="main.go" verify="go mod tidy && go run ."
 package main
 
 import (
@@ -107,7 +107,7 @@ main main
 
 在同一个模块里，用下面的程序替换 `main.go`。假设编辑器里打开了同一包的两个文件，`memfs.TwoFiles` 把两个缓冲区交给 `parser.ParseFSDir`。使用 `parser.ImportsOnly` 后，解析器读到导入声明结束就会停止。
 
-```go
+```go title="main.go"
 package main
 
 import (

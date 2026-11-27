@@ -17,12 +17,12 @@ go version
 
 ## 软件包安装
 
-<Tabs defaultValue="windows">
+<Tabs defaultValue="macos-linux">
   <TabsList aria-label="软件包安装" activateOnFocus>
+    <TabsTrigger value="macos-linux"><PlatformLogo name="apple" /><PlatformLogo name="linux" />macOS / Linux</TabsTrigger>
     <TabsTrigger value="windows"><PlatformLogo name="windows" />Windows</TabsTrigger>
     <TabsTrigger value="debian"><PlatformLogo name="debian" />Debian / Ubuntu</TabsTrigger>
     <TabsTrigger value="redhat"><PlatformLogo name="redhat" />Red Hat / CentOS / Fedora</TabsTrigger>
-    <TabsTrigger value="homebrew"><PlatformLogo name="homebrew" />Homebrew</TabsTrigger>
   </TabsList>
 
 <TabsContent value="windows" keepMounted>
@@ -61,7 +61,7 @@ sudo yum install xgo
 ```
 
 </TabsContent>
-<TabsContent value="homebrew" keepMounted>
+<TabsContent value="macos-linux" keepMounted>
 
 ### macOS 或 Linux（使用 Homebrew）
 
@@ -124,6 +124,8 @@ xgo version
 ```
 
 如果终端提示找不到命令，请检查对应的安装目录是否已加入 `PATH`。接下来，按照[你的第一个 XGo 程序](/zh-CN/docs/getting-started/hello-world)创建 `hello.xgo`，再执行 `xgo run hello.xgo`。
+
+要配置语法高亮和代码导航，请参阅[在 Visual Studio Code 中编辑 XGo](/zh-CN/docs/toolchain/vscode)。
 
 ## 在容器中查看 XGo 版本
 

@@ -1,10 +1,11 @@
 {
   "title": "iXGo",
-  "description": "Run scripts, use the REPL, and embed the interpreter.",
+  "description": "Run Go and XGo scripts interactively.",
   "root": true,
   "icon": "Terminal",
   "pages": [
     "index",
-    "embedding"
+    "embedding",
+    "adapters"
   ]
 }

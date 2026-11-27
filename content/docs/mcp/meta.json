@@ -1,6 +1,6 @@
 {
   "title": "MCP",
-  "description": "Build and test a Model Context Protocol server.",
+  "description": "Build and test MCP servers.",
   "root": true,
   "icon": "Network",
   "pages": [

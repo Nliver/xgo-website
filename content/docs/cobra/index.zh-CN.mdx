@@ -18,7 +18,7 @@ go get github.com/goplus/cobra@v1.10.8
 
 将以下内容保存为 `version_cmd.gox`。`flag` 字段标签定义选项 `--verbose`，其简写是 `-v`。`short` 指令设置帮助文本。
 
-```xgo
+```xgo title="version_cmd.gox" verify="xgo mod tidy && xgo run . version -v"
 var Verbose bool `flag:"verbose, short: v, usage: print verbose information"`
 
 short "print the example version"
