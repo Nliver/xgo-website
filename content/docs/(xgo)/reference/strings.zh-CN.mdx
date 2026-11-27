@@ -1,0 +1,654 @@
+---
+title: 字符串类型
+description: 编写 XGo 字符串，读取字节和 Unicode 码点，使用字符串和字符串切片的内置方法。
+---
+
+字符串用于表示文本，是编程中最常用的数据类型之一。XGo 提供多种字符串处理方式。
+
+## 字符串字面量
+
+XGo 支持多种字符串表示形式，可以书写简单文本，也可以表示复杂的 Unicode 字符。
+
+### 基本字符串字面量
+
+用双引号包围文本即可创建字符串。
+
+```xgo
+name := "Bob"
+message := "Hello, World!"
+empty := ""
+echo name, message, len(empty)
+```
+
+### 原始字符串字面量
+
+XGo 也支持用反引号（`` ` ``）包围的原始字符串。其中的反斜杠和其他特殊字符保持字面含义，适合表示正则表达式、文件路径和多行文本。
+
+```xgo
+// Raw strings ignore escape sequences
+path := `C:\Users\Bob\Documents`  // Backslashes are literal
+regex := `\d+\.\d+`               // No need to escape backslashes
+
+// Multi-line raw strings
+multiline := `Line 1
+Line 2
+Line 3`
+
+// JSON or code snippets
+json := `{
+    "name": "Alice",
+    "age": 30
+}`
+
+// SQL queries
+query := `SELECT * FROM users
+          WHERE age > 18
+          ORDER BY name`
+echo path, regex
+echo multiline
+echo json
+echo query
+```
+
+**双引号字符串和原始字符串的差异**
+
+| 特性 | 双引号 `"..."` | 原始字符串（反引号） `` `...` `` |
+|---------|----------------------|---------------------------|
+| 转义序列 | 解释 `\n`、`\t` 等 | 按字面值保留 |
+| 多行 | 用 `\n` 表示换行 | 直接换行 |
+| 反斜杠 | 写作 `\\` | 直接写 `\` |
+| 插值 | 支持 `${...}` | 不支持 |
+| 用途 | 普通文本、插值 | 路径、正则表达式、多行文本 |
+
+```xgo
+// Comparison example
+escaped := "Line 1\nLine 2"    // Two lines when printed
+raw := `Line 1\nLine 2`        // Literal \n characters
+
+echo escaped
+// Output:
+// Line 1
+// Line 2
+
+echo raw
+// Output:
+// Line 1\nLine 2
+```
+
+### 转义序列
+
+XGo 支持用转义序列表示特殊字符。
+
+```xgo
+// Common escape sequences
+newline := "Line 1\nLine 2"     // Newline
+tab := "Column1\tColumn2"       // Tab
+quote := "She said \"Hello\""   // Double quote
+backslash := "Path: C:\\files"  // Backslash
+
+// Octal escape notation \### where # is an octal digit
+octalChar := "\141a"            // aa
+
+// Unicode can be specified as \u#### where # is a hex digit
+// It will be converted internally to its UTF-8 representation
+star := "\u2605"                // ★
+heart := "\u2665"               // ♥
+
+echo newline
+echo tab, quote, backslash, octalChar, star, heart
+```
+
+#### 常见转义序列
+
+| 序列 | 含义 | 示例 |
+|----------|-------------|---------|
+| `\n` | 换行 | `"Line 1\nLine 2"` |
+| `\t` | 制表符 | `"Name:\tAlice"` |
+| `\\` | 反斜杠 | `"C:\\path"` |
+| `\"` | 双引号 | `"He said \"Hi\""` |
+| `\###` | 八进制表示的字符 | `"\141"`（a） |
+| `\u####` | Unicode 字符 | `"\u2605"`（★） |
+
+## 字符串不可变性
+
+XGo 的字符串值一旦创建，就不能修改其中单个字符。
+
+```xgo failcompile
+s := "hello 🌎"
+s[0] = `H` // Error: not allowed
+```
+
+需要改变文本内容时，要构造新的字符串。
+
+```xgo
+s := "hello"
+s = "Hello"  // OK: assigning a new string
+s = s + " world"  // OK: creating a new concatenated string
+```
+
+## 字符串操作
+
+### 索引与切片
+
+#### 索引
+
+对字符串取索引得到一个 `byte`，不能直接得到 `rune` 或子字符串。
+
+```xgo
+name := "Bob"
+echo name[0]   // 66 (ASCII value of 'B')
+echo name[1]   // 111 (ASCII value of 'o')
+echo name[2]   // 98 (ASCII value of 'b')
+```
+
+**注意**：汉字或表情符号等字符可能占多个字节。索引只返回其中一个字节，它可能不足以表示完整字符。
+
+#### 切片
+
+可以使用切片语法提取子字符串。
+
+```xgo
+name := "Bob"
+echo name[1:3]  // ob (from index 1 to 3, exclusive)
+echo name[:2]   // Bo (from start to index 2)
+echo name[2:]   // b (from index 2 to end)
+
+s := "Hello, World!"
+echo s[0:5]     // Hello
+echo s[:5]      // Hello (start defaults to 0)
+echo s[7:]      // World! (end defaults to string length)
+```
+
+切片有以下写法。
+- `s[start:end]` 从索引 `start` 读到 `end` 之前。
+- `s[:end]` 从开头读到 `end` 之前。
+- `s[start:]` 从 `start` 读到末尾。
+
+### 字符串转换
+
+#### 将字符串转换为整数
+
+自动属性 `.int` 将字符串解析为整数，返回解析结果和错误。加上 `!` 可以提取结果，转换失败时会引发 panic。参见[错误处理](/zh-CN/docs/tutorials/error-handling)。
+
+```xgo
+s := "12"
+n, err := s.int
+if err == nil {
+    echo "Valid number:", n
+} else {
+    echo "Invalid number"
+}
+echo s.int!
+```
+
+#### 将其他类型转换为字符串
+
+使用 `.string` 属性可以将其他类型的值转换为字符串。
+
+```xgo
+age := 10
+ageStr := age.string
+echo "age = " + ageStr  // age = 10
+
+pi := 3.14159
+piStr := pi.string
+echo "π = " + piStr  // π = 3.14159
+```
+
+## 字符串运算符
+
+### 拼接
+
+使用 `+` 运算符拼接字符串。
+
+```xgo
+name := "Bob"
+bobby := name + "by"
+echo bobby // Bobby
+
+s := "Hello "
+s += "world"
+echo s // Hello world
+
+// Multiple concatenations
+greeting := "Hello" + " " + "World" + "!"
+echo greeting  // Hello World!
+```
+
+### 类型一致性
+
+运算符两侧的操作数必须满足类型要求，整数不能直接与字符串拼接。
+
+```xgo failcompile
+age := 10
+echo "age = " + age // Error: not allowed
+```
+
+需要先将 `age` 转换为字符串。
+
+```xgo
+age := 10
+echo "age = " + age.string  // age = 10
+```
+
+## 字符串插值
+
+XGo 支持 `${expression}` 形式的字符串插值，可以直接在字符串中嵌入表达式，省去多次拼接。
+
+```xgo
+age := 10
+echo "age = ${age}"  // age = 10
+
+name := "Alice"
+greeting := "Hello, ${name}!"
+echo greeting  // Hello, Alice!
+```
+
+### 复杂插值
+
+插值表达式可以执行算术运算、调用函数或方法。对于无法自动转换为字符串的值，需要显式转换，例如用 `string(r)` 转换一个 rune。
+
+```xgo
+// Arithmetic expressions
+x := 5
+y := 3
+echo "${x} + ${y} = ${x + y}"  // 5 + 3 = 8
+
+// Function calls and method calls
+name := "bob"
+echo "Hello, ${name.toUpper}!"  // Hello, BOB!
+
+// Complex example
+host := "example.com"
+page := 0
+limit := 20
+url := "https://${host}/items?page=${page+1}&limit=${limit}"
+echo url  // https://example.com/items?page=1&limit=20
+```
+
+### 美元符号的转义
+
+在字符串中用 `$$` 表示一个字面量 `$`。
+
+```xgo
+echo "Price: $$50"  // Price: $50
+echo "Total: $$${100 + 50}"  // Total: $150
+```
+
+## 字符串方法
+
+XGo 为字符串和字符串切片提供内置方法。字符串操作保留原输入，例如 `.toUpper` 返回新字符串，`.split` 返回字符串切片，`.len` 返回字节数。
+
+### 字符串长度
+
+用 `len` 方法可以读取字符串长度。
+
+```xgo
+name := "Bob"
+echo name.len  // 3
+
+chinese := "你好"
+echo chinese.len  // 6 (bytes, not characters - each Chinese character is 3 bytes in UTF-8)
+```
+
+**注意**：`len` 统计字节数。汉字和表情符号等非 ASCII 字符的 UTF-8 编码占多个字节，这时字节数会大于字符数。
+
+### 大小写转换
+
+```xgo
+// Convert to uppercase
+echo "Hello".toUpper  // HELLO
+echo "hello world".toUpper  // HELLO WORLD
+
+// Convert to lowercase
+echo "Hello".toLower  // hello
+echo "HELLO WORLD".toLower  // hello world
+
+// Capitalize the initial letter of the string
+echo "hello world".capitalize  // Hello world
+echo "the quick brown fox".capitalize  // The quick brown fox
+```
+
+### 重复字符串
+
+```xgo
+// Repeat a string n times
+echo "XGo".repeat(3)  // XGoXGoXGo
+echo "Ha".repeat(5)  // HaHaHaHaHa
+echo "-".repeat(10)  // ----------
+
+// Useful for formatting
+separator := "=".repeat(40)
+echo separator
+echo "Title"
+echo separator
+```
+
+### 替换字符串
+
+```xgo
+// Replace all occurrences
+echo "Hello".replaceAll("l", "L")  // HeLLo
+echo "banana".replaceAll("a", "o")  // bonono
+
+// Practical example
+text := "The quick brown fox"
+censored := text.replaceAll("fox", "***")
+echo censored  // The quick brown ***
+```
+
+### 连接字符串
+
+用指定分隔符将一组字符串连接成一个字符串。
+
+```xgo
+// Join with comma
+fruits := ["apple", "banana", "cherry"]
+echo fruits.join(",")  // apple,banana,cherry
+
+// Join with space
+words := ["Hello", "World"]
+echo words.join(" ")  // Hello World
+
+// Join without separator
+letters := ["H", "e", "l", "l", "o"]
+echo letters.join("")  // Hello
+
+// Practical example with newlines
+lines := ["Line 1", "Line 2", "Line 3"]
+text := lines.join("\n")
+echo text
+// Output:
+// Line 1
+// Line 2
+// Line 3
+```
+
+### 拆分字符串
+
+按分隔符把字符串拆分为多个子字符串。
+
+```xgo
+// Split by delimiter
+subjects := "Math-English-Science-History"
+subjectList := subjects.split("-")
+echo subjectList  // [Math English Science History]
+
+// Split by space
+sentence := "The quick brown fox"
+words := sentence.split(" ")
+echo words  // [The quick brown fox]
+
+// Split a simple comma-delimited string
+line := "Alice,30,Engineer"
+fields := line.split(",")
+echo fields  // [Alice 30 Engineer]
+
+// Process split results
+for field in fields {
+    echo "Field:", field
+}
+```
+
+## 字符与字节
+
+XGo 可以按 Unicode 码点或按字节遍历字符串。
+
+### UTF-8 编码
+
+在 UTF-8 文本中，ASCII 码点占一个字节，其他码点占二至四个字节。一个 rune 表示一个 Unicode 码点，一个显示出来的字符可能由多个码点组成。`len` 统计字节，索引返回单个字节。
+
+### 按字符（rune）遍历
+
+使用 `for ... in` 遍历各个 rune。要输出它表示的文本，可以用 `string(c)` 进行转换。直接将 rune 传给 `echo` 会输出数值。
+
+```xgo
+// English text (1 byte per character)
+s := "Hello"
+for c in s {
+    echo string(c)
+}
+// Output:
+// H
+// e
+// l
+// l
+// o
+
+// Mixed text with Chinese characters
+mixed := "你好XGo"
+for c in mixed {
+    echo string(c)
+}
+// Output:
+// 你
+// 好
+// X
+// G
+// o
+```
+
+### 按字节遍历
+
+要逐字节读取，可以使用基于索引的普通循环。
+
+```xgo
+s := "Hello"
+for i := 0; i < len(s); i++ {
+    echo s[i]  // Prints byte values: 72, 101, 108, 108, 111
+}
+
+// With non-ASCII characters
+mixed := "你好XGo"
+for i := 0; i < len(mixed); i++ {
+    echo mixed[i]
+}
+// Outputs byte values (each Chinese character is 3 bytes)
+// For '你': 228, 189, 160
+// For '好': 229, 165, 189
+// For 'X': 88
+// For 'G': 71
+// For 'o': 111
+```
+
+### 处理非 ASCII 字符
+
+统计 Unicode 码点时使用范围循环。对多字节码点所在的位置取字节索引，只会读到其 UTF-8 编码中的一个字节。
+
+```xgo
+// Example: Chinese characters
+s := "你好"
+
+echo s.len  // 6 bytes
+echo s[0]   // 228, the first byte of '你'
+
+count := 0
+for range s {
+    count++
+}
+echo count  // 2 runes
+
+for r in s {
+    echo string(r)  // Prints 你, then 好
+}
+```
+
+### 示例：按字符处理与按字节处理
+
+```xgo
+// Process mixed text (need character iteration)
+mixed := "Hello你好"
+echo "Byte length:", mixed.len  // 11 (5 ASCII + 6 for Chinese)
+
+runeCount := 0
+for range mixed {
+    runeCount++
+}
+echo "Rune count:", runeCount  // 7
+
+// The index is a byte offset.
+for i, r in mixed {
+    echo "Byte ${i}: ${string(r)}"
+}
+// Output:
+// Byte 0: H
+// Byte 1: e
+// Byte 2: l
+// Byte 3: l
+// Byte 4: o
+// Byte 5: 你
+// Byte 8: 好
+```
+
+## 常见用法
+
+### 验证字符串
+
+```xgo
+// Check if string is a valid integer
+input := "12345"
+if num, err := input.int; err == nil {
+    echo "Valid number:", num
+} else {
+    echo "Invalid number"
+}
+
+// Check string length
+username := "alice"
+if username.len < 3 {
+    echo "Username too short"
+} else if username.len > 20 {
+    echo "Username too long"
+} else {
+    echo "Username OK"
+}
+```
+
+### 格式化字符串
+
+```xgo
+// Build formatted strings
+name := "Alice"
+age := 30
+city := "New York"
+
+// Using interpolation
+profile := "Name: ${name}, Age: ${age}, City: ${city}"
+echo profile
+
+// Building multi-line strings
+header := "=".repeat(40)
+title := "User Profile"
+content := "${header}\n${title}\n${header}\nName: ${name}\nAge: ${age}\nCity: ${city}"
+echo content
+```
+
+### 解析字符串
+
+```xgo
+// Split a simple comma-delimited string
+line := "Alice,30,Engineer,New York"
+fields := line.split(",")
+name := fields[0]
+age := fields[1].int!
+job := fields[2]
+city := fields[3]
+
+echo "Name: ${name}, Age: ${age}, Job: ${job}, City: ${city}"
+
+// Parse key-value pairs
+config := "host=localhost;port=8080;debug=true"
+pairs := config.split(";")
+settings := map[string]string{}
+for pair in pairs {
+    parts := pair.split("=")
+    key := parts[0]
+    value := parts[1]
+    settings[key] = value
+}
+echo settings  // map[host:localhost port:8080 debug:true]
+```
+
+### 字符串模板
+
+```xgo
+// Email template
+func generateEmail(name, action, link string) string {
+    return "Hello ${name},\n\nPlease click the link below to ${action}:\n${link}\n\nBest regards,\nThe Team"
+}
+
+email := generateEmail("Alice", "verify your email", "https://example.com/verify")
+echo email
+```
+
+### 文本处理
+
+```xgo
+// Word count
+text := "The quick brown fox jumps over the lazy dog"
+words := text.split(" ")
+echo "Word count:", words.len
+
+// Capitalize each word
+var capitalized []string
+for word in words {
+    capitalized = append(capitalized, word.capitalize)
+}
+result := capitalized.join(" ")
+echo result  // The Quick Brown Fox Jumps Over The Lazy Dog
+
+// Remove extra spaces
+messyText := "  Too   many    spaces   "
+cleaned := [s for s in messyText.split(" ") if s != ""].join(" ")
+echo cleaned  // Too many spaces
+```
+
+### 构造复杂字符串
+
+使用 `net/url` 为查询参数编码，正确处理键和值中的空格和保留字符。
+
+```xgo
+import "net/url"
+
+base := "https://api.example.com/search"
+params := url.Values{}
+params.Set("q", "XGo language")
+params.Set("page", "1")
+echo base + "?" + params.Encode()  // https://api.example.com/search?page=1&q=XGo+language
+```
+
+生成多行报告时，可以先连接各行，再将结果插入模板。
+
+```xgo
+
+// Building a report
+func buildReport(title string, items []string) string {
+    separator := "=".repeat(50)
+    header := "${separator}\n${title}\n${separator}"
+    
+    var itemList []string
+    for i, item in items {
+        itemList = append(itemList, "${i+1}. ${item}")
+    }
+    
+    body := itemList.join("\n")
+    return "${header}\n${body}"
+}
+
+report := buildReport("Task List", ["Review code", "Write tests", "Update docs"])
+echo report
+```
+
+## 拼接大量片段
+
+逐步构造长字符串且希望在最后统一插入分隔符时，可以用字符串切片收集片段。
+
+```xgo
+parts := make([]string, 0, 3)
+for i := 0; i < 3; i++ {
+    parts <- "item${i}"
+}
+echo parts.join(",")  // item0,item1,item2
+```
+
+示例中的 `make` 为三个元素预留空间。容量与追加操作见[切片参考](/zh-CN/docs/reference/slices)。

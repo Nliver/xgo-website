@@ -1,0 +1,16 @@
+---
+title: TPL：XGo 的文本处理语言
+description: 如何用 TPL 的文法规则和改写闭包描述文本处理过程。
+---
+
+TPL 是集成在 XGo 中、基于文法的文本处理语言。规则支持命名产生式、分支、重复、列表和相邻匹配。
+
+~~~text
+expr = INT % ","
+~~~
+
+可以通过 XGo 闭包改写匹配结果，让文法直接返回应用所需的值。处理列表和二元表达式的辅助函数可以简化常见的解析结果转换。
+
+TPL 提供领域文本字面量所用的处理模型。XGo 与嵌入文本的语法边界见[领域文本字面量](/zh-CN/docs/reference/domain-text-literals)，具体用法见[数据与文本示例](/zh-CN/docs/examples/data-and-text)。
+
+[TPL 文法与匹配结果](/zh-CN/docs/reference/tpl)

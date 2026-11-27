@@ -1,0 +1,12 @@
+---
+title: XGo 代码风格与源码转换
+description: XGo 的格式化约定如何将常见 Go 写法转换成简洁、易读的 XGo 源码。
+---
+
+XGo 的格式化工具倾向于使用易读的命令式表达。它能去掉 XGo 中可以省略的 Go 结构，例如简单程序最外层的 `main` 函数。
+
+格式化工具还能识别常见的输出写法和 XGo 内置操作，并在互操作需要时保留普通 Go 语法。转换后的源码更加简洁，底层的包与类型模型仍然清晰可见。
+
+[第一个程序教程](/zh-CN/docs/tutorials/first-program)展示了完整程序中的代码风格。[工具链约定](/zh-CN/docs/toolchain/tooling-conventions)列出了工具和编辑器应遵循的规则。
+
+[XGo 源码格式化](/zh-CN/docs/toolchain/code-style)

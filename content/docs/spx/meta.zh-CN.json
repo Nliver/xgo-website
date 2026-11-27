@@ -6,6 +6,7 @@
   "pages": [
     "index",
     "cli",
-    "animation-audio"
+    "animation-audio",
+    "examples"
   ]
 }

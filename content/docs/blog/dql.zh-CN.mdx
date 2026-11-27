@@ -1,0 +1,20 @@
+---
+title: DQL：面向树形数据的通用查询语言
+description: DQL 如何用同一种模型查询 JSON、HTML、XML、抽象语法树和文件系统。
+---
+
+DQL 将结构化数据视为树，并通过 `NodeSet`（节点集合）提供链式查询。JSON 字段、HTML 元素、语法树和文件系统都可以用同一种方式遍历。
+
+~~~xgo
+for a in doc.**.a {
+    if url := a.$href; url != "" {
+        echo url
+    }
+}
+~~~
+
+查询可以选择子节点、后代节点和属性，也可以按条件筛选节点。DQL 采用惰性求值：构造查询时先描述操作，读取结果时才执行。
+
+[DQL 参考](/zh-CN/docs/reference/dql)说明 `NodeSet` 的接口约定以及如何编写适配器。[数据与文本示例](/zh-CN/docs/examples/data-and-text)提供了可以运行的入门程序。
+
+[DQL 查询参考](/zh-CN/docs/reference/dql)

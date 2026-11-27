@@ -1,0 +1,406 @@
+---
+title: XGo 工具链约定
+description: 查阅编辑器、语言服务器、文档生成器和构建工具共用的 XGo 约定。
+---
+
+本文描述编辑器、语言服务器、文档生成器和构建工具如何解析 XGo 源码以及 XGo 使用的 Go 包。
+
+XGo 使用 `github.com/goplus/gogen` 处理 Go 包编码，使用 `github.com/goplus/mod` 处理模块元数据。依赖版本由 `go.mod` 指定。源码语法见[语言规范](/zh-CN/docs/reference/full-specification#注释)。
+
+## 表示形式
+
+源码分析和包导入会公开同一程序的不同表示。
+
+| 表示 | 内容 |
+| --- | --- |
+| XGo 源码 | 源码写法、声明、注释和隐式语言结构 |
+| XGo AST 与类型信息 | 源码节点、绑定、选中的重载和实例化类型 |
+| 生成的 Go 代码和 Go 导出数据 | Go 声明及导出命名约定 |
+| 初始化后的 Go 类型信息 | 重建的重载组、模板方法、静态成员和其他 XGo 扩展 |
+
+源码声明、生成实现和重建后的可调用对象可能是不同对象。实现跳转、重命名、文档和签名显示时，需要保留它们之间的关系。
+
+## 模块与类文件
+
+### 模块元数据
+
+| 位置 | 约定 | 工具行为 |
+| --- | --- | --- |
+| `go.mod` 的 `require` | `//xgo:class` | 加载依赖的类框架元数据 |
+| `go.mod` 的 `go` | `// llgo 1.0` 或 `// tinygo 0.32` 等编译器注释 | 读取指定的编译器及其版本 |
+| 框架模块根目录 | `gox.mod` | 加载项目、工作类和隐式导入元数据 |
+| `gox.mod` | `xgo` 版本指令 | 读取 XGo 版本要求 |
+
+历史形式 `//gop:class`、`gop.mod` 和 `gop` 版本指令仍然受支持。读取 `gox.mod` 失败时，模块加载器会尝试读取 `gop.mod`。如果 `gox.mod` 解析失败，则不会触发这个回退。
+
+模块发现和解析应使用 `github.com/goplus/mod`。它的宽松解析器会忽略未知指令。重写模块文件的工具必须保留它们不理解的类标记和元数据。XGo 的 tidy 集成会保留类框架依赖。
+
+见 [go.mod 扩展](/zh-CN/docs/toolchain/modules) 和 [gox.mod](/zh-CN/docs/toolchain/gox-mod)。
+
+### 框架注册表
+
+框架元数据会影响解析和编译。解析框架源文件前，使用 `xgomod.Module.ImportClasses` 初始化模块的类注册表。通过 `ClassInfo` 和 `LookupClass` 查询注册信息。
+
+| 指令 | 含义 |
+| --- | --- |
+| `project` | 项目入口模式、项目类和框架包 |
+| `class` | 工作类模式、基类型和可选原型 |
+| `import` | 当前项目的隐式包导入 |
+| `autolambda` | 将尾随源码块解析为 Lambda 的命令 |
+| `pack` | 项目配置打包使用的资源目录和索引文件名 |
+
+`class`、`import`、`autolambda` 和 `pack` 指令属于最近的前一条 `project` 指令。
+
+| 选项 | 含义 |
+| --- | --- |
+| `project -flat` | 声明没有工作类的项目 |
+| `class -embed` | 组装时将工作实例嵌入项目实例 |
+| `class -prefix=Prefix` | 为生成的工作类类型名添加 `Prefix` 前缀 |
+
+`times(1)` 这样的 `autolambda` 条目记录源码块前面有几个参数。`pack` 条目形式为 `pack <directory> <indexfile>`。目录必须是相对路径，不能包含 `..`。索引文件名不能包含路径分隔符。
+
+内置注册包括 `.gsh` 和 `_test.gox`。同一类后缀后续出现的注册会替代此前注册。
+
+项目、工作类模式、基类型和隐式导入见[框架注册](/zh-CN/docs/toolchain/classfile-specification#框架注册元数据)。`tool.PackProject` 会合并 JSON 或 YAML 项目配置，且不会写入输出文件。
+
+编辑器中的显示别名、回调分类和资源结构属于进一步的框架约定。类注册表只描述项目类、工作类和隐式导入等信息。
+
+### 源文件分类
+
+| 源文件后缀 | 分类 |
+| --- | --- |
+| `.go` | 混合 Go/XGo 包中的 Go 源码 |
+| `.xgo` | 普通 XGo 源码 |
+| `.gop` | `.xgo` 的历史写法 |
+| `.gox` | 普通或框架类文件 |
+| 已注册的类后缀 | 框架类文件 |
+
+使用带模块 `ClassInfo` 回调的 `parser.ParseEntry` 对 XGo 源码分类。`modfile.ClassExt` 会提取复合类后缀，包括 `_tag.gox` 形式。未注册的 `.gox` 文件是普通类文件。测试分类包括 `_test.xgo`、历史后缀 `_test.gop` 和类文件测试注册。
+
+解析器会在 XGo AST 中记录类文件属性。
+
+| AST 字段 | 含义 |
+| --- | --- |
+| `File.IsClass` | 类文件，包括普通 `.gox` 文件 |
+| `File.IsProj` | 框架项目文件 |
+| `File.IsNormalGox` | 普通 `.gox` 类文件 |
+| `File.ClassFields` | 实例字段声明块 |
+| `File.ShadowEntry` | 顶层语句对应的隐式入口函数 |
+
+### 类类型和生成成员
+
+类类型命名遵循[类文件规范](/zh-CN/docs/toolchain/classfile-specification#类型命名)。`cl.GetFileClassType` 是根据文件和注册表元数据计算名称的弃用辅助函数。扁平项目中的非项目文件会作为项目的组成部分，且不定义工作类类型。
+
+编译时，`FuncDecl.IsClass` 标记由类文件转换注入的接收者，`FuncDecl.Static` 标记静态方法。隐式接收者、嵌入基类、字段初始化和名称解析见[类文件规范](/zh-CN/docs/toolchain/classfile-specification)。
+
+类文件合成的方法取决于字段初始化、顶层语句和框架基类。
+
+- `XGo_Init` 对应[字段初始化](/zh-CN/docs/toolchain/classfile-specification#字段初始化)。
+- `MainEntry`、`Main` 对应[隐式入口](/zh-CN/docs/toolchain/classfile-specification#隐式入口)和[项目组装](/zh-CN/docs/toolchain/classfile-specification#为项目-main-组装工作类实例)。
+- `Classfname`、`Classclone` 对应[合成辅助方法](/zh-CN/docs/toolchain/classfile-specification#合成辅助方法)。
+
+包级入口遵循[包级 main 合成规则](/zh-CN/docs/toolchain/classfile-specification#合成包级-main)。
+
+若主框架包声明了 `XGoTestClass`，即使没有顶层语句，非测试项目在选择包入口时也会被视为有入口。历史标记 `GopTestClass` 仍然受支持。
+
+框架主包可以导出 `Gop_sched` 字符串常量，其中包含一个或两个以逗号分隔的调度器函数名。编译器会把第一个无参钩子插入生成的非空循环体，把第二个插入空循环体。只有一个名称时，两个位置都使用它。
+
+## 包和导入
+
+### 导入路径
+
+编译器会规范化以下源码导入。
+
+| 源码导入 | 规范导入 |
+| --- | --- |
+| 前缀 `xgo/` | 前缀 `github.com/goplus/xgo/` |
+| 前缀 `gop/`（历史写法） | 前缀 `github.com/goplus/xgo/` |
+| `c` | `github.com/goplus/lib/c` |
+| 前缀 `c/` | 前缀 `github.com/goplus/lib/c/` |
+| `py` | `github.com/goplus/lib/py` |
+| 前缀 `py/` | 前缀 `github.com/goplus/lib/py/` |
+| 前缀 `cpp/` | 前缀 `github.com/goplus/lib/cpp/` |
+
+编辑时保留源码写法，用规范化后的路径标识包。
+
+### 包标记
+
+包级 `XGoPackage` 常量标记需要初始化 XGo 导入信息的包。
+
+```go
+const XGoPackage = true
+```
+
+它也可以是以逗号分隔的 XGo 包导入路径，用于解析导出类型。
+
+```go
+const XGoPackage = "example.com/framework,example.com/library"
+```
+
+两种形式都根据声明名称识别。生成器不会为 `main` 包自动生成这个标记。
+
+历史标记 `GopPackage` 仍然受支持。若两者同时存在，优先使用 `XGoPackage`。
+
+### 导入初始化
+
+`gogen.InitXGoPackage` 从 Go 名称重建 XGo 声明，将对象加入包作用域，将方法加入命名类型。直接加载 Go 导出数据的工具必须在查找 XGo 成员或检查签名之前，为每个标记包初始化一次。
+
+该辅助函数只重建一个包。导入器还必须在同一包依赖图中，加载并初始化字符串标记中列出的依赖。
+
+Gogen 的导入处理会在包作用域中使用内存哨兵 `__xgo_inited` 记录初始化状态。该哨兵与源码标记相互独立。
+
+## Go 符号编码
+
+### 重载
+
+| Go 表示 | XGo 含义 |
+| --- | --- |
+| `Name__0`、`Name__1` 等 | 重载 `Name` 的编号实现 |
+| `XGoo_Name` | 列出包级重载实现的字符串常量 |
+| `XGoo_Type_Method` | 列出 `Type` 上重载实现的字符串常量 |
+| `XGoo__Type__Method` | 类型名或方法名含下划线时的转义形式 |
+
+编号后缀为 `0123456789abcdefghijklmnopqrstuvwxyz` 中的一个字符。重载解析按编号或列表顺序尝试候选项。编号命名类型采用相同的后缀约定。
+
+`XGoo_` 字符串是逗号分隔的列表。普通条目表示包级函数，以 `.` 开头的条目表示所属类型的方法。空条目表示对应的编号实现，例如第三个条目对应 `Name__2`。包含下划线的包级重载名采用 `XGoo__Name` 转义。`XGoo_` 前缀之后按[扩展成员](#扩展成员)中的规则拆分名称。
+
+重载组和调用点选中的实现是不同对象。独立命名的函数即使被重载组引用，仍然是一个声明。
+
+见[重载编码与运算符名称](/zh-CN/docs/reference/overloads#重载如何编码成-go)。
+
+### 扩展成员
+
+| Go 名称 | XGo 含义 | 解释 |
+| --- | --- | --- |
+| `XGot_Type_Method` | 模板接收者方法 | 底层函数的第一个参数提供接收者 |
+| `XGos_Type_Name` | 命名类型的静态成员 | 将包级函数、变量或常量关联到类型 |
+| `XGox_Name` | 接受前置类型实参的函数 | 在普通值参数之前绑定源码中的类型实参 |
+| `XGot__Type__XGox_Method` | 带前置类型实参的模板方法 | 同时绑定接收者和类型实参 |
+
+在 `XGot_` 或 `XGos_` 前缀之后，通常在第一个 `_` 处拆分剩余名称。若剩余名称以 `_` 开头，则去掉该字符后在第一个 `__` 处拆分，例如 `XGot__Type_Name__Method_Name`。
+
+这类调用可以提供前置泛型类型实参，并从值实参推断剩余的类型实参。
+
+历史前缀 `Gopt_`、`Gops_` 和 `Gopx_` 仍分别用于对应的成员类型。
+
+见[模板接收者方法](/zh-CN/docs/reference/template-receiver-method)和[类文件中的静态方法](/zh-CN/docs/toolchain/classfile-specification#静态方法声明)。
+
+### 重建的符号
+
+重建符号可以用带有 `__xgo_overload_args__` 参数的合成签名表示。该参数携带扩展信息，不属于源码参数。签名也可以表示静态值成员，因此不能单凭签名判断源码成员是否可调用。
+
+可以使用 gogen 的检查辅助函数。
+
+- `CheckSigFuncEx` 检查签名携带的扩展类型。
+- `CheckSigFuncExObjects` 获取重载、模板方法和类型作为实参的函数所对应的底层对象。
+- `CheckFuncEx` 返回签名携带的 `TyFuncEx` 扩展。
+- `CheckOverloadNamed` 识别重载命名类型。
+
+对于静态成员，应检查 `*gogen.TyStaticMember` 及其 `Obj()` 结果。`CheckSigFuncExObjects` 不会解包静态成员。
+
+推导源码签名时，要根据返回的扩展种类进行判断。重载、模板方法、静态成员和类型作为实参的函数有不同的接收者和参数绑定规则。
+
+## 调用和参数
+
+### 别名和隐式调用
+
+| 源码形式 | 查找或绑定 |
+| --- | --- |
+| 包函数别名，例如 `math.sqrt` | 小写 ASCII 首字母可解析到导出函数 `Sqrt` |
+| 实例方法别名，例如 `value.name` | 可以匹配精确的方法名，或通过将小写 ASCII 首字母大写来匹配 |
+| `value._Name` 方法别名 | 可以解析到协议方法 `XGo_Name` |
+| 值上下文中不带括号的别名 | 可以隐式调用无参函数或方法 |
+| 方法表达式 | 包含显式的接收者实参 |
+| 方法值或模板接收者方法调用 | 接收者与源码实参分开绑定 |
+
+当 `gogen.IsFunc` 识别导出对象的类型时，接受小写包别名。常量和普通类型名保持声明时的大小写。包别名不使用实例方法访问所用的精确名称查找。
+
+隐式调用的结果类型与可调用对象的签名不同。例如，值上下文中的 `time.now` 产生 `time.Time`，其可调用对象的签名为 `func() time.Time`。
+
+见[命令和函数调用](/zh-CN/docs/reference/function-calls)及 `cl/expr.go` 中的查找实现。
+
+### 参数约定
+
+| 表示 | 含义 |
+| --- | --- |
+| `ast.Field.Optional` | XGo 源码中的可选参数 |
+| `__xgo_optional_Name` | 编码在导入 Go 签名中的可选参数 |
+| `__xgo_autoclosure_Name` | 包装成闭包实参的源码表达式 |
+| `__xgo_loop_Name` | 带循环控制流处理的自动 Lambda |
+| `__xgo_cond_Name` | 带条件控制流处理的自动 Lambda |
+
+自动闭包参数的底层类型必须为 `func() T`。源码实参是 `T` 类型的表达式，编译器将其包装成闭包，供被调用方求值。
+
+Gogen 在内存中的参数对象上维护可选性，使用 `gogen.Package.NewParam` 创建这些参数。导入的参数通过上述名称编码保留可选性。
+
+对于自动 Lambda 代码块，解析器还需要从框架元数据获得命令的实参个数。识别代码块后，参数名称决定采用循环还是条件控制流处理。
+
+实参与形参的映射须考虑以下内容。
+
+- 选中的重载及推断出的类型实参。
+- 绑定的接收者和源码中显式提供的类型实参。
+- 可选参数、可变参数及 `...`。
+- 元组展开和合成实参。
+- 自动 Lambda 和装饰器回调。
+
+见[可选参数](/zh-CN/docs/reference/functions-and-closures#可选参数)和调用实参的编译实现。
+
+### 关键字实参
+
+关键字实参单独记录在 `ast.CallExpr.Kwargs` 中。编译器根据目标参数将其组合成一个值实参。在可变参数调用中，这个容器位于可变实参之前。
+
+| 目标类型 | 解释 |
+| --- | --- |
+| 字符串键映射 | 以关键字名称作为字符串键 |
+| 结构体或结构体指针 | 将关键字名称绑定到字段，需要时查找导出名称 |
+| 命名接口 | 用关键字组成一系列返回该接口的方法调用 |
+
+目标类型为接口时，方法调用的接收者必须是标识符（例如 `client`）或单个选择器（例如 `obj.client`）。接收者必须提供以该接口命名的工厂，例如 `client.Options()`。
+
+已知关键字调用对应的构造器方法并传入一个实参。查找方法时会将小写 ASCII 首字母改为大写。未知关键字需要 `Set(string, any) Self`。每个构造器方法均返回同一命名接口。
+
+见[关键字实参](/zh-CN/docs/reference/functions-and-closures#关键字实参)及关键字实参的编译转换。
+
+## 类型和库协议
+
+这些声明为 XGo 语法和类型检查提供库操作，也可以直接在 Go 库中编写。单看名称前缀无法判断代码是否由工具生成。
+
+### 运算符、转换和常量
+
+| 约定 | 含义 |
+| --- | --- |
+| `XGo_Add`、`XGo_Sub` 等运算符名称 | 运算符实现，包括重载组 |
+| `T_Cast` | 显式转换为命名类型 `T` |
+| `T_Init` | 初始化或赋值时隐式转换为 `T` |
+| `T_Default` | 为扩展类型指定默认类型的类型别名 |
+| `T_IsUntyped` | 为扩展常量类型启用无类型行为的布尔常量 |
+| `T_Min`、`T_Max` | 转换整数常量时检查的上下界 |
+| `XGo_Rcast` | 由源类型提供的逆向转换支持 |
+
+在定义 `T` 的包中查找 `T_Cast` 和 `T_Default` 等与类型关联的声明。先尝试标准的 Go 转换和赋值规则，再分别尝试 `T_Cast` 和 `T_Init`。`T_Init` 与类字段初始化生成的实例方法 `XGo_Init` 用途不同。重载命名类型的转换使用 `XGox_T_Cast`。
+
+见[运算符表](/zh-CN/docs/reference/overloads#运算符重载的-xgo_-名称和映射表)。
+
+### 数值单位
+
+定义 `T` 的包可以提供名为 `XGou_T` 的字符串常量作为单位表，其值包含以逗号分隔的 `unit=factor` 项。
+
+```go
+type Distance int64
+
+const XGou_Distance = "mm=1,cm=10,m=1000"
+```
+
+编译器根据调用中期望的参数类型为单位字面量选择单位表。类型必须为命名类型或类型别名，且必须能找到适用的单位表。仅凭单位后缀无法确定类型。
+
+编译器将字面量与对应的单位因子相乘。对类型别名，先检查别名自己的单位表，再检查完全展开别名后所得命名类型的单位表。`time.Duration` 有内置单位表。单位表条目不会声明包级变量或常量。
+
+见单位实参的编译实现。
+
+### 迭代
+
+`XGo_Enum()` 不接受参数，返回一个迭代器。支持以下迭代器函数签名。
+
+| 迭代器签名 | 产生的值 |
+| --- | --- |
+| `func(yield func() bool)` | 无 |
+| `func(yield func(V) bool)` | `V` 类型的值 |
+| `func(yield func(K, V) bool)` | `K` 类型的键和 `V` 类型的值 |
+
+该方法也可以返回具备 `Next() (V, bool)` 或 `Next() (K, V, bool)` 方法的命名迭代器对象。
+
+历史方法名 `Gop_Enum` 仍受支持。该容器协议与[枚举类型声明](/zh-CN/docs/reference/enums)相互独立。源码中的循环形式和绑定规则见[循环](/zh-CN/docs/reference/for-loops)。
+
+### 动态查找和查询
+
+动态查询采用以下协议。
+
+| 源码形式 | 协议 | 含义 |
+| --- | --- | --- |
+| `value.name` 或 `value."name"` | `XGo_Elem("name")` | 普通成员查找失败时查找子节点 |
+| `value.$name` | `XGo_Attr("name")` | 查找属性 |
+| `value.*` | `XGo_Child()` | 直接子节点 |
+| `value.**.name` | `XGo_Any("name")` | 查找指定名称的后代节点 |
+| `value.**.*` | `XGo_Any("")` | 查找所有后代节点 |
+| `value @ name` 或 `value @ "name"` | `XGo_Select("name")` | 选择指定名称的节点 |
+
+映射和空接口可以直接按键访问属性，无需调用 `XGo_Attr`。
+
+`value @ (condition)` 等谓词筛选使用 `XGo_Enum()` 遍历候选节点集，并使用 `XGo_first()` 提取匹配节点。后者返回一个节点和一个错误。隐式 `self` 绑定表示当前候选节点集。详见 DQL 协议。
+
+类方法的接收者还可以提供以下协议。
+
+| 协议 | 含义 |
+| --- | --- |
+| `XGo_Exec` | 无法解析命令调用时的回退处理 |
+| `XGo_Env` | 为环境表达式和插值标识符查找环境值 |
+
+历史名称 `Gop_Exec` 和 `Gop_Env` 仍受支持。见选择器及命令的编译实现。
+
+### 内置功能
+
+XGo 的内置功能和 Go 内置类型上的扩展方法由编译器的内置配置提供。有些对象的包路径为空，或来自支持库，因此它们不一定出现在 Go 全域作用域或普通 Go 方法集中。
+
+见[内置功能](/zh-CN/docs/reference/builtins)及内置功能的注册实现。
+
+## 源码分析
+
+### AST 和位置
+
+使用 XGo 的 AST 和解析器处理 XGo 源码。XGo 的节点包含与 Go 类似的节点，也包括重载声明、枚举类型、数值单位、装饰器、关键字实参和隐式类入口。
+
+- `File.Code` 保存原始源码字节。
+- `File.NoPkgDecl` 区分省略的包子句和显式包子句。
+- `token.Pos` 和 `token.FileSet` 沿用 Go 的位置表示。XGo 的 `token.Token` 是单独的词法记号类型。
+- 源码区间包含 `Pos()`，不包含 `End()`。
+- 文件偏移按字节计算。向语言服务器客户端传递位置时，需按与客户端协商的位置编码转换。
+- 区分文件中的物理位置与经过 `//line` 指令调整的位置。
+- 生成对象可以使用 `token.NoPos`。生成标识符可以复用位置，且不一定与该位置的源码写法一致。
+
+生成编辑前检查源码文本和声明映射。仅凭有效位置或 `Ident.Implicit()` 无法证明标识符明确写在源码中。保留位置相关的文件集及其对应的语法树和类型信息。
+
+编译过程可能修改 AST，例如插入隐式接收者和改写重载。需要原始语法的工具应另行保留解析树或源码快照。
+
+### 类型信息
+
+混合 Go 和 XGo 的包可以使用 `typesutil.NewChecker`，也可以使用带 typesutil 记录器的 `cl.NewPackage`。为使用方需要的每个 `typesutil.Info` 映射分配内存。未分配的映射不会填充，发生错误时也可能只得到部分信息。
+
+| 信息 | 查询方式 |
+| --- | --- |
+| 声明和引用绑定 | `Defs`、`Uses` 和 `ObjectOf` |
+| 表达式类型 | `Types` 和 `TypeOf` |
+| 常量表达式的值 | `Types[expr].Value` |
+| 原始重载组 | `Overloads` 和 `OverloadOf` |
+| 使用点选中的可调用对象 | `ObjectOf`，结合重载组查询 |
+| 泛型类型实参与实例化类型 | `Instances` |
+| 提升的成员和接收者选择 | `Selections` |
+| 词法作用域 | `Scopes` |
+| 隐式声明 | `Implicits` |
+
+重载调用中，选中的实现可能不同于 `Overloads` 记录的声明。对于单独出现的可调用标识符，`TypeOf` 可以描述可调用对象的类型，隐式调用的结果类型要另行判断。只有 `CheckSigFuncExObjects` 得到多个对象时，`OverloadOf` 才返回重载组。
+
+`typesutil.Config` 提供共用的包、文件集、模块和分析选项，包括 `IgnoreFuncBodies` 与 `UpdateGoTypesOverload`。`typesutil.Error` 包含诊断所用的 `Fset`、`Pos`、`End`、`Msg`、`Code` 和 `Soft`。详见检查器 API、记录及错误定义。
+
+### 源码注释
+
+解析源码时启用 `parser.ParseComments` 来收集注释。读取各个 `Comment.Text` 项获取指令文本。`CommentGroup.Text()` 返回规范化的文档文本，并省略指令式注释。
+
+Go 导出数据不包含源码注释。
+
+## 生成的 Go 代码
+
+Go 代码生成使用以下文件名。
+
+| 输出文件 | 用途 |
+| --- | --- |
+| `xgo_autogen.go` | 包级输出 |
+| `xgo_autogen_test.go` | 包内测试 |
+| `xgo_autogen2_test.go` | 外部测试包 |
+| `<stem>_autogen.go` | 单文件生成模式 |
+| `xgo_autogen_<source-filename>.go` | 同一目录有多个 XGo 文件时，`GenGoFiles` 为单个文件选用的默认输出名 |
+
+生成的 Go 代码包含从 XGo 源码派生的声明。把两份代码作为独立源码同时加载，可能造成重复声明。
+
+有 XGo 文件时，混合检查器会排除文件名以 `xgo_autogen` 开头的 Go 文件。目录解析也会跳过历史前缀 `gop_autogen`。自行提供 Go AST 的调用方必须排除混合检查器未过滤的旧版产物和其他生成副本。
+
+生成的代码可以包含 `//line` 映射及 `Code generated` 标记。诊断和编辑应使用原始源码位置。`cl.Config.NoFileLine` 可以禁用生成的行映射。

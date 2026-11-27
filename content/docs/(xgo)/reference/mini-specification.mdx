@@ -813,7 +813,7 @@ type ReadWriter interface {
 	Writer  // includes methods of Writer in ReadWriter's method set
 }
 ```
-A union of method sets contains the (exported and non-exported) methods of each method set exactly once, and methods with the [same](#type-identity) names must have [identical](#type-identity) signatures.
+A union of method sets contains the (exported and non-exported) methods of each method set exactly once, and methods with the [same](#type-identity-1) names must have [identical](#type-identity-1) signatures.
 
 ```xgo
 type ReadCloser interface {
@@ -1342,7 +1342,7 @@ The equality operators == and != apply to operands of comparable types. The orde
 * Complex types are comparable. Two complex values u and v are equal if both real(u) == real(v) and imag(u) == imag(v).
 * String types are comparable and ordered. Two string values are compared lexically byte-wise.
 * Pointer types are comparable. Two pointer values are equal if they point to the same variable or if both have value `nil`. Pointers to distinct [zero-size](#size-and-alignment-guarantees) variables may or may not be equal.
-* Interface types are comparable. Two interface values are equal if they have [identical](#type-identity) dynamic types and equal dynamic values or if both have value `nil`.
+* Interface types are comparable. Two interface values are equal if they have [identical](#type-identity-1) dynamic types and equal dynamic values or if both have value `nil`.
 * A value x of non-interface type X and a value t of interface type T can be compared if type X is comparable and X [implements](#interface-types) T. They are equal if t's dynamic type is identical to X and t's dynamic value is equal to x.
 * Array types are comparable if their array element types are comparable. Two array values are equal if their corresponding element values are equal. The elements are compared in ascending index order, and comparison stops as soon as two element values differ (or all elements have been compared).
 
@@ -2161,7 +2161,7 @@ t = append(t, 42, 3.1415, "foo")   //                             t is [42, 3.14
 var b []byte
 b = append(b, "bar"...)            // append string contents      b is []byte("bar")
 ```
-The function copy copies slice elements from a source src to a destination dst and returns the number of elements copied. The [underlying types](#underlying-types) of both arguments must be slices with [identical](#type-identity) element type. The number of elements copied is the minimum of `len(src)` and `len(dst)`. As a special case, if the destination's underlying type is `[]byte`, copy also accepts a source argument with underlying type bytestring. This form copies the bytes from the byte slice or string into the byte slice.
+The function copy copies slice elements from a source src to a destination dst and returns the number of elements copied. The [underlying types](#underlying-types) of both arguments must be slices with [identical](#type-identity-1) element type. The number of elements copied is the minimum of `len(src)` and `len(dst)`. As a special case, if the destination's underlying type is `[]byte`, copy also accepts a source argument with underlying type bytestring. This form copies the bytes from the byte slice or string into the byte slice.
 
 ```xgo
 copy(dst, src []T) int
@@ -2578,7 +2578,7 @@ A type definition creates a new, distinct type with the same [underlying type](#
 ```text
 TypeDef = identifier Type .
 ```
-The new type is called a _defined type_. It is [different](#type-identity) from any other type, including the type it is created from.
+The new type is called a _defined type_. It is [different](#type-identity-1) from any other type, including the type it is created from.
 
 ```xgo
 type (
@@ -2945,7 +2945,7 @@ Type unification is controlled by a matching mode, which may be `exact` or `loos
 
 Two types that are not bound type parameters unify exactly if any of following conditions is true:
 
-* Both types are [identical](#type-identity).
+* Both types are [identical](#type-identity-1).
 * Both types have identical structure and their element types unify exactly.
 * Exactly one type is an unbound type parameter with a [underlying type](#underlying-types), and that underlying type unifies with the other type per the unification rules for ≡A (loose unification at the top level and exact unification for element types).
 
@@ -2959,7 +2959,7 @@ A single bound type parameter P and another type T unify per the given matching 
 
 * P doesn't have a known type argument. In this case, T is inferred as the type argument for P.
 * P does have a known type argument A, A and T unify per the given matching modes, and one of the following conditions is true:
-  * Both A and T are interface types: In this case, if both A and T are also [defined](#type-definitions) types, they must be [identical](#type-identity). Otherwise, if neither of them is a defined type, they must have the same number of methods (unification of A and T already established that the methods match).
+  * Both A and T are interface types: In this case, if both A and T are also [defined](#type-definitions) types, they must be [identical](#type-identity-1). Otherwise, if neither of them is a defined type, they must have the same number of methods (unification of A and T already established that the methods match).
   * Neither A nor T are interface types: In this case, if T is a defined type, T replaces A as the inferred type argument for P.
 
 Finally, two types that are not bound type parameters unify loosely (and per the element matching mode) if:

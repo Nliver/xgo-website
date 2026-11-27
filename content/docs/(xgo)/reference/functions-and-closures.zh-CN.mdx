@@ -1,0 +1,602 @@
+---
+title: 函数与闭包
+description: XGo 上游参考文档中的函数和闭包。
+---
+
+## 函数定义
+
+定义 XGo 函数时，需要给参数和返回值指定类型。
+
+```xgo
+func add(x int, y int) int {
+    return x + y
+}
+
+echo add(2, 3) // 5
+```
+### 参数列表
+
+连续的多个参数类型相同时，可以合并类型声明。
+
+```xgo
+// Verbose form: each parameter has its own type
+func add(x int, y int) int {
+    return x + y
+}
+
+// Concise form: parameters of the same type can be grouped
+func add(x, y int) int {
+    return x + y
+}
+
+// Mixed types require separate declarations
+func greet(firstName, lastName string, age int) {
+    echo firstName, lastName, "is", age, "years old"
+}
+```
+返回值也可以按同一规则分组。
+
+```xgo
+// Multiple return values of the same type can be grouped
+func minMax(a, b int) (min, max int) {
+    if a < b {
+        return a, b
+    }
+    return b, a
+}
+
+// Mixed return types require separate declarations
+func divide(a, b float64) (result float64, err error) {
+    if b == 0 {
+        return 0, errors.New("division by zero")
+    }
+    return a / b, nil
+}
+```
+**分组规则**
+- `x int, y int` 可以简写为 `x, y int`。相同类型的参数或返回值都适用。
+- 不同类型必须分别声明。
+- 参数列表和返回值列表均可使用这种写法。
+- 分组可以简化声明，不改变函数的行为。
+
+### 无返回值函数
+
+只执行操作、不产生结果的函数可以省略返回类型。
+
+```xgo
+func greet(name string) {
+    echo "Hello,", name
+}
+
+greet("Alice") // Hello, Alice
+```
+要提前结束这种函数，写一条不带值的 `return` 语句即可。
+
+```xgo
+func printPositive(x int) {
+    if x <= 0 {
+        return // exit early if condition not met
+    }
+    echo "Positive number:", x
+}
+
+printPositive(5)  // Positive number: 5
+printPositive(-3) // (prints nothing)
+```
+### 多个返回值
+
+函数可以一次返回多个值。
+
+```xgo
+func foo() (int, int) {
+    return 2, 3
+}
+
+a, b := foo()
+echo a // 2
+echo b // 3
+c, _ := foo() // ignore values using `_`
+```
+### 命名返回值
+
+可以给返回值命名，以简化返回语句。
+
+```xgo
+func sum(a ...int) (total int) {
+    for x in a {
+        total += x
+    }
+    return // no need to explicitly return named values that are already assigned
+}
+
+echo sum(2, 3, 5) // 10
+```
+## 可选参数
+
+XGo 用 `T?` 声明可选参数。省略实参时，参数取其类型的零值。
+
+```xgo
+func greet(name string, count int?) {
+    if count == 0 {
+        count = 1
+    }
+    for i := 0; i < count; i++ {
+        echo "Hello,", name
+    }
+}
+
+greet "Alice", 3  // prints "Hello, Alice" three times
+greet "Bob"       // prints "Hello, Bob" once (uses default value)
+```
+将 `?` 写在参数类型后。整数的默认值为 `0`，字符串为 `""`，布尔值为 `false`。
+
+```xgo
+func connect(host string, port int?, secure bool?) {
+    if port == 0 {
+        port = 80
+    }
+    echo "Connecting to", host, "on port", port, "secure:", secure
+}
+
+connect "example.com", 443, true  // Connecting to example.com on port 443 secure: true
+connect "example.com"             // Connecting to example.com on port 80 secure: false
+```
+## 可变参数
+
+使用 `...` 可以让函数接收任意数量的同类型实参。
+
+```xgo
+func sum(a ...int) int {
+    total := 0
+    for x in a {
+        total += x
+    }
+    return total
+}
+
+echo sum(2, 3, 5)       // 10
+echo sum(1, 2, 3, 4, 5) // 15
+echo sum()              // 0
+```
+在函数体内，可变参数的行为与该元素类型的切片相同。
+
+### 参数的位置
+
+**注意**：可变参数必须放在签名的最后，位于所有普通参数和可选参数之后。
+
+```xgo
+// ✓ Correct: variadic parameter is last
+func log(level string, verbose bool?, messages ...string) {
+    // ...
+}
+
+// ✗ Wrong: variadic parameter must be last
+func log(messages ...string, level string) {  // Error!
+    // ...
+}
+
+// ✗ Wrong: variadic parameter must be after optional parameters
+func log(messages ...string, verbose bool?) {  // Error!
+    // ...
+}
+```
+### 组合普通参数与可变参数
+
+```xgo
+func log(level string, messages ...string) {
+    echo "[" + level + "]", strings.Join(messages, " ")
+}
+
+log("INFO", "Server", "started", "successfully")
+// Output: [INFO] Server started successfully
+```
+### 向可变参数传递切片
+
+在已有切片后面加上 `...`，即可将其中的元素传给可变参数。
+
+```xgo
+func max(nums ...int) int {
+    if len(nums) == 0 {
+        return 0
+    }
+    maxVal := nums[0]
+    for _, n in nums[1:] {
+        if n > maxVal {
+            maxVal = n
+        }
+    }
+    return maxVal
+}
+
+numbers := []int{3, 7, 2, 9, 1}
+echo max(numbers...)  // 9
+echo max(5, 8, 3)     // 8
+```
+### 实际示例
+
+```xgo
+// String formatting
+func format(template string, args ...any) string {
+    result := template
+    for i, arg in args {
+        result = strings.Replace(result, "{${i}}", fmt.Sprint(arg), 1)
+    }
+    return result
+}
+
+echo format("Hello {0}, you have {1} messages", "Alice", 5)
+// Output: Hello Alice, you have 5 messages
+```
+## 关键字实参
+
+调用参数较多的函数时，可以使用 `key = value` 形式写出参数名，使调用更容易阅读。
+
+### 使用映射接收关键字实参
+
+```xgo
+func process(opts map[string]any?, args ...any) {
+    if name, ok := opts["name"]; ok {
+        echo "Name:", name
+    }
+    if age, ok := opts["age"]; ok {
+        echo "Age:", age
+    }
+    echo "Args:", args
+}
+
+process name = "Ken", age = 17              // keyword parameters only
+process "extra", 1, name = "Ken", age = 17  // variadic parameters first, then keyword parameters
+process                                     // all parameters optional
+```
+**适用场景**：参数集合动态变化、需要扩展、参数类型多样，或需要在运行时检查参数。
+
+### 使用元组接收关键字实参
+
+```xgo
+type Config (timeout, maxRetries int, debug bool)
+
+func run(task int, cfg Config?) {
+    if cfg.timeout == 0 {
+        cfg.timeout = 30
+    }
+    if cfg.maxRetries == 0 {
+        cfg.maxRetries = 3
+    }
+    echo "timeout:", cfg.timeout, "maxRetries:", cfg.maxRetries, "debug:", cfg.debug
+    echo "task:", task
+}
+
+run 100, timeout = 60, maxRetries = 5
+run 200
+```
+**适用场景**：参数集合固定且类型已知，需要编译期检查或关注性能。**多数情况下推荐使用元组。**
+
+**注意**：字段名必须与元组定义完全一致，编译器不会自动转换大小写。
+
+### 使用结构体接收关键字实参
+
+结构体既能提供类型检查，又能为关键字参数保留完整的运行时反射信息。
+
+```xgo
+type Config struct {
+    Timeout    int
+    MaxRetries int
+    Debug      bool
+}
+
+func run(cfg *Config?) {
+    timeout := 30
+    maxRetries := 3
+    debug := false
+    if cfg != nil {
+        if cfg.Timeout > 0 {
+            timeout = cfg.Timeout
+        }
+        if cfg.MaxRetries > 0 {
+            maxRetries = cfg.MaxRetries
+        }
+        debug = cfg.Debug
+    }
+    echo "Timeout:", timeout, "MaxRetries:", maxRetries, "Debug:", debug
+}
+
+run timeout = 60, maxRetries = 5           // lowercase field names work
+run Timeout = 10, Debug = true             // uppercase field names work too
+run                                        // uses default values
+```
+**适用场景**：需要与 Go 代码兼容，需要方法、嵌入字段、标签等结构体特性，或需要运行时反射。
+
+### 语法规则与使用建议
+
+**语法规则**
+
+1. **形参位置**
+   - 用于接收关键字实参的形参必须标为可选，即使用 `?`。
+   - 没有可变参数时，该形参放在最后；有可变参数时放在倒数第二位。
+   
+2. **传参顺序**
+   - 调用时，关键字实参放在所有普通实参和可变实参之后。
+
+```xgo
+// ✓ Correct call order
+process "value", key1 = "a", key2 = "b"
+process "v1", "v2", key = "x"
+
+// ✗ Wrong call order
+process key = "x", "value"  // keyword arguments must come last
+```
+**类型选择**
+
+- 需要动态参数或运行时灵活性时，使用**映射**。
+- 多数情况下可以使用**元组**：它轻量、支持编译期检查，性能也好。
+- 需要与 Go 兼容或依赖结构体特有功能时，使用**结构体**。
+
+## 高阶函数
+
+函数可以作为参数传递给其他函数。
+
+```xgo
+func square(x float64) float64 {
+    return x*x
+}
+
+func abs(x float64) float64 {
+    if x < 0 {
+        return -x
+    }
+    return x
+}
+
+func transform(a []float64, f func(float64) float64) []float64 {
+    return [f(x) for x in a]
+}
+
+y := transform([1, 2, 3], square)
+echo y // [1 4 9]
+
+z := transform([-3, 1, -5], abs)
+echo z // [3 1 5]
+```
+## Lambda 表达式
+
+Lambda 表达式用 `=>` 运算符在使用处定义匿名函数。
+
+### 基本语法
+
+```xgo
+// Single parameter (no parentheses needed)
+x => x * x
+
+// Multiple parameters (parentheses required)
+(x, y) => x + y
+
+// No parameters (no parentheses needed, just start with =>)
+=> someValue
+
+// Multi-line body
+x => {
+    result := x * 2
+    return result
+}
+```
+### 常见用法
+
+**转换数据**
+
+```xgo
+func transform(a []float64, f func(float64) float64) []float64 {
+    return [f(x) for x in a]
+}
+
+// The lambda parameter type is inferred from transform's function parameter type
+// which expects func(float64) float64
+y := transform([1, 2, 3], x => x*x)           // [1 4 9]
+
+z := transform([-3, 1, -5], x => {
+    if x < 0 {
+        return -x
+    }
+    return x
+})                                            // [3 1 5]
+```
+**组合多个值**
+
+```xgo
+func combine(a, b []int, f func(int, int) int) (result []int) {
+    for i := 0; i < len(a) && i < len(b); i++ {
+        result = append(result, f(a[i], b[i]))
+    }
+    return result
+}
+
+sums := combine([1, 2, 3], [4, 5, 6], (x, y) => x + y)  // [5 7 9]
+```
+**通过闭包捕获变量**
+
+```xgo
+func multiplier(factor int) func(int) int {
+    return x => x * factor
+}
+
+func counter(start int) func() int {
+    count := start
+    return => {
+        count++
+        return count
+    }
+}
+
+double := multiplier(2)
+echo double(5)  // 10
+
+c := counter(0)
+echo c()  // 1
+echo c()  // 2
+```
+**排序与筛选**
+
+```xgo
+numbers := [1, 2, 3, 4, 5, 6]
+evens := filter(numbers, x => x % 2 == 0)  // [2 4 6]
+
+sort.Slice(products, (i, j) => products[i].Price < products[j].Price)
+```
+**处理事件**
+
+```xgo
+// Event registration functions
+func OnStart(onStart func())
+func OnMsg(msg string, onMsg func())
+
+// Register event handlers with lambdas
+// With one argument (the lambda), no comma is needed.
+onStart => {
+    echo "Game started!"
+    initializeGame()
+}
+
+// With multiple arguments, use a comma to separate them.
+onMsg "game over", => {
+    echo "Game over!"
+    cleanup()
+}
+```
+**注意**：如果找不到以小写字母开头的函数，XGo 会尝试将首字母改为大写再查找。例如，找不到 `onStart` 时会查找 `OnStart`，因此调用可以使用较自然的命名方式。
+
+### 类型推断
+
+编译器根据上下文推断参数和返回值的类型。XGo 的 Lambda 表达式不支持显式类型标注。
+
+```xgo
+// Types are inferred from the function signature
+transform([1, 2, 3], x => x * 2)
+
+// The lambda parameter type is inferred from transform's function parameter type
+// which expects func(float64) float64
+```
+### 如何选择
+
+**适合使用 Lambda 的场景**
+- 只在使用处调用一次的函数。
+- 简单的数据转换和筛选。
+- 回调和事件处理。
+- 构建数据处理流水线。
+
+**适合使用命名函数的场景**
+- 需要复用的逻辑。
+- 需要文档解释的复杂操作。
+- 公开 API。
+
+## 自动闭包
+
+当回调形参名以 `__xgo_autoclosure_` 开头时，调用方按回调的结果类型提供实参。编译器把实参包装成一个无参数、单返回值的函数。被调用函数每执行一次回调，就重新计算一次实参表达式。
+
+```xgo title="autoclosure.xgo"
+func repeatUntil(__xgo_autoclosure_done func() bool, body func()) {
+    for !__xgo_autoclosure_done() {
+        body()
+    }
+}
+
+count := 0
+repeatUntil count >= 3, => {
+    echo count
+    count++
+}
+```
+
+运行 `xgo run autoclosure.xgo`。
+
+```text
+0
+1
+2
+```
+
+
+示例中的条件在每次迭代时读取 `count` 的当前值，循环体则显式使用 Lambda。类框架还可以通过 `autolambda` 让特定命令接收尾随代码块。参见[语言工具链约定](/zh-CN/docs/toolchain/tooling-conventions#框架注册表)。
+
+## 函数装饰器
+
+将 `@name` 或 `@name(arguments)` 放在函数或方法声明前。装饰器先接收其显式实参，再接收一个 `func()` 或 `func() error` 类型的回调，也可以使用这两种类型的别名。编译器生成的包装函数在回调中绑定原接收者和实参，并为调用方保存原函数的返回值。多个装饰器叠加时，列在最前面的装饰器位于最外层。
+
+```xgo title="decorators.xgo"
+func withLog(fn func()) {
+    echo "start"
+    fn()
+    echo "end"
+}
+
+func tagged(tag string, fn func()) {
+    echo tag
+    fn()
+}
+
+@withLog
+@tagged("job")
+func twice(n int) int {
+    echo "inside"
+    return 2 * n
+}
+
+echo twice(5)
+```
+
+运行 `xgo run decorators.xgo`。
+
+```text
+start
+job
+inside
+end
+10
+```
+
+
+使用 `func() error` 回调时，被装饰函数或方法的最后一个返回值必须可以赋给 `error`。回调将该结果传给装饰器，装饰器可以据此决定是否再次调用回调。
+
+```xgo title="decorators-error.xgo"
+import "errors"
+
+func retry(n int, fn func() error) {
+    for i := 0; i < n; i++ {
+        if fn() == nil {
+            return
+        }
+    }
+}
+
+var attempts int
+
+@retry(3)
+func load() (string, error) {
+    attempts++
+    if attempts < 2 {
+        return "", errors.New("try again")
+    }
+    return "ready", nil
+}
+
+name, err := load()
+echo name, err, attempts
+```
+
+运行 `xgo run decorators-error.xgo`。
+
+```text
+ready <nil> 2
+```
+
+## 小结
+
+XGo 函数系统支持下列写法。
+- 用标准函数声明返回多个值。
+- 定义不返回值、只执行操作的函数。
+- 通过可选参数简化调用。
+- 通过可变参数接收数量不固定的实参。
+- 使用映射、元组或结构体接收关键字实参，让调用更容易阅读。
+- 通过高阶函数组织函数式程序。
+- 用 Lambda 在使用处定义简洁的匿名函数。
+- 通过闭包捕获并维护状态。
+
+这些特性可以组合使用，既支持传统的命令式程序，也支持函数式编程。

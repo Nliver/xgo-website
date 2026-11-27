@@ -1,0 +1,113 @@
+---
+title: 元组与结构体
+description: XGo 上游参考文档对元组和结构体的比较。
+---
+
+元组和结构体都能组合多个值，但在类型系统、可见性和运行时表现上有不同的规则。这些差异决定了各自适用的场景。
+
+## 类型标识与实例化
+
+元组和结构体在类型判定与创建实例时遵循不同规则。
+
+**类型标识**：元素结构相同的元组具有相同的底层表示。`(a int, b string)` 与 `(c int, d string)` 是相同的匿名元组类型。通过类型定义声明的命名元组各有独立的类型标识，例如 `type Point (x int, y int)` 和 `type Coord (a int, b int)` 定义了两个不同的类型，即使底层结构相同。元组字段名只在编译时作为别名使用。
+
+结构体的类型检查对字段更加严格。即使字段的类型和顺序相同，只要声明的是不同的定义类型，或字段名不同，也会得到不同的类型。这让结构体适合表达语义明确的数据结构。
+
+**初始化语法**：元组类型定义与初始化都可以采用类似函数的写法。定义元组像编写函数签名，构造实例像调用函数，因此这两种操作的形式容易辨认。
+
+元组初始化还与类型转换使用相同的记法。创建元组或者转换兼容的元组类型都可以使用 `TypeName(values)`，这样函数调用、元组构造和类型转换沿用了同一套语法。
+
+结构体则用花括号包围字段值来初始化，例如 `Point{3, 4}`，类型转换另有写法。读者需要在函数调用的写法之外再掌握这些形式。
+
+### 元组示例
+
+```xgo
+// Anonymous tuples: structural equivalence
+var t1 (int, string) = (42, "hello")
+var t2 (int, string) = t1  // ✓ OK: same structure
+
+// Named tuples: nominal typing but structurally convertible
+type Point (x, y int)      // Definition: function-like syntax
+type Coord (a, b int)
+
+// Tuple initialization has two equivalent forms:
+// Form 1: positional arguments (like function calls)
+var pt1 = Point(3, 4)
+
+// Form 2: named arguments (explicit field names)
+var pt2 = Point(x = 3, y = 4)
+
+// Both forms use function-call syntax
+// Type conversion: same function-like syntax!
+var cd = Coord(pt1) // Type conversion (structurally compatible)
+
+// Notice: Point(3, 4) creates a tuple, Coord(pt1) converts types
+// Both use identical syntax pattern - no new syntax to learn
+```
+### 结构体示例
+
+```xgo
+// Structs: always require exact type match
+type Point struct {        // Definition: requires 'struct' keyword
+    X, Y int
+}
+
+type Coord struct {
+    X, Y int
+}
+
+// Struct initialization also has two equivalent forms:
+// Form 1: positional arguments
+var pt1 = Point{3, 4}
+
+// Form 2: named fields (explicit field names)
+var pt2 = Point{X: 3, Y: 4}
+
+// Type conversion still requires explicit field access
+var cd = Coord(pt1)          // ✗ Error: different types
+var cd = Coord{pt1.X, pt1.Y} // Positional conversion
+
+// Struct requires learning the {field: value} syntax separately
+// No unified pattern across initialization and conversion
+```
+## 可见性规则
+
+元组的所有字段都对外可见。字段名以小写字母开头也可以从外部访问。元组适合作为轻量容器临时组合数据，封装复杂对象状态并非它的主要用途。
+
+结构体遵循 Go 的可见性规则，以字段名首字母的大小写区分导出与未导出字段，支持模块化设计和封装。
+
+## 运行时反射
+
+通过反射查看元组时，其字段名为 `X_0`、`X_1` 等。源码中的字段别名只在编译期间有效，运行时无法通过反射取回这些别名。
+
+结构体的字段名在运行时完整保留，因此可以支持依赖反射的序列化、对象关系映射（ORM）和配置解析等功能。
+
+## 方法与面向对象编程
+
+XGo 将元组定位为简单的数据容器，不鼓励为元组添加方法，以免让轻量的数据组合承载过多行为。
+
+数据结构确实需要方法时，XGo 建议使用[类文件](/zh-CN/docs/toolchain/classfiles)，以获得更完整的面向对象能力。
+
+## 实际应用中的限制
+
+例如，**读取配置文件**通常依赖反射将配置项映射到字段。元组的字段别名在运行时已经丢失，因此无法像结构体一样完成这种按字段名映射的任务。
+
+更广泛地说，多数依赖反射并需要完整字段信息的功能都使用结构体，包括 JSON/XML 序列化、数据库 ORM、依赖注入和结构体标签解析。
+
+## XGo 迷你规范的建议
+
+选择时还可以参考 XGo 的推荐语法集（MiniSpec）。该语法集包含元组，没有纳入结构体。
+
+这一取舍体现了 XGo 的设计理念：**元组与[类文件](/zh-CN/docs/toolchain/classfiles)组合使用，可以覆盖 Go 中结构体的使用场景**。两者分工如下。
+- 元组用于轻量数据容器和函数返回值。
+- 类文件用于需要封装、方法或其他面向对象能力的复杂类型。
+
+MiniSpec 推荐这种组合，希望减少多个相近结构带来的学习负担，并提供更一致的方式组织数据和行为。
+
+## 小结
+
+元组适合轻量、临时的数据组合和函数的多个返回值。结构体适合定义语义明确的数据类型，尤其适合需要封装、运行时反射或绑定方法的场景。
+
+遵循 MiniSpec 时，可以用元组组合简单数据，需要面向对象能力时使用类文件。这样可以用较少的概念覆盖完整的应用功能，无需直接使用结构体。
+
+了解这些差异，有助于针对具体任务选择合适的数据结构，写出更清晰、高效的代码。

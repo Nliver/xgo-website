@@ -18,7 +18,7 @@ make doctor
 
 `make setup` 下载当前平台的运行时并安装 `spx` 命令。`make doctor` 可查看项目识别到的平台、运行时和工具链配置。
 
-## 修改 Calf 的对白
+## 运行 Hello 并修改 Calf 的对白
 
 从源码根目录进入 Hello 教程。
 
@@ -41,12 +41,14 @@ onStart => {
 
 在对应目录中运行 `xgo run .`。
 
-| 目录 | 可以观察的行为 |
-| --- | --- |
-| `tutorial/01-Weather` | Kai 的启动事件广播消息 `1`，Jaime 收到消息后回复 `2`，Kai 接着回应。 |
-| `tutorial/02-Dragon` | Dragon 碰到 Shark 时，舞台监视器中的分数发生变化。 |
-| `tutorial/03-Clone` | 点击 Calf 创建克隆，点击箭头移除最近的克隆。对比各自的 `id` 与共享的 `gid`。 |
-| `tutorial/04-Bullet` | 观察临时子弹精灵从创建到清理的过程。 |
-| `tutorial/05-Animation` | 查看素材中的造型序列，并观察精灵播放动画时如何切换造型。 |
+| 目录 | 任务 | 可以观察的行为 |
+| --- | --- | --- |
+| `tutorial/01-Weather` | 跟踪 `broadcast` 和 `onMsg`。 | Kai 和 Jaime 通过互发消息展开对话。 |
+| `tutorial/02-Dragon` | 找到显示精灵变量 `score` 的舞台监视器。 | Dragon 碰到 Shark 时，分数会变化。 |
+| `tutorial/03-Clone` | 比较各个克隆自己的 `id` 与共享的 `gid`。 | 点击 Calf 创建克隆，点击箭头移除最近的克隆。 |
+| `tutorial/04-Bullet` | 跟踪一个克隆从创建到清理的过程。 | 游戏运行时会生成临时的子弹精灵。 |
+| `tutorial/05-Animation` | 查看素材中的造型序列。 | 精灵播放动画时会切换造型。 |
+
+在 Weather 教程中，`Kai.spx` 的启动事件处理器广播消息 `1`。`Jaime.spx` 中的 `onMsg "1"` 处理器收到消息后，广播消息 `2`。`Kai.spx` 中的 `onMsg "2"` 处理器接着回应。精灵文件在语言层的行为见[类文件规范](/zh-CN/docs/toolchain/classfile-specification)。
 
 要新建自己的项目，请参阅 [SPX 命令行工作流](/zh-CN/docs/spx/cli)。要给角色动画添加音效，请参阅 [SPX 动画音效指南](/zh-CN/docs/spx/animation-audio)。

@@ -1,0 +1,84 @@
+---
+title: TinyGo 示例程序
+description: 使用 XGo 和 TinyGo 试运行可移植的排序示例，并了解指定开发板的 LED 程序。
+---
+
+请使用固定版本 XGo 源码中的示例目录。上一级模块通过 `go 1.18 // tinygo 0.32` 声明 TinyGo。参阅[模块编译器注解](/zh-CN/docs/toolchain/modules)。
+
+## 对整数和字符串排序
+
+在 `demo/_tinygo/sortdemo` 中运行。
+
+使用标准库按升序对整数排序，按长度对字符串排序。同样长度的字符串按字母顺序排列。可以在桌面环境中用默认 Go 编译器运行程序，查看排序结果。
+
+### sort.xgo
+
+```xgo
+import "sort"
+
+vals := [32, 58, 25, 92, 45, 78]
+sort.ints vals
+for v in vals {
+	println v
+}
+
+texts := ["apple", "banana", "cherry", "date", "elderberry", "fig"]
+sort.slice texts, (i, j) => {
+	leni, lenj := len(texts[i]), len(texts[j])
+	if leni != lenj {
+		return leni < lenj
+	}
+	return texts[i] < texts[j]
+}
+for v in texts {
+	println v
+}
+```
+
+```sh
+xgo run .
+```
+
+程序输出如下。
+
+```text
+25
+32
+45
+58
+78
+92
+fig
+date
+apple
+banana
+cherry
+elderberry
+```
+
+## 让开发板的 LED 闪烁
+
+原始源码位于 `demo/_tinygo/blink`。
+
+TinyGo 提供 `machine` 包，并根据编译目标选择引脚定义。例如，TinyGo 0.32.0 针对 `arduino` 目标时将 `machine.LED` 映射到数字引脚 13。程序将该引脚配置为输出，交替输出低电平和高电平，每次持续一秒。
+
+在此处固定的 XGo 版本中，导入器通过 Go 的包导入机制查找 `machine`。使用标准 Go 包目录执行 `xgo go .` 时会遇到 `package machine is not in std`。编译原始 XGo 源码需要能够查找 TinyGo 目标专用包的导入器。
+
+### blink.xgo
+
+```xgo
+import (
+	"machine"
+	"time"
+)
+
+led := machine.LED
+led.configure {Mode: machine.PinOutput}
+for {
+	led.low
+	time.sleep 1s
+
+	led.high
+	time.sleep 1s
+}
+```

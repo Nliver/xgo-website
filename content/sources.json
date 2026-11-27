@@ -16,6 +16,7 @@
         "cmd/internal/test/test.go",
         "cmd/internal/gopfmt/fmt.go",
         "cmd/internal/gengo/go.go",
+        "cmd/xgo/go_cmd.gox",
         "cmd/internal/watch/watch.go",
         "cmd/internal/clean/clean.go",
         "cmd/internal/mod/init.go",
@@ -40,7 +41,7 @@
       ],
       "translationReviewStatus": "pending",
       "translationOf": "content/docs/(xgo)/toolchain/command-reference.mdx",
-      "sourceCheckedAt": "2026-11-26"
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/toolchain/pack-project-configuration.zh-CN.mdx": {
       "sourcePath": "cmd/xgo/pack_cmd.gox",
@@ -69,6 +70,7 @@
         "cmd/internal/test/test.go",
         "cmd/internal/gopfmt/fmt.go",
         "cmd/internal/gengo/go.go",
+        "cmd/xgo/go_cmd.gox",
         "cmd/internal/watch/watch.go",
         "cmd/internal/clean/clean.go",
         "cmd/internal/mod/init.go",
@@ -91,7 +93,7 @@
         "x/gocmd/gocmd.go",
         "x/xgoprojs/proj.go"
       ],
-      "sourceCheckedAt": "2026-11-26"
+      "sourceCheckedAt": "2026-11-27"
     },
     "content/docs/(xgo)/toolchain/pack-project-configuration.mdx": {
       "sourcePath": "cmd/xgo/pack_cmd.gox",
@@ -2632,6 +2634,1038 @@
         }
       ],
       "translationOf": "content/docs/spx/animation-audio.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/concepts/xgo-and-go.zh-CN.mdx": {
+      "sourcePath": "doc/xgo-vs-go.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/concepts/xgo-and-go.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/tutorials/concurrency.mdx": {
+      "sourcePath": "parser/_testdata/mytest/mytest.xgo",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "cl/stmt.go",
+        "parser/parser.go",
+        "doc/for.md",
+        "doc/spec-mini.md"
+      ]
+    },
+    "content/docs/(xgo)/tutorials/concurrency.zh-CN.mdx": {
+      "sourcePath": "parser/_testdata/mytest/mytest.xgo",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-27",
+      "additionalSourcePaths": [
+        "cl/stmt.go",
+        "parser/parser.go",
+        "doc/for.md",
+        "doc/spec-mini.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/tutorials/concurrency.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/toolchain/code-coverage.zh-CN.mdx": {
+      "sourcePath": "doc/code-coverage.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "additionalSourcePaths": [
+        "cmd/internal/test/testflag.go",
+        "cmd/make.go",
+        "demo/unit-test/foo_test.gox",
+        "demo/unit-test/foo.xgo"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/toolchain/code-coverage.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/toolchain/vscode.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "sourceCheckedAt": "2026-11-26",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "vscode-xgo 0.8.6 (source snapshot)",
+      "externalSources": [
+        {
+          "repository": "goplus/vscode-xgo",
+          "commit": "9efaf15e8da3893410e9f39c13e78b6686f8d7fa",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/vscode-xgo",
+          "commit": "9efaf15e8da3893410e9f39c13e78b6686f8d7fa",
+          "path": "package.json"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/toolchain/vscode.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/examples/core-language.zh-CN.mdx": {
+      "sourcePath": "demo/clsinit/Rect.gox",
+      "additionalSourcePaths": [
+        "demo/kwargs/run.xgo",
+        "demo/lambda1/lambda.xgo",
+        "demo/mapliteral/mapliteral.xgo",
+        "demo/sliceliteral/sliceliteral.xgo",
+        "demo/stringtrans/transform.xgo",
+        "demo/tupletype/tuple.xgo",
+        "demo/unitliteral/unitlit.xgo",
+        "demo/xgo-calc/calc.xgo",
+        "demo/xgo-parser/parser.xgo",
+        "demo/xgo-sample/a.xgo",
+        "demo/xgo-sample/b.xgo",
+        "demo/xgo-sample/cpkag/b/ab.go",
+        "demo/xgo-scanner/scanner.xgo",
+        "demo/xgo-scanner/simplecalc/calc.xgo",
+        "demo/xgo-scanner/rpncalc/rpncalc.xgo",
+        "demo/xgo-typeof/typeof.xgo"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/examples/core-language.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/examples/mixed-go-generics.zh-CN.mdx": {
+      "sourcePath": "demo/mixgo/README.md",
+      "additionalSourcePaths": [
+        "demo/mixgo/a.go",
+        "demo/mixgo/b.xgo",
+        "demo/mixgo/xgo_autogen.go",
+        "demo/fullspec/mixgo-complex/bar.go",
+        "demo/fullspec/mixgo-complex/foo.xgo",
+        "demo/fullspec/mixgo-complex/xgo_autogen.go",
+        "demo/fullspec/overloadfunc1/add.xgo",
+        "demo/fullspec/overloadfunc2/mul.xgo",
+        "demo/fullspec/overloadmethod/method.xgo",
+        "demo/fullspec/overloadop1/overloadop.xgo",
+        "demo/fullspec/overloadop2/overloadop.xgo",
+        "demo/typeasparamsfunc/col.go",
+        "demo/typeasparamsfunc/typeAsParamsFunc.xgo",
+        "demo/typeasparamsmethod/col.go",
+        "demo/typeasparamsmethod/typeAsParamsMethod.xgo",
+        "demo/typeparamscast/foo.go",
+        "demo/typeparamscast/typecast.xgo",
+        "demo/unit-test/foo.xgo",
+        "demo/unit-test/foo_test.gox"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/examples/mixed-go-generics.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/examples/data-and-text.zh-CN.mdx": {
+      "sourcePath": "demo/domaintext/domaintext.xgo",
+      "additionalSourcePaths": [
+        "demo/dql-fs/fsq.xgo",
+        "demo/dql-json/jq.xgo",
+        "demo/dql-links/links.xgo",
+        "demo/dql-xgo/xgoq.xgo",
+        "demo/dql-yaml/yq.xgo",
+        "demo/tpl-calc/calc.xgo",
+        "demo/tpl-calc-dump/calc_dump.xgo",
+        "demo/tpl-intlist/ints.xgo",
+        "demo/tpl-natural-lang/nlang.xgo",
+        "demo/tpl-parser-demo/demo.xgo",
+        "demo/tpl-pseudo/gauss.pseudo",
+        "demo/tpl-pseudo/pseudo.gox",
+        "demo/tpl-vcalc/variant_calc.xgo",
+        "demo/fullspec/tpl-gen-ast/gen_calc_ast.xgo"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/examples/data-and-text.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/llgo/examples.zh-CN.mdx": {
+      "sourcePath": "demo/_llgo/hello/hello.xgo",
+      "additionalSourcePaths": [
+        "demo/_llgo/hellollgo/README.md",
+        "demo/_llgo/hellollgo/hello.xgo",
+        "demo/_llgo/chello/hello.xgo",
+        "demo/_llgo/cpphello/cpphello.xgo",
+        "demo/_llgo/pyhello/hello.xgo",
+        "demo/_llgo/pyprint/print.xgo",
+        "demo/_llgo/pymax/pymax.xgo",
+        "demo/_llgo/callpy/callpy.xgo",
+        "demo/_llgo/matrix/matrix.xgo",
+        "demo/_llgo/pytensor/tensor.xgo",
+        "demo/_llgo/statistics/statistics.xgo",
+        "demo/_llgo/defer/defer.xgo",
+        "demo/_llgo/errors/errors.xgo",
+        "demo/_llgo/goroutine/goroutine.xgo",
+        "demo/_llgo/qsort/qsort.xgo",
+        "demo/_llgo/reflect/reflect.xgo",
+        "demo/_llgo/sqlitedemo/sqlitedemo.xgo",
+        "demo/_llgo/tetris/tetris.xgo",
+        "demo/_llgo/go.mod",
+        "demo/_llgo/go.sum",
+        "x/gocmd/gocmd.go"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "externalSources": [
+        {
+          "repository": "goplus/lib",
+          "commit": "3011291e9632070aa8c8e7cdc890caa504c26e44",
+          "path": "c/raylib/raylib.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/llgo/examples.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/examples/gsh-and-classfiles.zh-CN.mdx": {
+      "sourcePath": "demo/gsh-exec/exec.gsh",
+      "additionalSourcePaths": [
+        "demo/gsh-exec/foo/foo.xgo",
+        "doc/classfile.md"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/examples/gsh-and-classfiles.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/examples/tinygo-demos.zh-CN.mdx": {
+      "sourcePath": "demo/_tinygo/sortdemo/sort.xgo",
+      "additionalSourcePaths": [
+        "demo/_tinygo/blink/blink.xgo",
+        "demo/_tinygo/go.mod",
+        "tool/imp.go"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "externalSources": [
+        {
+          "repository": "tinygo-org/tinygo",
+          "commit": "dd6fa89aa66a5113baa8883d4180ee090f35f784",
+          "path": "targets/arduino.json"
+        },
+        {
+          "repository": "tinygo-org/tinygo",
+          "commit": "dd6fa89aa66a5113baa8883d4180ee090f35f784",
+          "path": "src/machine/board_arduino.go"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/examples/tinygo-demos.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/examples/overview.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "additionalSourcePaths": [
+        "doc/classfile.md",
+        "demo/mixgo/README.md"
+      ],
+      "contentType": "example",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/examples/overview.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/ecosystem/gsh.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "qiniu/x",
+          "commit": "17702ef7423bdc56344a0b925ff7e1bf5b8da133",
+          "path": "gsh/README.md"
+        },
+        {
+          "repository": "qiniu/x",
+          "commit": "17702ef7423bdc56344a0b925ff7e1bf5b8da133",
+          "path": "gsh/demo/hello/example.gsh"
+        },
+        {
+          "repository": "qiniu/x",
+          "commit": "17702ef7423bdc56344a0b925ff7e1bf5b8da133",
+          "path": "gsh/demo/example/example.gsh"
+        },
+        {
+          "repository": "qiniu/x",
+          "commit": "17702ef7423bdc56344a0b925ff7e1bf5b8da133",
+          "path": "LICENSE"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/ecosystem/gsh.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/ecosystem/hdq.zh-CN.mdx": {
+      "sourcePath": "dql/README.md",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/hdq",
+          "commit": "5541652ee36a76ba3244fbed412a38cb5153ea17",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/hdq",
+          "commit": "5541652ee36a76ba3244fbed412a38cb5153ea17",
+          "path": "LICENSE"
+        }
+      ],
+      "additionalSourcePaths": [
+        "demo/dql-links/links.xgo"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/ecosystem/hdq.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/llgo/interoperability.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "additionalSourcePaths": [
+        "demo/_llgo/chello/hello.xgo",
+        "demo/_llgo/cpphello/cpphello.xgo",
+        "demo/_llgo/pyhello/hello.xgo",
+        "demo/_llgo/pytensor/tensor.xgo",
+        "demo/_llgo/tetris/tetris.xgo",
+        "demo/_llgo/sqlitedemo/sqlitedemo.xgo",
+        "demo/_llgo/hellollgo/README.md",
+        "demo/_llgo/statistics/statistics.xgo",
+        "x/gocmd/gocmd.go"
+      ],
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/llgo/interoperability.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/spx/examples/aircraft-war.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "sourceCheckedAt": "2026-11-26",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "SPX v1.0.0",
+      "externalSources": [
+        {
+          "repository": "goplus/AircraftWar",
+          "commit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/AircraftWar",
+          "commit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/AircraftWar",
+          "commit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+          "path": "main.spx"
+        },
+        {
+          "repository": "goplus/AircraftWar",
+          "commit": "e92768138e5732d2264c9f42dbbedefac74fa960",
+          "path": "MyAircraft.spx"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/spx/examples/aircraft-war.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/spx/examples/flappy-calf.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "sourceCheckedAt": "2026-11-26",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "SPX v1.1.0",
+      "externalSources": [
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "main.spx"
+        },
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "Pipe.spx"
+        },
+        {
+          "repository": "goplus/FlappyCalf",
+          "commit": "4ee62694ef952b51f03938ccbd969c1083c40256",
+          "path": "Calf.spx"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/spx/examples/flappy-calf.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/spx/examples/maze-play.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "sourceCheckedAt": "2026-11-26",
+      "contentType": "guide",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "SPX v1.1.0",
+      "externalSources": [
+        {
+          "repository": "goplus/MazePlay",
+          "commit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/MazePlay",
+          "commit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+          "path": "go.mod"
+        },
+        {
+          "repository": "goplus/MazePlay",
+          "commit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+          "path": "main.spx"
+        },
+        {
+          "repository": "goplus/MazePlay",
+          "commit": "48b33bae8adeed19d07d982768e2e5edabda9a14",
+          "path": "Calf.spx"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/spx/examples/maze-play.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/cobra/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v1.10.8",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/cobra",
+          "commit": "8eb28b24b21808ca3ceef1f9b80a7e03fd5f5647",
+          "path": "xcmd/README.md"
+        },
+        {
+          "repository": "goplus/cobra",
+          "commit": "8eb28b24b21808ca3ceef1f9b80a7e03fd5f5647",
+          "path": "gox.mod"
+        },
+        {
+          "repository": "goplus/cobra",
+          "commit": "8eb28b24b21808ca3ceef1f9b80a7e03fd5f5647",
+          "path": "xcmd/demo/godemo/version_cmd.gox"
+        },
+        {
+          "repository": "goplus/cobra",
+          "commit": "8eb28b24b21808ca3ceef1f9b80a7e03fd5f5647",
+          "path": "LICENSE.txt"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/cobra/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/mcp/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "v0.9.8",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "demo/hello/main_mcp.gox"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "demo/hello/hello_tool.gox"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "demo/hello/hello_mtest.gox"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "gox.mod"
+        },
+        {
+          "repository": "goplus/mcp",
+          "commit": "e0f03ac7350af7434cf4c5dbf119e9588ee346c5",
+          "path": "LICENSE"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/mcp/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/yap/index.zh-CN.mdx": {
+      "sourcePath": "README.md",
+      "contentType": "tutorial",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "externalSources": [
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "README.md"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "classfile_v2.go"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_hello/get.yap"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_hello/get_p_#id.yap"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_blog/get_p_#id.yap"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_blog/yap/article_yap.html"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "demo/classfile2_static/main.yap"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ytest/README.md"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ytest/demo/foo/foo_ytest.gox"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ytest/demo/foo/bar_ytest.gox"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ydb/demo/foo/articles_ydb.gox"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ydb/demo/foo/users_ydb.gox"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "gox.mod"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ydb/sqlite3/sqlite3.go"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "ydb/query.go"
+        },
+        {
+          "repository": "goplus/yap",
+          "commit": "1caa1d123c9ab24ffec95d0d8cbb472d6c87862d",
+          "path": "LICENSE"
+        }
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/yap/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/domain-text-literals-design.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "doc/domian-text-lit.md",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/domain-text-literals-design.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/dql.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "dql/README.md",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/dql.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/goodbye-printf.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourcePath": "doc/goodbye-printf.md",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "additionalSourcePaths": [
+        "README.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/goodbye-printf.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/index.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourcePath": "README.md",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "additionalSourcePaths": [
+        "doc/classfile.md",
+        "doc/domian-text-lit.md",
+        "doc/docs.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/index.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/overloading-in-xgo.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourcePath": "doc/overload.md",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "additionalSourcePaths": [
+        "demo/fullspec/overloadfunc1/add.xgo",
+        "demo/fullspec/overloadfunc2/mul.xgo",
+        "demo/fullspec/overloadmethod/method.xgo"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/overloading-in-xgo.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/specific-domain-friendliness.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "doc/classfile.md",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/specific-domain-friendliness.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/template-receiver-methods.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "doc/template-recv-method.md",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/template-receiver-methods.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/tpl.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "tpl/README.md",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/tpl.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/what-is-xgo.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "README.md",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/what-is-xgo.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/xgo-and-go-design-goals.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "doc/xgo-vs-go.md",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/xgo-and-go-design-goals.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/xgo-code-style.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "sourcePath": "x/format/README.md",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/xgo-code-style.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/blog/xgo-design-philosophy.zh-CN.mdx": {
+      "contentType": "blog",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourcePath": "README.md",
+      "sourceCommit": "c70869bd8cc9936c9fa2f3023566662c8963c49a",
+      "additionalSourcePaths": [
+        "doc/classfile.md",
+        "doc/xgo-vs-go.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/blog/xgo-design-philosophy.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/toolchain/code-style.zh-CN.mdx": {
+      "sourcePath": "x/format/README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "additionalSourcePaths": [
+        "x/format/format.go",
+        "cmd/internal/gopfmt/fmt.go"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/toolchain/code-style.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/toolchain/modules.zh-CN.mdx": {
+      "sourcePath": "doc/go.mod.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/toolchain/modules.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/toolchain/gox-mod.zh-CN.mdx": {
+      "sourcePath": "doc/gox.mod.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/toolchain/gox-mod.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/toolchain/classfile-specification.zh-CN.mdx": {
+      "sourcePath": "doc/classfile-spec.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/toolchain/classfile-specification.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/toolchain/tooling-conventions.zh-CN.mdx": {
+      "sourcePath": "doc/tooling-conventions.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/toolchain/tooling-conventions.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/toolchain/classfiles.zh-CN.mdx": {
+      "sourcePath": "doc/classfile.md",
+      "contentType": "guide",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/toolchain/classfiles.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/function-calls.zh-CN.mdx": {
+      "sourcePath": "doc/fncall.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/tooling-conventions.md",
+        "cl/expr.go",
+        "cl/_testxgo/unit/in.xgo",
+        "cl/_testxgo/unit/out.go",
+        "demo/unitliteral/unitlit.xgo",
+        "cl/_testxgo/type-as-args/in.xgo",
+        "cl/_testxgo/type-as-args/out.go",
+        "cl/_testxgo/type-as-fnargs/in.xgo",
+        "cl/_testxgo/type-as-fnargs/out.go",
+        "cl/internal/typeargs/typeargs.go",
+        "parser/parser.go"
+      ],
+      "sourceCheckedAt": "2026-11-26",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/function-calls.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/slices.zh-CN.mdx": {
+      "sourcePath": "doc/slice.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/slices.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/full-specification.zh-CN.mdx": {
+      "sourcePath": "doc/spec.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/full-specification.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/dql.zh-CN.mdx": {
+      "sourcePath": "dql/README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/dql.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/for-loops.zh-CN.mdx": {
+      "sourcePath": "doc/for.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/for-loops.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/structs-and-tuples.zh-CN.mdx": {
+      "sourcePath": "doc/struct-vs-tuple.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/structs-and-tuples.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/strings.zh-CN.mdx": {
+      "sourcePath": "doc/string.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cl/builtin.go",
+        "doc/spec-mini.md"
+      ],
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/strings.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/maps.zh-CN.mdx": {
+      "sourcePath": "doc/map.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/maps.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/builtins.zh-CN.mdx": {
+      "sourcePath": "doc/builtin.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cl/_testxgo/newexpr/in.xgo",
+        "cl/_testxgo/newexpr/out.go"
+      ],
+      "sourceCheckedAt": "2026-11-26",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/builtins.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/domain-text-literals.zh-CN.mdx": {
+      "sourcePath": "doc/domian-text-lit.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/domain-text-literals.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/functions-and-closures.zh-CN.mdx": {
+      "sourcePath": "doc/func-closure.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "cl/compile.go",
+        "cl/expr.go",
+        "cl/decorator_test.go",
+        "cl/_testxgo/deco1/in.xgo",
+        "cl/_testxgo/deco2/in.xgo",
+        "cl/_testxgo/deco3/in.xgo",
+        "cl/_testxgo/repeatuntil/in.xgo",
+        "cl/_testxgo/repeatuntil/out.go"
+      ],
+      "sourceCheckedAt": "2026-11-26",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/functions-and-closures.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/tpl.zh-CN.mdx": {
+      "sourcePath": "tpl/README.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "sourceCheckedAt": "2026-11-26",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/tpl.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/enums.zh-CN.mdx": {
+      "sourcePath": "doc/enum.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/enums.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/template-receiver-method.zh-CN.mdx": {
+      "sourcePath": "doc/template-recv-method.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/template-receiver-method.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/overloads.zh-CN.mdx": {
+      "sourcePath": "doc/overload.md",
+      "contentType": "reference",
+      "sourceStatus": "upstream-synced",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/overloads.mdx",
+      "translationReviewStatus": "pending"
+    },
+    "content/docs/(xgo)/reference/mini-specification.zh-CN.mdx": {
+      "sourcePath": "doc/spec-mini.md",
+      "contentType": "reference",
+      "sourceStatus": "editorial",
+      "reviewStatus": "technical-review",
+      "applicableVersion": "source-snapshot",
+      "additionalSourcePaths": [
+        "doc/spec/mini/mini.xgo",
+        "cmd/chore/xgominispec/minispec.xgo",
+        "cmd/go.mod",
+        "tpl/tpl.go",
+        "x/xgoprojs/proj.go"
+      ],
+      "sourceCheckedAt": "2026-11-26",
+      "locale": "zh-CN",
+      "translationOf": "content/docs/(xgo)/reference/mini-specification.mdx",
       "translationReviewStatus": "pending"
     }
   },

@@ -1,0 +1,402 @@
+---
+title: "命令与函数调用"
+description: "介绍 XGo 的命令式调用、函数调用、运算符以及参数的写法。"
+---
+
+XGo 中看似不同的语法有一个共同点。**命令、函数调用和运算符都可以用函数调用模型来理解。** 这让初学者容易上手，也让有经验的程序员能用同一套思路阅读代码。
+
+## 统一的函数模型
+
+下面是三种调用形式。
+
+```xgo
+echo "Hello"           // Command style
+echo("Hello")          // Function call style
+3 + 4                  // Operator style
+```
+三种写法都表示函数调用。语法上的差异让你可以按场景选择更易读的写法。
+
+### 命令式调用
+
+命令式调用像自然语言里的指令。
+
+```xgo
+echo "Hello world"
+println "Temperature:", 25.5
+time.sleep 2*time.Second
+```
+**写法特点**。调用可以省略括号，参数依次写在命令之后。
+
+### 带括号的函数调用
+
+传统的函数调用形式用括号括住参数。
+
+```xgo
+echo("Hello world")
+println("Temperature:", 25.5)
+time.sleep(2*time.Second)
+```
+**写法特点**。明确写出括号，便于在复杂表达式中看清函数的嵌套和组合。
+
+### 用运算符表示函数调用
+
+运算符沿用常见的数学记号。
+
+```xgo
+3 + 4        // Addition
+x * y        // Multiplication
+a == b       // Equality comparison
+```
+运算符可以理解为相应的函数调用。`+` 表示加法，`*` 表示乘法。沿用数学记号让数值运算更易读写。
+
+XGo 还允许自定义运算符。这部分在进阶主题中介绍。
+
+## 函数的来源
+
+XGo 的函数有三类，各自的访问方式略有不同。
+
+### 1. 内置函数
+
+内置函数属于语言本身，无需导入即可使用。
+
+#### 输入与输出
+
+```xgo
+echo "Hello", "World"     // Output with spaces and newline
+print "Hello", "World"    // Output without spaces, no newline
+```
+两种写法效果相同。
+```xgo
+echo "Result:", 42         // Command style
+echo("Result:", 42)        // Function call style
+```
+`echo` 和 `print` 的输出格式有以下区别。
+- `echo` 用空格分隔各参数，并在末尾换行。
+- `print` 直接连接各参数，末尾不换行。
+
+```xgo
+echo "A", "B", "C"    // Output: A B C\n
+print "A", "B", "C"   // Output: ABC
+```
+#### 错误处理
+
+```xgo
+panic "Something went wrong!"
+panic("Fatal error: division by zero")
+```
+遇到无法继续处理的错误，可以调用 `panic` 中止当前执行流程。
+
+#### 作为内置函数的运算符
+
+算术运算符和比较运算符也可以用内置函数的概念来理解。
+
+```xgo
+sum := 3 + 4           // Addition operator
+product := 5 * 6       // Multiplication operator
+equal := (x == y)      // Equality operator
+```
+运算符沿用数学记号，在概念上可以视为中缀形式的函数调用。XGo 也允许用这个模型定义自定义运算符。
+
+### 2. 包函数
+
+要访问其他包里的函数，先导入包，再用包名限定函数名。
+
+#### 导入包
+
+将导入声明写在文件开头。
+
+```xgo
+import "math"
+import "time"
+```
+也可以将多项导入放在同一组声明中。
+
+```xgo
+import (
+    "math"
+    "time"
+)
+```
+#### 使用包函数
+
+通过 `packageName.functionName` 形式访问包函数。
+
+```xgo
+import "math"
+
+echo math.sqrt(16)        // Square root: 4
+echo math.pow(2, 3)       // Power: 8
+echo math.abs(-5)         // Absolute value: 5
+```
+**小写调用约定**。Go 中以大写字母开头的导出函数，在 XGo 中可以将名称的首字母改成小写来调用。
+
+```xgo
+// In the math package, the actual function is Sqrt (uppercase)
+math.sqrt(16)    // ✓ Lowercase call (recommended in XGo)
+math.Sqrt(16)    // ✓ Original uppercase name (also works)
+
+// But you cannot call a lowercase function with uppercase
+// somePackage.DoSomething()  // ✗ Won't work if function is actually doSomething
+```
+这个约定让调用更易读，同时沿用 Go 的导出规则。
+- 按照 Go 的规则，导出的函数名以大写字母开头。
+- XGo 允许调用时使用首字母小写的形式。
+- 首字母原本就是小写的函数，调用时仍应使用原名。
+
+**省略括号**。对于无参函数，使用首字母小写的名称时可以省略括号。
+
+```xgo
+import "time"
+
+echo time.now        // Current time (no parentheses needed)
+echo time.now()      // Same thing with explicit call
+echo time.Now()      // Also works with uppercase
+```
+#### 常见包函数示例
+
+**数学运算**
+```xgo
+import "math"
+
+math.sqrt(16)              // 4
+math.pow(2, 8)             // 256
+math.max(10, 20)           // 20
+math.min(10, 20)           // 10
+math.Pi                    // 3.141592653589793 (constant, not a function)
+```
+**时间操作**
+```xgo
+import "time"
+
+time.now                   // Current timestamp
+time.sleep 2*time.Second   // Pause for 2 seconds
+```
+包也提供 `math.Pi` 和 `time.Second` 之类的常量。它们也用点号访问，表示固定值。
+
+### 3. 方法
+
+方法作用在特定的对象上，通过 `object.method()` 形式调用。
+
+可以把方法理解为对象提供的操作。例如，字符串可以转换为大写，时间值可以返回当天是星期几。
+
+#### 字符串方法
+
+字符串提供了一些常见操作的方法。
+
+```xgo
+"Hello".len              // 5 (length of string)
+"Hello".toUpper          // "HELLO"
+"Hello".toLower          // "hello"
+"Go".repeat(3)           // "GoGoGo"
+"Hello".replaceAll("l", "L")  // "HeLLo"
+```
+**无参方法**。与包函数一样，无参方法可以省略括号。
+
+```xgo
+"Hello".len        // Parentheses optional
+"Hello".len()      // Explicit call—same result
+```
+**有参方法**。用点号形式调用时，将参数写在括号内。
+
+```xgo
+"Go".repeat(3)                    // Must use parentheses
+"Hello".replaceAll("l", "L")      // Must use parentheses
+```
+#### 时间方法
+
+`time.now` 返回的时间值提供了提取各个时间分量的方法。
+
+```xgo
+import "time"
+
+now := time.now
+
+echo now.weekday      // e.g., "Wednesday"
+echo now.year         // e.g., 2025
+echo now.month        // e.g., "February"
+echo now.day          // e.g., 15
+echo now.hour         // e.g., 14 (24-hour format, UTC)
+echo now.minute       // e.g., 30
+echo now.second       // e.g., 45
+```
+这些方法都无需参数，因此可以省略括号。
+
+**链式调用**
+
+```xgo
+import "time"
+
+echo time.now.weekday         // Current day of week
+echo time.now.year            // Current year
+```
+## 点号语法
+
+点号（`.`）用于访问对象的方法或包里的函数。
+
+```xgo
+// Package.function
+math.sqrt(16)
+time.now
+
+// Object.method
+"Hello".toUpper
+time.now.weekday
+```
+两者沿用同样的访问模式。
+
+## 实际示例
+
+### 组合不同类型的函数
+
+```xgo
+import "math"
+import "time"
+
+// Built-in + Package function
+echo "Square root of 25 is", math.sqrt(25)
+
+// Package function + Method
+echo "Today is", time.now.weekday
+
+// Operator + Built-in + Method
+result := 3 + 4
+message := "Result: " + result.string
+echo message.toUpper
+```
+### 命令式调用和带括号的调用
+
+在简单的独立语句中，可以用命令式调用。
+
+```xgo
+echo "Starting calculation..."
+result := math.sqrt(144)
+echo "Result:", result
+```
+在嵌套表达式中，使用带括号的函数调用。
+
+```xgo
+// Clear nesting with explicit parentheses
+echo math.sqrt(math.pow(3, 2) + math.pow(4, 2))  // Pythagorean theorem
+
+// String method in expression
+name := "alice"
+echo "Hello, " + name.toUpper()
+```
+### 完整示例
+
+```xgo
+import "time"
+import "math"
+
+// Get current time details
+now := time.now
+echo "Current time:", now
+echo "Day:", now.weekday
+echo "Date:", now.year, "-", now.month, "-", now.day
+
+// Wait a bit
+time.sleep 2*time.Second
+
+// Do some calculations
+value := math.pow(2, 10)
+echo "2^10 =", value
+echo "Square root:", math.sqrt(value)
+
+// String manipulation
+message := "processing complete"
+echo message.toUpper()
+```
+## 用时长字面量传参
+
+将数值和单位连写，例如 `1.5ms`。实参的预期类型决定使用哪张单位表。当参数类型为 `time.Duration` 时，`1m` 表示一分钟，`0.5µs` 表示 500 纳秒。标准库的函数也可接受这类时长，例如 `time.sleep 1s`。
+
+```xgo title="duration-units.xgo"
+import "time"
+
+func show(d time.Duration) {
+    echo d.String()
+}
+
+show 1m
+show 1.5ms
+show 0.5µs
+```
+
+运行 `xgo run duration-units.xgo`。
+
+```text
+1m0s
+1.5ms
+500ns
+```
+
+
+单位后缀需要匹配参数类型和对应的单位表。类型无法仅凭后缀确定。
+
+## 用类型传参
+
+当形参需要 `reflect.Type` 时，可以直接传入类型。XGo 将它转换为对 `reflect.TypeFor[T]()` 的调用。
+
+```xgo title="type-arguments.xgo"
+import "reflect"
+
+func show(t reflect.Type) {
+    echo t.String()
+}
+
+show *int
+show []string
+```
+
+运行 `xgo run type-arguments.xgo`。
+
+```text
+*int
+[]string
+```
+
+
+Go 库可以用 `XGox_` 前缀公开泛型函数。XGo 调用时省略前缀，在普通值实参之前读取开头的类型实参。编译器可根据其余实参的值推断剩下的类型参数。要在同一个包里混用 Go 和 XGo，请将这两个文件保存在同一个目录。
+
+```go title="helper.go"
+package main
+
+import "fmt"
+
+func XGox_Describe[T any, U any](value U) string {
+    return fmt.Sprintf("%T: %v", *new(T), value)
+}
+```
+
+```xgo title="main.xgo"
+echo Describe(int, "sample")
+```
+
+初始化模块并运行。
+
+```sh
+xgo mod init example.com/typeargs
+xgo run .
+```
+
+```text
+int: sample
+```
+
+`Describe(int, "sample")` 为 `T` 指定 `int`，并根据值推断 `U` 为 `string`。此调用被转换为 `XGox_Describe[int]("sample")`。参见[语言工具约定](/zh-CN/docs/toolchain/tooling-conventions#扩展成员)。
+
+## defer 与 go 语句中的调用
+
+使用带括号的调用，例如 `defer echo("done")` 或 `go echo("working")`。本文对应的源码版本中，解析器要求这两种语句都使用带括号的形式。延迟执行的规则见 [defer 语句](/zh-CN/docs/reference/mini-specification#defer-语句)。
+
+## 小结
+
+1. **统一的函数调用模型**涵盖命令、函数调用和运算符。
+2. **运算符**沿用数学记号，也可以自定义运算符。
+3. **内置函数和运算符**无需导入，例如 `echo`、`print`。
+4. **包函数**需要导入对应的包，并使用 `package.function` 语法调用。
+5. **方法**属于对象，用 `object.method` 形式访问。
+6. 命令式调用可以省略括号。使用首字母小写的名称调用无参函数或方法时，也可以省略括号。
+7. **小写调用约定**允许用小写首字母调用导出函数，例如用 `math.sqrt` 调用 `math.Sqrt`。反向转换不适用。
+
+`echo "Hello"`、`echo("Hello")`、`3 + 4` 和 `time.now` 都可以按函数调用来理解。根据语句和表达式的需要选择写法即可。

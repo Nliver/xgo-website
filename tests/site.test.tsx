@@ -9,6 +9,7 @@ import BlogPage, {
   generateMetadata as generateBlogMetadata,
   generateStaticParams as generateBlogStaticParams,
 } from '@/app/(english)/(home)/blog/[[...slug]]/page';
+import ChineseBlogPage, { generateMetadata as generateChineseBlogMetadata } from '@/app/zh-CN/(home)/blog/[[...slug]]/page';
 import ChineseRootLayout from '@/app/zh-CN/layout';
 import ChineseHomeLayout from '@/app/zh-CN/(home)/layout';
 import ChineseHomePage, { metadata as chineseHomeMetadata } from '@/app/zh-CN/(home)/page';
@@ -244,8 +245,12 @@ describe('actual documentation content and provenance', () => {
       const localized = page.locale === 'zh-CN';
       const blog = page.slugs[0] === 'blog';
       const props = pageProps(blog ? page.slugs.slice(1) : page.slugs);
-      expect(await (blog ? BlogPage : localized ? ChinesePage : EnglishPage)(props)).toBeTruthy();
-      const metadata = await (blog ? generateBlogMetadata : localized ? generateChineseMetadata : generateEnglishMetadata)(props);
+      const Page = blog ? (localized ? ChineseBlogPage : BlogPage) : (localized ? ChinesePage : EnglishPage);
+      expect(await Page(props)).toBeTruthy();
+      const getMetadata = blog
+        ? (localized ? generateChineseBlogMetadata : generateBlogMetadata)
+        : (localized ? generateChineseMetadata : generateEnglishMetadata);
+      const metadata = await getMetadata(props);
       expect(metadata.description).toBe(page.data.description);
       expect(metadata.alternates?.canonical).toBe(page.url);
       expect(metadata.openGraph).toMatchObject({ type: 'article', url: page.url, images: [getPageImageUrl(page).url] });
@@ -475,7 +480,7 @@ describe('actual route responses', () => {
     expect(chinese.status).toBe(200);
     const chineseResults = await chinese.json();
     expect(chineseResults.length).toBeGreaterThan(0);
-    expect(chineseResults.every((result: { url: string }) => /^\/zh-CN\/docs(?:\/|#|$)/.test(result.url))).toBe(true);
+    expect(chineseResults.every((result: { url: string }) => /^\/zh-CN\/(?:docs|blog)(?:\/|#|$)/.test(result.url))).toBe(true);
 
     const projects = await getSearch(new Request('http://localhost/api/search?query=LLGo'));
     expect(await projects.json()).toContainEqual(expect.objectContaining({ url: '/docs/llgo' }));

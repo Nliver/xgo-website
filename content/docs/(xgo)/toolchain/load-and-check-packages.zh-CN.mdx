@@ -80,7 +80,7 @@ go run .
 base.go:2:26 resolves to Double
 ```
 
-Go 调用中的引用与 XGo 声明指向同一个类型对象。检查返回值的同时，通过 `types.Config.Error` 收集诊断。混合输入时，最后的 Go 检查可能覆盖 `Files` 先前得到的 XGo 错误。其他字段和重载记录见[类型信息（英文）](/docs/toolchain/tooling-conventions#type-information)。
+Go 调用中的引用与 XGo 声明指向同一个类型对象。检查返回值的同时，通过 `types.Config.Error` 收集诊断。混合输入时，最后的 Go 检查可能覆盖 `Files` 先前得到的 XGo 错误。其他字段和重载记录见[类型信息](/zh-CN/docs/toolchain/tooling-conventions#类型信息)。
 
 ## 从模块目录加载包
 
@@ -207,4 +207,4 @@ Format(int)
 Format(string)
 ```
 
-文档模型包含 `XGoPackage` 或旧版 `GopPackage` 标记时，`doc.Transform` 会原地修改模型。输出的后两行展示了文档工具可使用的重载名称。有关生成代码的命名约定，参阅[重载参考（英文）](/docs/reference/overloads#under-the-hood-how-xgo-encodes-overloading-in-go)。
+文档模型包含 `XGoPackage` 或旧版 `GopPackage` 标记时，`doc.Transform` 会原地修改模型。输出的后两行展示了文档工具可使用的重载名称。有关生成代码的命名约定，参阅[重载参考](/zh-CN/docs/reference/overloads#重载如何编码成-go)。

@@ -1,0 +1,149 @@
+---
+title: XGo 的 go.mod 和 gox.mod 扩展
+description: 了解如何选择模块编译器、声明类框架及标记类框架依赖。
+---
+
+XGo 沿用 Go 的模块系统。这份提案描述了三个小型扩展，让 Go 模块可以携带 XGo 所需的信息，并继续由标准的 `go` 命令处理。
+
+1. `go.mod` 中的 `go` 指令可以指定构建模块的编译器，可选官方 Go 编译器、LLGo 或 TinyGo。
+2. 包含类框架的 Go 模块会在 `go.mod` 旁提供 `gox.mod` 文件。
+3. 使用类框架的项目在相应的 `require` 行添加 `//xgo:class` 标记。
+
+三项扩展都放在 Go 工具链会忽略的地方，即注释和额外的文件，因此现有工具可继续正常运行。
+
+## 背景
+
+XGo 是 Go 的超集。XGo 项目仍是 Go 模块，有 `go.mod` 文件，通过 `require` 声明模块依赖，也可以作为普通 Go 项目的依赖。
+
+XGo 需要 `go.mod` 提供两类附加信息。
+
+- **编译器选择。** XGo 代码可以由官方 Go 编译器、基于 LLVM 的 [LLGo](/zh-CN/docs/llgo) 或适用于微控制器等小型目标的 TinyGo 编译。模块需要同时声明目标编译器和版本。
+- **类框架。** 类框架是定义类文件的库。对于 `main.gox` 等源文件，XGo 根据框架提供的基类型和约定生成类。`github.com/goplus/cobra` 命令行应用框架就是一个例子，XGo 和 LLGo 都已在使用它。工具链需要准确判断某个依赖是否包含类框架，并定位其元数据。
+
+## 动机
+
+单看 `go.mod`，构建工具无法确定模块面向哪个编译器，也只能下载并检查各个依赖才能判断其中是否包含类框架。在模块文件中明确这些信息有助于复现构建。`xgo`、`llgo` 和编辑器可以在下载代码前确定后续操作，XGo 模块也继续兼容标准 Go 模块。
+
+## 设计
+
+### 1. 在 go 指令中选择编译器
+
+`go` 指令仍然声明 Go 语言版本。要选择其他编译器，在指令末尾加上注释，写明编译器名称和版本。
+
+LLGo 的通用写法如下。
+
+```text
+go <go-version> // llgo <llgo-version>
+```
+
+TinyGo 的写法如下。
+
+```text
+go <go-version> // tinygo <tinygo-version>
+```
+
+以 LLGo 为例。
+
+```text
+go 1.24 // llgo 1.0
+```
+
+以下是 TinyGo 的示例。
+
+```text
+go 1.24 // tinygo 0.35
+```
+
+使用时请遵循以下规则。
+
+- **默认使用官方 Go 编译器。** 单独写 `go 1.24` 的行为与标准 Go 一致，无需写出默认编译器的名称。
+- **编译器名称后的版本号属于该编译器。** Go 语言版本仍由 `go` 指令本身声明。
+- **当前提案支持 `llgo` 和 `tinygo`。** 提案不识别其他名称。工具遇到未知编译器名称时应明确报告。
+- **标准 `go` 命令将行尾文本视为普通注释。** 官方工具链仍可加载模块、整理依赖并构建。
+
+### 2. 在类框架模块中提供 gox.mod
+
+包含类框架的 Go 模块有两个模块文件。
+
+```files
+mymodule/
+├── go.mod
+├── gox.mod
+└── ...
+```
+
+`go.mod` 沿用 Go 的模块描述方式。`gox.mod` 将模块标记为类框架模块，并保存该框架的元数据。
+
+**文件名的由来。** 类文件的标准后缀是 `.gox`。`gox.mod` 专门指向类框架配置，`xgo.mod` 则容易让人理解为通用 XGo 配置文件。
+
+`gox.mod` 的内容详见 [gox.mod](/zh-CN/docs/toolchain/gox-mod)。本提案只依赖该文件的存在来识别类框架模块。
+
+### 3. 在 require 指令中添加 //xgo:class
+
+项目仍使用标准 `require` 引用框架的 Go 模块，并加入 `//xgo:class` 标记来表明该依赖包含类框架。
+
+```text
+require <go-module-path> //xgo:class
+```
+
+例如，使用 `cobra` 类框架构建命令行应用时可这样声明依赖。
+
+```text
+module example.com/myapp
+
+go 1.24
+
+require github.com/goplus/cobra vX.Y.Z //xgo:class
+```
+
+同样可以在 `require` 块中使用该标记。
+
+```text
+require (
+	github.com/goplus/cobra vX.Y.Z //xgo:class
+	github.com/qiniu/x     vX.Y.Z
+)
+```
+
+- 标记遵循 `//go:generate`、`//go:embed` 等 Go 指令注释的约定。`//` 后不加空格，采用 `tool:name` 形式，并用 `xgo:` 作为命名空间，便于和面向读者的注释区分。
+- 标记作用于整个 Go 模块。若模块包含多个类框架，只需一个 `//xgo:class` 标记。
+- 工具链可从项目的 `go.mod` 知道哪些依赖提供类文件支持，直接寻找相应模块的 `gox.mod`，无需探测构建图中的每个依赖。
+- 只有包含类框架的模块需要此标记。普通库照常声明依赖。
+- 官方 `go` 命令会忽略该标记，与编译器注释的处理一致。
+
+## 完整示例
+
+使用 LLGo 构建的 XGo 命令行应用可以采用以下 `go.mod`。
+
+```text
+module example.com/myapp
+
+go 1.24 // llgo 1.0
+
+require github.com/goplus/cobra vX.Y.Z //xgo:class
+```
+
+`cobra` 模块同时提供 `go.mod` 和 `gox.mod`。应用的源文件采用类文件格式，框架负责将其转换为可运行的命令行应用。
+
+## 兼容性
+
+- **官方 Go 工具链。** 扩展均位于注释或附加文件中，`go build`、`go mod tidy` 和 `go list` 等命令仍可正常使用。标准工具会保留 `go` 和 `require` 行上的注释。
+- **现有 XGo 项目。** 没有新注释和标记的项目仍保持原有行为，默认使用官方 Go 编译器，且未声明类框架。
+- **现有 Go 模块。** 普通 Go 模块无需调整。没有 `gox.mod` 的普通模块不属于类框架模块。
+
+## 待定问题
+
+1. **与 `// indirect` 共同使用。** `go mod tidy` 也会在 `require` 行末尾写注释。对于同时标记为间接依赖和类框架的行，需要确定确切写法，并通过标准模块文件处理程序验证。
+2. **编译器版本格式。** 需要明确版本号仅接受 `0.11` 这样的纯数字写法，还是允许前导 `v` 和 `0.11.2` 这样的补丁版本，以及工具应如何比较版本。
+3. **未知编译器名称。** 需要确定 XGo 工具链应将无法识别的编译器名称视为错误还是警告，以及第三方工具应如何处理。
+4. **验证框架模块。** 需要确定工具链是否应验证带 `//xgo:class` 标记的模块确实包含 `gox.mod`，以及缺少文件时的诊断信息。
+
+## 语法速查
+
+| 位置 | 写法 | 含义 |
+| --- | --- | --- |
+| `go.mod` 的 `go` 指令 | `go <go-version>` | 使用官方 Go 编译器（默认） |
+| `go.mod` 的 `go` 指令 | `go <go-version> // llgo <llgo-version>` | 使用 LLGo 构建 |
+| `go.mod` 的 `go` 指令 | `go <go-version> // tinygo <tinygo-version>` | 使用 TinyGo 构建 |
+| 模块根目录 | 与 `go.mod` 并列的 `gox.mod` | 将模块声明为类框架模块 |
+| `go.mod` 的 `require` 指令 | `require <module-path> <version> //xgo:class` | 此依赖包含类框架 |

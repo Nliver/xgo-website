@@ -1,0 +1,69 @@
+---
+title: 用 XGo 编写并测试 MCP 服务器
+description: 用 MCP 类文件构建问候工具，并通过 mcptest 在本地测试。
+---
+
+创建一个处理问候请求的模型上下文协议（MCP）服务器。测试会用模拟服务器在本地发出一次 MCP 工具调用。
+
+## 创建模块
+
+安装 XGo，然后在空目录中运行以下命令。
+
+```sh
+xgo mod init example.com/mcphello
+go get github.com/goplus/mcp@v0.9.8
+```
+
+在 `go.mod` 中，把 MCP 依赖的注释设为 `//xgo:class`，让 XGo 加载其类框架。
+
+将服务器声明保存为 `main_mcp.gox`。
+
+```xgo
+server "Greeting Demo", "1.0.0"
+```
+
+将工具保存为 `hello_tool.gox`。工具模式声明了一个名为 `name` 的必填字符串，工具正文用类框架的环境表达式读取该值。
+
+```xgo
+tool "helloWorld", => {
+    description "Say hello to someone"
+    string "name", => {
+        required
+        description "Name of the person to greet"
+    }
+}
+
+name, ok := ${name}.(string)
+if !ok {
+    return newError("name must be a string")
+}
+
+return text("Hello, ${name}!")
+```
+
+## 测试工具
+
+将测试保存为 `hello_mtest.gox`。
+
+```xgo
+mock new(MCPApp)
+
+initialize nil
+ret {}
+
+call "helloWorld", {"name": "Ken"}
+ret {
+    "content": [{"type": "text", "text": "Hello, Ken!"}],
+}
+```
+
+运行测试。
+
+```sh
+xgo mod tidy
+xgo test -v .
+```
+
+测试运行器会报告 `PASS`。断言检查工具响应中是否包含文本 `Hello, Ken!`。用 `xgo run .` 启动服务器，供客户端使用。MCP 还用 `_res.gox` 类文件定义资源和资源模板，用 `_prompt.gox` 类文件定义提示词。
+
+类框架如何根据后缀选择类，见[类文件指南](/zh-CN/docs/toolchain/classfiles)。

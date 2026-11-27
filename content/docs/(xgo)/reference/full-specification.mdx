@@ -191,7 +191,7 @@ Given a struct type `S` and a [named type](#types) `T`, promoted methods are inc
 * If `S` contains an embedded field `T`, the [method sets](/docs/reference/mini-specification#method-sets) of `S` and `*S` both include promoted methods with receiver `T`. The method set of `*S` also includes promoted methods with receiver `*T`.
 * If `S` contains an embedded field `*T`, the method sets of `S` and `*S` both include promoted methods with receiver `T` or `*T`.
 
-A field declaration may be followed by an optional string literal _tag_, which becomes an attribute for all the fields in the corresponding field declaration. An empty tag string is equivalent to an absent tag. The tags are made visible through a reflection interface and take part in [type identity](/docs/reference/mini-specification#type-identity) for structs but are otherwise ignored.
+A field declaration may be followed by an optional string literal _tag_, which becomes an attribute for all the fields in the corresponding field declaration. An empty tag string is equivalent to an absent tag. The tags are made visible through a reflection interface and take part in [type identity](/docs/reference/mini-specification#type-identity-1) for structs but are otherwise ignored.
 
 ```xgo
 struct {

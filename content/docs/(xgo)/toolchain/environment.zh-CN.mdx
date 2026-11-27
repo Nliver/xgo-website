@@ -33,8 +33,8 @@ xgo env XGOROOT
 XGO_GOCMD=llgo xgo env XGO_GOCMD
 ```
 
-这条命令输出 `llgo`。如果要构建使用 C 或 Python 包的项目，按 [LLGo 互操作指南（英文）](/docs/llgo/interoperability)生成 Go 源码并运行 LLGo。
+这条命令输出 `llgo`。如果要构建使用 C 或 Python 包的项目，按 [LLGo 互操作指南](/zh-CN/docs/llgo/interoperability)生成 Go 源码并运行 LLGo。
 
 ## 检查模块路径
 
-运行 `xgo env GOMOD GOMODCACHE` 查看当前 Go 模块文件和模块缓存路径。若当前模块的 `go.mod` 旁有 `gox.mod`，`GOXMOD` 会输出它的路径，否则会输出旧版的 `gop.mod` 路径，该文件可能不存在。类框架的查找流程见[类框架配置（英文）](/docs/toolchain/gox-mod)。
+运行 `xgo env GOMOD GOMODCACHE` 查看当前 Go 模块文件和模块缓存路径。若当前模块的 `go.mod` 旁有 `gox.mod`，`GOXMOD` 会输出它的路径，否则会输出旧版的 `gop.mod` 路径，该文件可能不存在。类框架的查找流程见[类框架配置](/zh-CN/docs/toolchain/gox-mod)。

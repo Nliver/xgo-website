@@ -1,0 +1,230 @@
+---
+title: gox.mod 配置文件
+description: 了解类框架怎样通过 gox.mod 声明类类型、文件模式和隐式导入。
+---
+
+## 概览
+
+`gox.mod` 是 XGo（原名 Go+）的模块配置文件，属于**类框架包**。它的作用类似于插件清单，告诉 XGo 工具链如何组织框架的类系统、如何根据文件后缀确定类类型，以及需要自动导入哪些包。
+
+> **普通项目。** 普通 XGo 项目与 Go 项目一样使用标准的 `go.mod` 文件。只有类框架包自身需要 `gox.mod`。
+
+> **历史名称。** 早期版本使用文件名 `gop.mod`。为兼容已有项目，工具链仍接受 `gop` 指令。
+
+---
+
+## XGo 如何查找 gox.mod
+
+在项目中运行 `xgo run`、`xgo build`、`xgo install` 或 `xgo test` 等命令时，XGo 会到框架依赖中查找 `gox.mod`。查找过程如下。
+
+### 1. 从 go.mod 查找类框架依赖
+
+XGo 读取项目的 `go.mod`，检查每个 `require` 项是否带有 `//xgo:class` 标记。
+
+```text
+require (
+    github.com/goplus/spx/v2 v2.0.0 //xgo:class
+    github.com/goplus/yap v0.8.0 //xgo:class
+)
+```
+
+带有 `//xgo:class` 标记的依赖会被识别为类框架。
+
+### 2. 定位框架的 gox.mod
+
+对于每个已识别的框架，XGo 从本地模块缓存或 `replace` 指定的本地路径中查找框架的 `gox.mod`。
+
+### 3. 解析类元数据
+
+XGo 解析 `gox.mod`，读取以下信息。
+
+- 项目类及其文件匹配模式，例如 `main.spx` 对应 `Game`
+- 工作类及其文件匹配模式，例如 `*.spx` 对应 `SpriteImpl`
+- 每个源文件中应该自动导入的包
+
+### 4. 使用 xgo/parser 解析源文件
+
+`xgo/parser` 根据 `gox.mod` 提供的匹配模式判断文件对应的类类型，再按该类型解析。应用项目只需要提供 `go.mod` 和源文件，类系统配置由框架包维护和版本管理。
+
+---
+
+## 文件结构
+
+`gox.mod` 由几个指令组成，每个指令占一行或一个行块。
+
+| 指令 | 作用范围 | 用途 |
+| --- | --- | --- |
+| `xgo` | 文件 | 声明所需的 XGo 版本 |
+| `project` | 文件 | 声明类文件项目的入口 |
+| `class` | 项目 | 为当前项目声明工作类 |
+| `import` | 项目 | 为当前项目声明自动导入的包 |
+
+---
+
+## 指令
+
+### xgo 版本声明
+
+```text
+xgo <version>
+```
+
+指定模块所需的最低 XGo 语言版本。版本号须采用 `1.x` 或 `1.x.y` 格式。
+
+**示例**
+
+```text
+xgo 1.6.0
+```
+
+该指令过去也写作 `gop`，此名称仍受支持。
+
+---
+
+### project 项目声明
+
+```text
+project [*.projExt ProjectClass] classFilePkgPath ...
+```
+
+`project` 定义类文件项目，指定入口文件后缀、表示项目的 Go 类型，以及实现类文件框架的一个或多个 Go 包路径。
+
+| 参数 | 是否必需 | 说明 |
+| --- | --- | --- |
+| `*.projExt` 或 `*_projTag.gox` | 可选 | 匹配项目文件后缀的通配模式，如 `main.spx`、`*_app.gox` |
+| `ProjectClass` | 指定后缀时必需 | 用作项目类的 Go 类型名称，如 `Game` |
+| `classFilePkgPath ...` | 必需 | 一个或多个 Go 包导入路径。第一项是主要类文件包 |
+
+**示例**
+
+```text
+# Project with extension and class
+project main.spx Game github.com/goplus/spx/v2 math
+ 
+# Project with package path only (no dedicated entry file)
+project github.com/example/myframework
+```
+
+项目文件的匹配模式可采用以下形式。
+
+| 模式 | 含义 |
+| --- | --- |
+| `main.spx` | 只有 `main.spx` 是项目文件 |
+| `*.spx` | 任意 `.spx` 文件都是项目文件 |
+| `main_yap.gox` | 只有 `main_yap.gox` 是项目文件 |
+| `*_yap.gox` | 任意 `*_yap.gox` 文件都是项目文件 |
+
+---
+
+### class 工作类声明
+
+```text
+class [-embed] [-prefix=Prefix] *.workExt WorkClass [WorkPrototype]
+```
+
+在最近声明的 `project` 中定义工作类。工作类表示项目中的独立角色或对象类型，例如游戏中的精灵。同一 `project` 可以包含多个 `class` 指令。
+
+| 选项 | 说明 |
+| --- | --- |
+| `-embed` | 将工作类实例嵌入项目结构体，通过嵌入实现组合 |
+| `-prefix=Prefix` | 为工作类的名称加上前缀 |
+
+| 参数 | 是否必需 | 说明 |
+| --- | --- | --- |
+| `*.workExt` 或 `*_workTag.gox` | 必需 | 匹配工作类源文件的模式，如 `*.spx`、`*_cmd.gox` |
+| `WorkClass` | 必需 | 工作类的 Go 类型名称，如 `SpriteImpl` |
+| `WorkPrototype` | 可选 | 定义多个工作类时，需要提供原型类型 |
+
+**示例**
+
+```text
+class -embed *.spx SpriteImpl
+```
+
+除项目入口文件外，每个 `*.spx` 文件都编译成 `SpriteImpl` 工作类，并且类实例会嵌入项目。
+
+---
+
+### import 自动导入声明
+
+```text
+import [name] pkgPath
+```
+
+为当前项目的每个源文件自动导入指定包。类框架可以通过该指令提供工具包，源文件无需显式导入。
+
+| 参数 | 是否必需 | 说明 |
+| --- | --- | --- |
+| `name` | 可选 | 导入包在本地使用的别名 |
+| `pkgPath` | 必需 | Go 包的导入路径 |
+
+**示例**
+
+```text
+project .yap YapApp github.com/goplus/yap
+ 
+import "github.com/goplus/yap/test"
+```
+
+---
+
+## 实例：SPX 游戏框架
+
+以下 `gox.mod` 配置展示了为 XGo 提供 2D 游戏编程环境的 SPX 类框架如何定义项目。
+
+```text
+xgo 1.6.0
+ 
+project main.spx Game github.com/goplus/spx/v2 math
+ 
+class -embed *.spx SpriteImpl
+```
+
+### 如何理解此配置
+
+1. **`xgo 1.6.0`** 要求 XGo 版本达到 1.6.0。
+
+2. **`project main.spx Game github.com/goplus/spx/v2 math`**
+
+   - `main.spx` 是项目入口文件。
+   - 它会编译为 `github.com/goplus/spx/v2` 提供的 `Game` 类。
+   - 标准库 `math` 也属于该类文件可用的包集合。
+
+3. **`class -embed *.spx SpriteImpl`**
+
+   - 其余 `*.spx` 文件都会编译成 `SpriteImpl` 工作类，`main.spx` 除外。
+   - `-embed` 将每个精灵实例直接嵌入 `Game` 项目结构体，游戏和精灵可以直接调用彼此的方法。
+
+### 应用项目如何使用框架
+
+基于 SPX 的应用项目使用 `go.mod`，并通过 `//xgo:class` 标记引用框架。
+
+```text
+module mygame
+ 
+go 1.21
+ 
+require github.com/goplus/spx/v2 v2.0.0 //xgo:class
+```
+
+运行 `xgo run` 时，工具链读取标记并找到 `spx/v2` 的 `gox.mod`，进而识别 `main.spx` 对应 `Game` 实例，其余 `*.spx` 文件对应 `SpriteImpl` 实例。
+
+### 典型的项目结构
+
+```files
+mygame/
+├── go.mod
+├── main.spx
+├── Cat.spx
+└── Dog.spx
+```
+
+项目采用标准 `go.mod`。编译器将 `main.spx` 识别为 `Game`，将 `Cat.spx` 和 `Dog.spx` 识别为 `SpriteImpl` 实例。
+
+---
+
+## 总结
+
+`gox.mod` 位于类框架包中。普通项目通过 `go.mod` 中的 `//xgo:class` 标记指明框架依赖，`xgo run` 等工具链命令会据此找到框架的 `gox.mod`，在解析和编译前读取文件模式、类类型、自动导入等信息。
+
+框架作者可以组合 `project`、`class` 和 `import` 等指令，构建适用于游戏、Web 服务器或数据管道的类型安全开发环境。XGo 源文件可直接编译为该环境所需的代码，无需额外的样板代码。

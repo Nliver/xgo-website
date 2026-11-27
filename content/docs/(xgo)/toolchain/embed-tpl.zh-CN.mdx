@@ -55,7 +55,7 @@ names.txt:1:7: unexpected token: 7
 
 `ParseExprFrom` 接受以分号或输入末尾结束的表达式。第二份输入在这两个边界之前出现了数字 `7`，诊断因此指向 `names.txt` 的第 1 行第 7 列。整份文件可以使用 `Parse`，它要求文法消耗全部词法单元，包括扫描器在行末自动插入的分号。若只需匹配开头的一段，可以调用 `Match`，从返回的 `MatchState` 读取词法单元列表和已消耗的数量。
 
-列表运算、分支规则与结果改写见 [TPL 文法与匹配结果](/docs/reference/tpl)。
+列表运算、分支规则与结果改写见 [TPL 文法与匹配结果](/zh-CN/docs/reference/tpl)。
 
 ## 解析跨行的名称列表
 

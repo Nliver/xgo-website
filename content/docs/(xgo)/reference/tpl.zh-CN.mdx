@@ -1,0 +1,169 @@
+---
+title: TPL 文法与匹配结果
+description: 定义文法、查看匹配树，并使用 XGo 闭包改写结果。
+---
+
+编程时经常要处理文本。正则表达式很常用，但较复杂的模式往往难以阅读。XGo TPL（文本处理语言）为这类任务提供了另一种表达能力强、语法直观的写法。
+
+TPL 与 XGo 集成，采用类似扩展巴科斯范式（EBNF）的文法。它能清楚地描述文本结构，便于维护，也能处理超出正则表达式能力的任务。
+
+## 理解 XGo TPL
+
+理解 TPL 需要掌握三个概念。
+
+### 1. 为规则命名
+
+TPL 使用 `name = rule` 声明命名规则。一套文法由一系列命名规则组成，第一条是根规则。`rule` 可由以下部分组合而成。
+
+* **基本词法单元**：例如 `INT`、`FLOAT`、`CHAR`、`STRING`、`IDENT`、`"+"`、`"++"`、`"+="` 和 `"<<="`。
+* **关键字**：用引号括起的 `IDENT`，例如 `"if"`、`"else"`、`"for"`。
+* **引用**：引用其他命名规则，也可以引用自身。
+* **序列**：`R1 R2 ... Rn` 按顺序匹配这些规则。
+* **分支**：`R1 | R2 | ... | Rn` 匹配其中一条规则。
+* **重复运算符**：
+  * `*R` 表示匹配零次或多次。
+  * `+R` 表示匹配一次或多次。
+  * `?R` 表示匹配零次或一次，即可选项。
+* **列表运算符**：`R1 % R2` 是 `R1 *(R2 R1)` 的简写，表示用 R2 分隔的 R1 序列。例如 `INT % ","` 表示用逗号分隔的整数列表。
+* **相邻运算符**：`R1 ++ R2` 要求 R1 和 R2 紧邻，中间不允许有空白或注释。
+
+运算符优先级从高到低依次为一元运算符（`*R`、`+R`、`?R`）、`++`、`%`、序列（空格）、`|`。括号可以改变结合顺序。
+
+#### 字符串字面量
+
+`STRING`（字符串字面量）有两种形式。
+
+```xgo
+"Hello\nWorld\n"  // QSTRING (quoted string)
+
+`Hello
+World
+`               // RAWSTRING (raw string)
+```
+
+可以这样定义 `STRING`：
+
+```xgo
+STRING = QSTRING | RAWSTRING
+```
+
+#### 相邻运算符的作用
+
+TPL 匹配规则时会自动忽略空白和注释，因此序列 `R1 R2` 无法表达两个部分必须紧邻的要求。需要紧邻时使用 `++`。
+
+例如，XGo 的[领域文本字面量](/zh-CN/docs/reference/domain-text-literals)定义为 `IDENT ++ RAWSTRING`，以下写法有效。
+
+```xgo
+tpl`expr = INT % ","`
+json`{"name": "Ken", age: 15}`
+```
+
+下面的写法能匹配 `IDENT STRING`，但不符合领域文本字面量的语法。
+
+```xgo
+tpl"expr = *INT"              // IDENT must be followed by RAWSTRING, not QSTRING
+tpl/* comment */`expr = *INT` // No whitespace or comments allowed between IDENT and RAWSTRING
+```
+
+### 2. 匹配结果
+
+每种规则都有默认的匹配结果。
+
+* **词法单元和关键字**：结果为 `*tpl.Token`。
+* **序列**（`R1 R2 ... Rn`）：结果为包含 n 个元素的列表（`[]any`）。
+* **重复**（`*R`、`+R`）：结果为列表（`[]any`），其长度取决于 R 的匹配次数。
+* **分支**（`R1 | R2 | ... | Rn`）：结果取决于实际匹配的规则。
+* **可选项**（`?R`）：匹配成功时得到 R 的结果，未匹配时得到 `nil`。
+* **列表运算符**（`R1 % R2`）：结果是一个三层树状结构。
+
+  这三层来自下面的匹配过程。
+  1. 整个表达式 `R1 % R2`（即 `R1 *(R2 R1)`）的结果是包含两个元素的列表。
+  2. 第一个元素是第一次匹配 `R1` 得到的结果。
+  3. 第二个元素本身是一个列表，包含后续所有 `(R2 R1)` 的匹配结果。
+     - 其中每个元素又是一个含两项的列表，分别为 `R2` 和 `R1` 的匹配结果。
+
+  例如，使用 `INT % ","` 解析 `"1, 2, 3"` 时，结果结构如下。
+  ```text
+  [
+    <INT:1>,                // First R1
+    [
+      [<COMMA>, <INT:2>],   // First (R2 R1)
+      [<COMMA>, <INT:3>]    // Second (R2 R1)
+    ]
+  ]
+  ```
+  这种树状结构保留了所有匹配项及其关系，直接处理起来较为繁琐。TPL 提供 `ListOp`、`BinaryOp` 等辅助函数，可将其转换为更易使用的形式。
+
+* **相邻运算符**（`R1 ++ R2`）：与序列 `R1 R2` 类似，结果为含两个元素的列表（`[]any`）。
+
+### 3. 改写匹配结果
+
+TPL 将默认匹配结果称为 self。可以使用 XGo 闭包 `=> { ... }` 改写它。
+
+这使得 TPL 与 XGo 可以双向配合：在 XGo 中通过[领域文本字面量](/zh-CN/docs/reference/domain-text-literals)引用 TPL，在 TPL 中通过结果改写调用 XGo 代码。
+
+从 Go 程序调用文法的方式见[在 Go 中使用 TPL 文法](/zh-CN/docs/toolchain/embed-tpl)。
+
+## 实际示例
+
+### 解析整数
+
+```xgo
+import "xgo/tpl"
+
+cl := tpl`
+expr = INT % "," => {
+    return tpl.ListOp[int](self, v => {
+        return v.(*tpl.Token).Lit.int!
+    })
+}
+`!
+
+echo cl.parseExpr("1, 2, 3", nil)!  // Outputs: [1 2 3]
+```
+
+这个示例解析用逗号分隔的整数，并用 TPL 的 `ListOp` 将匹配树转换为扁平的整数列表。
+
+### 编写计算器
+
+可以用很少的 XGo TPL 代码实现一个计算器。
+
+```xgo
+import "xgo/tpl"
+
+cl := tpl`
+expr = operand % ("*" | "/") % ("+" | "-") => {
+    return tpl.BinaryOp(true, self, (op, x, y) => {
+        switch op.Tok {
+        case '+': return x.(float64) + y.(float64)
+        case '-': return x.(float64) - y.(float64)
+        case '*': return x.(float64) * y.(float64)
+        case '/': return x.(float64) / y.(float64)
+        }
+        panic("unexpected")
+    })
+}
+
+operand = basicLit | unaryExpr
+
+unaryExpr = "-" operand => {
+    return -(self[1].(float64))
+}
+
+basicLit = INT | FLOAT => {
+    return self.(*tpl.Token).Lit.float!
+}
+`!
+
+echo cl.parseExpr("1 + 2 * -3", nil)!  // Outputs: -5
+```
+
+这段计算器代码不到 30 行，支持基本算术运算并正确处理运算符优先级。
+
+## 小结
+
+TPL 为文本处理提供了正则表达式之外的选择。通过基于文法的解析和 XGo 集成，可以编写清晰、易维护的处理程序。
+
+更多示例见[数据与文本示例](/zh-CN/docs/examples/data-and-text)中以 `tpl-` 开头的项目。它们演示如何构建计算器、将文本解析为抽象语法树，甚至用几百行代码实现一门语言。
+
+对于结构化文本解析、领域专用语言和复杂文本转换，TPL 提供了比传统正则表达式更易阅读、表达能力更强的写法。

@@ -61,7 +61,7 @@ scores := [2, 4]
 echo scores
 ```
 
-这两个位置都拼写为 scores。若需区分不同作用域中的定义与引用，可查阅[类型信息（英文）](/docs/toolchain/tooling-conventions#type-information)。要在格式化时保留源码注释，请将解析模式设为 `parser.ParseComments`。
+这两个位置都拼写为 scores。若需区分不同作用域中的定义与引用，可查阅[类型信息](/zh-CN/docs/toolchain/tooling-conventions#类型信息)。要在格式化时保留源码注释，请将解析模式设为 `parser.ParseComments`。
 
 ## 在 Go 程序中生成 Go 源码
 
@@ -101,7 +101,7 @@ func main() {
 main main
 ```
 
-需要转换已有的声明语法树时，使用 `ast/fromgo.ASTFile` 或 `ast/togo.ASTFile`。当前版本中两者都不支持保留函数体；生成可运行的 Go 函数体请使用上述编译接口。
+需要转换已有的声明语法树时，使用 `ast/fromgo.ASTFile` 或 `ast/togo.ASTFile`。本页对应的版本中，两者都会拒绝 `KeepFuncBody` 选项。生成可运行的 Go 函数体请使用上述编译接口。
 
 ## 从内存中的文件提取导入路径
 
