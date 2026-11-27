@@ -3,14 +3,14 @@ title: XGo ecosystem
 description: Find guides for the XGo language, LLGo, iXGo, XBuilder, SPX, and XGo class frameworks.
 ---
 
-import { XGoLogo } from '@/components/xgo-logo';
-import { Cpu, Gamepad2, Network, PanelsTopLeft, Server, SquareTerminal, Terminal } from 'lucide-react';
+import { XBuilderLogo, XGoLogo } from '@/components/xgo-logo';
+import { Cpu, Gamepad2, Network, Server, SquareTerminal, Terminal } from 'lucide-react';
 
 <Cards>
   <Card title="XGo" icon={<XGoLogo className="w-10!" />} href="/docs" description="Install XGo and write your first program." />
   <Card title="LLGo" icon={<Cpu />} href="/docs/llgo" description="Compile and run a Go program with the LLVM-based compiler." />
   <Card title="iXGo" icon={<Terminal />} href="/docs/ixgo" description="Run an XGo script, use the REPL, or embed the interpreter." />
-  <Card title="XBuilder" icon={<PanelsTopLeft />} href="/docs/xbuilder" description="Build and preview a game in the browser." />
+  <Card title="XBuilder" icon={<XBuilderLogo />} href="/docs/xbuilder" description="Build and preview a game in the browser." />
   <Card title="SPX" icon={<Gamepad2 />} href="/docs/spx" description="Run a game and add behavior to a sprite." />
   <Card title="MCP and mcptest" icon={<Network />} href="/docs/mcp" description="Build and test a greeting tool for the Model Context Protocol." />
   <Card title="YAP, yaptest, and YDB" icon={<Server />} href="/docs/yap" description="Route HTTP requests, test a response, and query an in-memory database." />

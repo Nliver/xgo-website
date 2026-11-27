@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { XGoLogo } from '@/components/xgo-logo';
 import { getPageImageUrl, homePaths } from '@/lib/shared';
 
 const description = 'Install XGo, run your first program, and learn how XGo works with Go.';
@@ -15,6 +16,9 @@ const routes = [
   { title: 'Language tutorials', text: 'Declare variables, format strings, and define your own functions.', href: '/docs/tutorials/first-program' },
   { title: 'Language reference', text: 'Look up syntax for function calls, strings, slices, and maps.', href: '/docs/reference/language' },
   { title: 'Working with Go', text: 'Use a Go package and build a project with both Go and XGo files.', href: '/docs/interoperability/go' },
+  { title: 'Concurrency', text: 'Collect results from a goroutine and use select to read a ready channel.', href: '/docs/tutorials/concurrency' },
+  { title: 'Command-line tools', text: 'Find commands for running a file, building a package, and testing a project.', href: '/docs/toolchain/command-reference' },
+  { title: 'Ecosystem projects', text: 'Explore LLGo, iXGo, and tools for building games with SPX.', href: '/docs/ecosystem' },
 ];
 
 export default function HomePage() {
@@ -25,12 +29,13 @@ export default function HomePage() {
           <h1>Programming with <em>XGo</em></h1>
           <p className="hero-lede">XGo is a Go-compatible language for engineering, STEM education, and data science. Start with a one-line program, then use it alongside Go.</p>
           <div className="hero-actions">
-            <Link className="button button--dark" href="/docs/getting-started/installation">Install XGo <span aria-hidden="true">→</span></Link>
+            <Link className="button button--dark" href="/docs/getting-started/hello-world">Run your first program <span aria-hidden="true">→</span></Link>
+            <Link className="button button--quiet" href="/docs/getting-started/installation">Install XGo</Link>
             <Link className="button button--quiet" href="/docs">Browse the docs</Link>
           </div>
         </div>
         <figure className="hero-code">
-          <figcaption>hello.xgo</figcaption>
+          <figcaption><XGoLogo className="xgo-code-icon" viewBox="4 7 56 18" width={32} height={14} /> hello.xgo</figcaption>
           <pre><code><span className="code-keyword">println</span> <span className="code-string">&quot;Hello world&quot;</span></code></pre>
           <div className="hero-code__output"><span>Output</span><samp>Hello world</samp></div>
         </figure>

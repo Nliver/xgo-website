@@ -3,14 +3,14 @@ title: XGo 生态项目
 description: 查阅 XGo 语言、LLGo、iXGo、XBuilder、SPX 和 XGo 类框架的指南。
 ---
 
-import { XGoLogo } from '@/components/xgo-logo';
-import { Cpu, Gamepad2, Network, PanelsTopLeft, Server, SquareTerminal, Terminal } from 'lucide-react';
+import { XBuilderLogo, XGoLogo } from '@/components/xgo-logo';
+import { Cpu, Gamepad2, Network, Server, SquareTerminal, Terminal } from 'lucide-react';
 
 <Cards>
   <Card title="XGo" icon={<XGoLogo className="w-10!" />} href="/zh-CN/docs" description="安装 XGo 并编写第一个程序。" />
   <Card title="LLGo" icon={<Cpu />} href="/zh-CN/docs/llgo" description="用基于 LLVM 的编译器编译并运行 Go 程序。" />
   <Card title="iXGo" icon={<Terminal />} href="/zh-CN/docs/ixgo" description="运行 XGo 脚本、使用交互式解释器，或在应用中嵌入解释器。" />
-  <Card title="XBuilder" icon={<PanelsTopLeft />} href="/zh-CN/docs/xbuilder" description="在浏览器中制作并预览游戏。" />
+  <Card title="XBuilder" icon={<XBuilderLogo />} href="/zh-CN/docs/xbuilder" description="在浏览器中制作并预览游戏。" />
   <Card title="SPX" icon={<Gamepad2 />} href="/zh-CN/docs/spx" description="运行游戏，为精灵添加行为。" />
   <Card title="MCP 和 mcptest" icon={<Network />} href="/zh-CN/docs/mcp" description="为模型上下文协议构建并测试一个问候工具。" />
   <Card title="YAP、yaptest 和 YDB" icon={<Server />} href="/zh-CN/docs/yap" description="为 HTTP 请求配置路由、测试响应并查询内存数据库。" />
