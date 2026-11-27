@@ -7,15 +7,31 @@ import { PlatformLogo } from './platform-logo';
 import { XGoLogo } from './xgo-logo';
 import { RunnableXGo } from './runnable-xgo';
 import type { ComponentProps } from 'react';
+import { Braces } from 'lucide-react';
 
-function DocumentationCodeBlock({ 'data-xgo': isXGoLanguage, children, ...props }: ComponentProps<typeof CodeBlock> & { 'data-xgo'?: boolean }) {
-  const filename = typeof props.title === 'string' ? props.title : '';
-  const isXGo = isXGoLanguage || filename.endsWith('.xgo') || filename.endsWith('.gox');
+type DocumentationCodeBlockProps = ComponentProps<typeof CodeBlock> & {
+  'data-language'?: string;
+  'data-language-label'?: string;
+};
+
+function DocumentationCodeBlock({
+  'data-language': language,
+  'data-language-label': label,
+  title,
+  icon,
+  children,
+  ...props
+}: DocumentationCodeBlockProps) {
+  const filename = typeof title === 'string' ? title : '';
+  const isXGo = language === 'xgo' || filename.endsWith('.xgo') || filename.endsWith('.gox');
+  if (isXGo) icon = <XGoLogo viewBox="4 7 56 18" width={24} height={16} />;
+  if (language === 'json') icon = <Braces size={16} aria-hidden="true" />;
   return (
     <CodeBlock
       {...props}
-      title={props.title ?? (isXGo ? 'XGo' : undefined)}
-      icon={isXGo ? <XGoLogo className="xgo-code-icon" viewBox="4 7 56 18" width={32} height={14} /> : props.icon}
+      data-language={language}
+      title={title ?? (label && <span className="text-xs">{label}</span>)}
+      icon={icon}
     >
       <Pre>{children}</Pre>
     </CodeBlock>

@@ -13,10 +13,18 @@ function documentationFiles(directory) {
   }).sort();
 }
 
+function isManualExample(block) {
+  return /(?:^|\s)verify=(?:"[^"]*"|'[^']*'|\S+)/.test(block.meta ?? '') || /(?:^|\s)noRun(?:=|\s|$)/.test(block.meta ?? '');
+}
+
 function exampleFilename(block) {
   const title = block.meta?.match(/(?:^|\s)title=(?:"([^"]+)"|'([^']+)')/);
   const filename = title?.[1] ?? title?.[2];
   if (filename && /\.(xgo|go)$/.test(filename)) return filename;
+}
+
+function validExampleFilename(filename) {
+  return /^(?:[a-z0-9][a-z0-9._-]*\/)*[a-z0-9][a-z0-9._-]*\.(xgo|go)$/.test(filename);
 }
 
 function reportManualExamples(files) {
@@ -56,6 +64,58 @@ function checkOutputGroups(tree, page) {
   }
 }
 
+function collectRunnableExamples(tree, page, examples) {
+  function processSection(children) {
+    let sources = [];
+    let duplicateFilenames = new Set();
+    let sawOutput = false;
+
+    for (const block of children) {
+      const filename = exampleFilename(block);
+      if (filename && !isManualExample(block)) {
+        if (!validExampleFilename(filename)) throw new Error(`${page}: example filename must be a safe relative Go or XGo path`);
+        if (sources.some((source) => source.title === filename)) duplicateFilenames.add(filename);
+        sources.push({ title: filename, value: block.value });
+      }
+      if (block.type !== 'code' || block.lang !== 'text' || !sources.length) continue;
+      if (!sources.some((source) => source.title.endsWith('.xgo'))) {
+        sources = [];
+        duplicateFilenames = new Set();
+        sawOutput = true;
+        continue;
+      }
+      if (duplicateFilenames.size) {
+        throw new Error(`${page}: duplicate example filename ${[...duplicateFilenames].join(', ')}`);
+      }
+      const mixed = sources.some((source) => source.title.endsWith('.go'));
+      if (!mixed && sources.length !== 1) throw new Error(`${page}: each standalone program needs its own text output block`);
+      examples.push({ sources, mixed, expected: block.value.trimEnd() });
+      sources = [];
+      duplicateFilenames = new Set();
+      sawOutput = true;
+    }
+
+    if (sources.length && sawOutput) throw new Error(`${page}: example is missing a text output block`);
+  }
+
+  function visit(node) {
+    if (!node.children) return;
+    let section = [];
+    for (const child of node.children) {
+      if (child.type === 'heading') {
+        processSection(section);
+        section = [];
+      } else {
+        section.push(child);
+      }
+    }
+    processSection(section);
+    for (const child of node.children) visit(child);
+  }
+
+  visit(tree);
+}
+
 export function discoverExamples(root) {
   const docsRoot = path.join(root, 'content/docs');
   const pages = [];
@@ -64,21 +124,7 @@ export function discoverExamples(root) {
     const { tree } = readPage(file);
     checkOutputGroups(tree, page);
     const examples = [];
-    let sources = [];
-    for (const block of collectNodes(tree, (node) => node.type === 'code')) {
-      const filename = exampleFilename(block);
-      if (filename) {
-        if (!/^[a-z0-9-]+\.(xgo|go)$/.test(filename)) throw new Error(`${page}: example filename must be a simple basename`);
-        if (sources.some((source) => source.title === filename)) throw new Error(`${page}: duplicate example filename ${filename}`);
-        sources.push({ title: filename, value: block.value });
-      }
-      if (block.lang !== 'text' || !sources.length) continue;
-      const mixed = sources.some((source) => source.title.endsWith('.go'));
-      if (!mixed && sources.length !== 1) throw new Error(`${page}: each standalone program needs its own text output block`);
-      examples.push({ sources, mixed, expected: block.value.trimEnd() });
-      sources = [];
-    }
-    if (sources.length) throw new Error(`${page}: example is missing a text output block`);
+    collectRunnableExamples(tree, page, examples);
     if (examples.length) pages.push({ page, examples });
   }
   if (!pages.length) throw new Error('No runnable documentation examples were found.');
@@ -142,7 +188,11 @@ function checkExamples(root, revision) {
       for (const { sources, mixed, expected } of examples) {
         const directory = path.join(workspace, String(++count));
         fs.mkdirSync(directory);
-        for (const source of sources) fs.writeFileSync(path.join(directory, source.title), `${source.value}\n`);
+        for (const source of sources) {
+          const target = path.join(directory, source.title);
+          fs.mkdirSync(path.dirname(target), { recursive: true });
+          fs.writeFileSync(target, `${source.value}\n`);
+        }
         if (mixed) execute(['mod', 'init', 'example.com/mixgo'], directory, page);
         const actual = execute(['run', mixed ? '.' : sources[0].title], directory, page);
         if (actual !== expected) throw new Error(`${page}: unexpected output for ${sources.map((source) => source.title).join(', ')}\nExpected:\n${expected}\nActual:\n${actual}`);

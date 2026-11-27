@@ -1,10 +1,20 @@
 import type { SVGProps } from 'react';
 
 // Wordmark from the header at https://xgo.dev/.
+const xMark = 'M24 8L10.72 24H5.78L12.46 16L6 8H10.89L14.89 13L19.02 8H24ZM15.66 19.92L19 24H23.88L18.18 16.93L15.66 19.92Z';
+
+export function XGoMark() {
+  return (
+    <svg width="24" height="24" viewBox="3 4 24 24" aria-hidden="true">
+      <path d={xMark} fill="currentColor" />
+    </svg>
+  );
+}
+
 export function XGoLogo({ color = 'currentColor', ...props }: SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={64} height={32} viewBox="0 0 64 32" aria-hidden="true" {...props}>
-      <path d="M24 8L10.72 24H5.78L12.46 16L6 8H10.89L14.89 13L19.02 8H24ZM15.66 19.92L19 24H23.88L18.18 16.93L15.66 19.92Z" fill={color} />
+      <path d={xMark} fill={color} />
       <path fillRule="evenodd" clipRule="evenodd" d="M40 8V11.8H29C27.69 11.8 25.8 13.19 25.8 16C25.8 18.81 27.69 20.2 29 20.2H35V24H29C25.13 24 22 20.42 22 16C22 11.58 25.13 8 29 8H40ZM37 14H30V17.8H36.2V24H40V17C39.9822 16.2099 39.6604 15.4572 39.1016 14.8984C38.5428 14.3396 37.7901 14.0178 37 14Z" fill={color} />
       <path d="M51.81 10H46.81C45.1153 10.2043 43.5589 11.0366 42.448 12.3326C41.3372 13.6286 40.7527 15.294 40.81 17C40.7527 18.706 41.3372 20.3714 42.448 21.6674C43.5589 22.9634 45.1153 23.7957 46.81 24H51.81C53.5056 23.7979 55.0634 22.9662 56.1747 21.6697C57.286 20.3732 57.8696 18.7066 57.81 17C57.872 15.2929 57.2891 13.6249 56.1774 12.3279C55.0657 11.0309 53.5065 10.1998 51.81 10ZM51.81 20.11H46.81C46.1532 19.9092 45.583 19.4933 45.1912 18.9292C44.7994 18.3651 44.6088 17.6856 44.65 17C44.6066 16.3076 44.7983 15.6208 45.1939 15.0509C45.5896 14.481 46.1661 14.0614 46.83 13.86H51.83C52.4921 14.0632 53.0663 14.4836 53.46 15.0533C53.8537 15.6231 54.044 16.3089 54 17C54.0376 17.6891 53.842 18.3708 53.4447 18.935C53.0473 19.4993 52.4715 19.9132 51.81 20.11Z" fill={color} />
     </svg>
@@ -12,6 +22,17 @@ export function XGoLogo({ color = 'currentColor', ...props }: SVGProps<SVGSVGEle
 }
 
 // goplus/builder@92c702b, gui/src/assets/logo.svg
+// Sidebar adaptation of the crossed hammer and pencil for small sizes.
+export function XBuilderMark() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m3 8 4.8-4.8c1.1.3 2.1.1 3.1-.6l1.2 1.2-7 7L3 8Z" />
+      <path d="m8.6 7.4 12.1 12.1" />
+      <path d="m14.1 8.7 4.6-4.6a1.6 1.6 0 0 1 2.3 2.3L16.4 11M10.1 12.7l-5.8 5.8-1.2 3.1 3.1-1.2 6.3-6.3" />
+    </svg>
+  );
+}
+
 export function XBuilderLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>

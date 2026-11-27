@@ -281,6 +281,17 @@ describe('actual documentation content and provenance', () => {
     expect(html).toContain('Apache-2.0');
   });
 
+  it('labels named source files and anonymous Go snippets while leaving plain output uncaptioned', () => {
+    const page = source.getPage(['toolchain', 'load-and-check-packages'], 'en')!;
+    const Body = page.data.body;
+    const html = renderSite(<Body components={getMDXComponents()} />, page.url);
+    const figures = html.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/g) ?? [];
+    const go = figures.filter(block => block.includes('data-language="go"'));
+    expect(go.some(block => /<figcaption[^>]*>main\.go<\/figcaption>/.test(block))).toBe(true);
+    expect(go.some(block => /<figcaption[^>]*><span[^>]*>Go<\/span><\/figcaption>/.test(block))).toBe(true);
+    expect(figures.find(block => block.includes('data-language="text"'))).not.toContain('<figcaption');
+  });
+
   it.each(['en', 'zh-CN'] as const)('renders tutorial runners from the authored fences in %s', async (locale) => {
     const page = source.getPage(['tutorials', 'organize-projects'], locale)!;
     const Body = page.data.body;
@@ -289,6 +300,8 @@ describe('actual documentation content and provenance', () => {
     expect(html).toContain(locale === 'en' ? 'Try this example' : '在线运行示例');
     expect(html).toContain('-- main.xgo --');
     expect(html).toContain('-- greeting.xgo --');
+    expect(html).toMatch(/<figcaption[^>]*>main\.xgo<\/figcaption>/);
+    expect(html).toMatch(/<figcaption[^>]*>greeting\.xgo<\/figcaption>/);
     expect(html).toContain('#!/usr/bin/env -S xgo run');
     const markdown = await page.data.getText('processed');
     expect(markdown).toContain('```xgo');

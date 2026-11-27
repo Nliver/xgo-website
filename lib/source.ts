@@ -1,5 +1,5 @@
 import { createElement } from 'react';
-import { XBuilderLogo, XGoLogo } from '@/components/xgo-logo';
+import { XBuilderMark, XGoMark } from '@/components/xgo-logo';
 import { createGetUrl, llms, loader } from 'fumadocs-core/source';
 import { flattenTree } from 'fumadocs-core/page-tree';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
@@ -39,6 +39,11 @@ export const source = loader({
     : getDocsUrl(slugs, locale),
   i18n,
   source: docs.toFumadocsSource(),
+  icon(name) {
+    if (name === 'XGoMark') return createElement(XGoMark);
+    if (name === 'XBuilderMark') return createElement(XBuilderMark);
+    return name;
+  },
   plugins: [lucideIconsPlugin()],
 });
 
@@ -50,13 +55,7 @@ export function getDocsPageTree(locale: string) {
   const tree = source.getPageTree(locale);
   return {
     ...tree,
-    children: tree.children.filter((node) => !isBlogFolder(node)).map((node) => (
-      node.type === 'folder' && node.$ref?.folder === '(xgo)'
-        ? { ...node, icon: createElement(XGoLogo) }
-        : node.type === 'folder' && node.$ref?.folder === 'xbuilder'
-          ? { ...node, icon: createElement(XBuilderLogo) }
-          : node
-    )),
+    children: tree.children.filter((node) => !isBlogFolder(node)),
   };
 }
 
