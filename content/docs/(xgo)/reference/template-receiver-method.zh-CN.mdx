@@ -1,0 +1,248 @@
+---
+title: "模板接收者方法"
+description: "介绍 XGo 模板接收者方法的语义、Go 编码和调用方式。"
+---
+
+**模板接收者方法**（Template Recv Method）让框架的基础类型可以回调用户在自有类型上实现的方法。编译器在调用处处理分派，无需手动注册。
+
+## 摘要
+
+模板接收者方法让通过 Go 嵌入结构体实现的多态具有类似 C++ 虚函数分派的调用体验。XGo 类型系统无需为此增设虚函数或虚函数表。模板接收者方法的*接收者类型*是一个类型参数，约束为嵌入指定基础结构体的类型。XGo 编译为 Go，因此这个特性在 Go 层通过命名约定定义。XGo 编译器将它公开为普通的方法调用，无需增加 XGo 声明语法。
+
+---
+
+## 动机
+
+Go 有意省略虚函数，并通过接口实现多态。通常接口就够用，但当*框架基础类型*需要回调用户具体类型提供的方法时，直接用 Go 编写会多出一些步骤。
+
+### C++ 中的写法
+
+```cpp
+class Game {
+public:
+    virtual void OnUpdate() = 0;   // subclass must implement
+    void Run() { /* calls OnUpdate() */ }
+};
+
+class MyGame : public Game {
+    void OnUpdate() override { /* ... */ }
+};
+```
+`Run` 会调用具体子类覆盖的 `OnUpdate`。这是常见的虚函数分派。
+
+### 惯用的 Go 写法
+
+```go
+type Updater interface {
+    OnUpdate()
+}
+
+type Game struct {
+    updater Updater
+}
+
+func (g *Game) SetUpdater(updater Updater) {
+    g.updater = updater
+}
+
+func (g *Game) Run() {
+    // calls g.updater.OnUpdate() internally
+}
+
+type MyGame struct {
+    Game
+}
+
+func NewMyGame() *MyGame {
+    g := new(MyGame)
+    g.SetUpdater(g)   // ← caller must remember this
+    return g
+}
+
+func (g *MyGame) OnUpdate() { /* ... */ }
+```
+用接口的写法正确且明确，但框架用户还要处理两件事。
+
+1. 每个构造函数都需要调用 `SetUpdater(self)`，这一步容易遗漏。
+2. 从 `Game` 的类型声明处无法看出它与回调接口的关系。
+
+---
+
+## 提案
+
+### 概念
+
+**模板接收者方法**的*接收者类型*本身就是类型参数 `T`，它约束为嵌入指定基础结构体 `B` 的类型。在 `T` 类型的值上调用这个方法时，方法可以调用具体类型 `T` 的其他方法。这样就能获得虚函数分派的语义，运行时间接调用沿用 Go 的接口机制。
+
+### 伪代码语义
+
+下面的*伪代码*用于说明预期语义。实际 XGo 代码使用后面的 Go 层编码。
+
+```text
+// A default implementation of OnUpdate, attached to Game itself.
+func [g *Game] OnUpdate() { ... }
+
+// Run is a template method: T must embed Game.
+// Calling g.OnUpdate() inside Run dispatches to T's OnUpdate, not Game's.
+func [T Game] (g *T) Run() {
+    g.OnUpdate()   // dispatches to MyGame.OnUpdate when T = MyGame
+}
+```
+调用示例。
+
+```go
+var a Game
+a.Run()       // T inferred as Game  → calls Game.OnUpdate
+
+var b MyGame
+b.Run()       // T inferred as MyGame → calls MyGame.OnUpdate
+```
+---
+
+## Go 层编码
+
+XGo 的新特性需要先确定如何在 Go 中表示。模板接收者方法采用遵守 `XGot_` 命名约定的包级泛型函数。
+
+### `XGot_` 命名约定
+
+模板接收者方法在 Go 中编码成遵守以下约定的包级泛型函数。
+
+```text
+XGot_<BaseType>_<MethodName>[T <constraint>](recv T, ...)
+```
+| 部分 | 含义 |
+|---|---|
+| `XGot_` | 模板接收者方法的前缀 |
+| `<BaseType>` | 接收者必须嵌入的基础结构体 |
+| `<MethodName>` | 对外呈现的方法名 |
+| `T <constraint>` | 类型参数。`constraint` 是列出基础方法所需回调的接口。 |
+
+### 示例
+
+```go
+// The callback interface: what Game.Run needs from the concrete type.
+type gamer interface {
+    OnUpdate()
+}
+
+// Template Recv Method for Game.Run
+func XGot_Game_Run[T gamer](g T) {
+    // g is the concrete receiver; g.OnUpdate() calls the concrete OnUpdate.
+    g.OnUpdate()
+}
+```
+`XGot_` 前缀告诉 XGo 编译器，该函数是模板接收者方法在 Go 层的表示。任何嵌入 `Game` 的类型都可将它作为普通方法调用。
+
+### 默认方法实现
+
+如果希望 `Game` 自身满足 `gamer` 接口并能独立使用，就按普通方法的写法为它提供 `OnUpdate` 的默认实现。
+
+```go
+func (g *Game) OnUpdate() { /* default, possibly no-op */ }
+```
+### 完整示例
+
+框架作者编写 Go，框架使用者编写 XGo。
+
+#### 框架侧的 Go 库
+
+```go
+// Package game provides the Game framework base type.
+package game
+
+type Game struct{ /* ... */ }
+
+// gamer is the internal constraint interface.
+// It lists exactly the callbacks that Game's template methods require.
+type gamer interface {
+    OnUpdate()
+}
+
+// Default OnUpdate on Game itself (makes *Game satisfy gamer).
+func (g *Game) OnUpdate() {}
+
+// XGot_Game_Run is the Go encoding of the Template Recv Method Run.
+// The XGo compiler lifts this into a proper method on any type embedding Game.
+func XGot_Game_Run[T gamer](g T) {
+    g.OnUpdate()
+}
+```
+#### 用户侧的 XGo 代码
+
+```xgo
+import "game"
+
+type MyGame struct {
+    game.Game
+}
+
+func (g *MyGame) OnUpdate() {
+    // user-supplied drawing logic
+}
+
+func main() {
+    var a game.Game
+    a.Run()       // dispatches to (*game.Game).OnUpdate
+
+    var b MyGame
+    b.Run()       // dispatches to (*MyGame).OnUpdate
+}
+```
+XGo 编译器识别 `XGot_Game_Run`，并将它公开为嵌入 `game.Game` 的类型上的 `Run` 方法。调用 `b.Run()` 被改写为 `game.XGot_Game_Run(&b)`。Go 以 `T = MyGame` 实例化泛型函数，从而将调用分派到 `(*MyGame).OnUpdate`。定义端和调用端都无需新增 XGo 语法。
+
+---
+
+## Go 作为 XGo 的“汇编语言”
+
+> Go 是 XGo 的“汇编语言”
+>
+> 这句话准确概括了 XGo 与 Go 的关系。Go 是 XGo 的**语义基础**。
+> - 每个 XGo 包都可以一对一地转换为 Go 包。
+> - 转换后的 Go 包**完整保留原有语义**，可供任何标准 Go 工具链使用。
+> - 其他 XGo 代码也可以直接导入转换后的 Go 包，无需桥接层。
+>
+> XGo 直接沿用 Go 的类型系统、内存模型和并发原语。Go 的编译期校验同样适用于所有 XGo 源码。
+
+这个提案沿用同样的设计。带 `XGot_` 前缀的函数**必须用 Go 定义**。XGo 目前没有声明带 `XGot_` 语义的泛型函数的语法。该前缀是 Go 作者和 XGo 编译器之间的约定。
+
+遇到 XGo 尚未提供的底层或结构复杂的声明时，作者可以在作为“汇编语言”的 Go 中编写声明。XGo 则在调用处提供友好的语法。这个例子中，对 `MyGame` 值调用 `b.Run()` 会分派到 `(*MyGame).OnUpdate`，无需手动绑定。
+
+`XGot_` 命名约定已足以连接两端。框架作者用 Go 声明，使用者用 XGo 调用，编译器通过命名约定完成转换。这符合 XGo 谨慎添加语法的设计原则。
+
+---
+
+## 设计决策
+
+### 为何使用前缀
+
+XGo 编码成的 Go 代码必须是有效、符合习惯的 Go。若在 Go 层增加关键字或专用语法，便会破坏 `go build` 兼容性。`XGot_` 命名约定不增加成本。Go 工具链将它视为普通泛型函数，XGo 编译器按名称识别，并将它公开为对应的方法。
+
+### 为何将接收者移到参数位置
+
+Go 不允许 `func [T C] (g T) M()` 形式的泛型接收者，因为接收者必须是当前包定义的具名类型。要用标准 Go 泛型表达这一语义，就需要将接收者移到普通参数的位置，写成 `func XGot_Base_Method[T C](g T)`。
+
+### 为何定义单独的 `gamer` 约束接口
+
+约束接口明确列出 `Run` 需要调用的回调。相比依赖某个具体类型的完整方法集，这种方式更便于维护。XGo 编译器也能检查传给 `T` 的类型是否提供模板方法所调用的方法。
+
+### 无需调用 `SetUpdater`
+
+使用模板接收者方法时无需调用注册函数。Go 在调用处通过泛型实例化处理分派，无需额外维护运行时状态。
+
+---
+
+## 方案对比
+
+| | C++ 虚函数 | 惯用 Go 方案（接口与 `SetUpdater`） | 模板接收者方法 |
+|---|---|---|---|
+| 运行时成本 | 查询虚函数表 | 接口分派 | 同样使用接口分派 |
+| 用户需要编写的额外代码 | 无 | 在构造函数中调用 `SetUpdater(self)` | 无 |
+| 显式约定 | 无，使用隐式重写 | 框架代码中的接口 | 约束接口 |
+| 编码是否兼容 Go | 不适用 | 是 | 是，使用 `XGot_` 约定 |
+| 是否需要新的 XGo 语法 | 不适用 | 否 | 否 |
+
+---
+
+## 小结
+
+模板接收者方法让框架基础类型 `Game` 可以回调嵌入它的具体类型 `MyGame` 提供的方法，无需用户手动配置分派。该机制依靠标准 Go 泛型和 `XGot_` 命名约定，兼容 Go 工具链。框架作者编写 Go，使用者在 XGo 中直接写 `b.Run()` 即可。整个过程沿用现有的 XGo 声明语法。

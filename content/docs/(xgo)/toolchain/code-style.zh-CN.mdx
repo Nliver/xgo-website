@@ -1,0 +1,134 @@
+---
+title: 格式化 XGo 源码
+description: 对照命令式调用、内置函数、程序入口和 Lambda 在格式化前后的写法。
+---
+
+使用 `xgo fmt -smart example.xgo` 可以在格式化 XGo 源文件时应用以下语法转换。直接运行 `xgo fmt` 只调整格式。
+
+
+## 转换规则
+
+### 省略 package main
+
+```xgo
+package main
+
+func f() {
+}
+```
+
+格式化后的代码如下。
+
+```xgo
+func f() {
+}
+```
+
+
+### 省略 func main
+
+```xgo
+package main
+
+func main() {
+    a := 0
+}
+```
+
+格式化后的代码如下。
+
+```xgo
+a := 0
+```
+
+
+### 使用内置函数替代 fmt 调用
+
+```xgo
+import "fmt"
+
+n, err := fmt.Println("Hello world")
+```
+
+格式化后的代码如下。
+
+```xgo
+n, err := echo("Hello world")
+```
+
+转换说明如下。
+
+* 转换 `fmt.Errorf => errorf`
+* 转换 `fmt.Fprint => fprint`
+* 转换 `fmt.Fprintf => fprintf`
+* 转换 `fmt.Fprintln => fprintln`
+* 转换 `fmt.Print` => `print`
+* 转换 `fmt.Printf` => `printf`
+* 转换 `fmt.Println` => `echo`
+* 转换 `fmt.Sprint => sprint`
+* 转换 `fmt.Sprintf => sprintf`
+* 转换 `fmt.Sprintln => sprintln`
+
+### 优先使用命令式调用
+
+```xgo
+import "fmt"
+
+fmt.Println()
+fmt.Println(fmt.Println("Hello world"))
+```
+
+格式化后的代码如下。
+
+```xgo
+echo
+echo echo("Hello world")
+```
+
+转换说明如下。
+
+* 仅将最外层的函数调用语句转换为命令式写法。例如 `fmt.Println(fmt.Println("Hello world"))` 转换为 `echo echo("Hello world")`，内层调用保留括号，不能写成 `echo echo "Hello world"`.
+
+
+### 包函数调用改用小写首字母
+
+```xgo
+import "math"
+
+echo math.Sin(math.Pi/3)
+```
+
+格式化后的代码如下。
+
+```xgo
+echo math.sin(math.Pi/3)
+```
+
+### 将实参中的函数字面量转换为 Lambda（命名结果除外）
+
+```xgo
+echo(demo(func(n int) int {
+	return n+100
+}))
+
+echo(demo(func(n int) (v int) {
+	return n+100
+}))
+
+onStart(func() {
+	echo("start")
+})
+```
+
+格式化后的代码如下。
+```xgo
+echo demo(n => n + 100)
+
+echo demo(func(n int) (v int) {
+	return n + 100
+})
+
+onStart => {
+	echo "start"
+}
+```

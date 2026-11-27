@@ -1,0 +1,45 @@
+---
+title: 告别 printf
+description: 为什么 XGo 为常见的格式化任务提供字符串插值和命令式输出。
+---
+
+程序经常需要将信息整理成适合用户阅读的文本。使用 `printf` 时，初学者需要同时记住格式动词和转义序列。XGo 为常见情形提供了字符串插值。
+
+## 字符串拼接与 printf
+
+可以拼接字符串，但这里需要显式转换类型。
+
+```xgo
+age := 10
+println "age = " + age.string
+```
+
+也可以使用传统的格式化写法。
+
+```xgo
+age := 10
+printf "age = %d\n", age
+```
+
+## 字符串插值
+
+在字符串中写入 `${expr}`，XGo 会计算表达式并插入它的值。
+
+```xgo
+age := 10
+echo "age = ${age}"
+```
+
+拼接 URL 或其他结构化文本时，也可以直接使用插值。
+
+```xgo
+host := "foo.com"
+page := 0
+limit := 20
+println "https://${host}/items?page=${page+1}&limit=${limit}"
+println "$$"
+```
+
+`$$` 输出一个美元符号。内置的 `echo` 是 `println` 的别名，常用的输出语句因此可以写得像一条 shell 命令。
+
+完整的字符串规则见[字符串](/zh-CN/docs/reference/strings)。命令式调用的写法见[命令与函数调用](/zh-CN/docs/reference/function-calls)。

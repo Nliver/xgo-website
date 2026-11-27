@@ -1,0 +1,39 @@
+---
+title: XGo 中的重载是什么
+description: XGo 如何为函数、方法和运算符提供重载，并保持与 Go 的互操作性。
+---
+
+Go 要求同一个包中的函数名称唯一。有些操作根据实参类型选择实现后，表达式会更清楚、自然。XGo 为此提供了重载声明。
+
+## 函数重载
+
+可以用内联的函数字面量声明一组重载。
+
+```xgo title="add.xgo"
+func add = (
+	func(a, b int) int {
+		return a + b
+	}
+	func(a, b string) string {
+		return a + b
+	}
+)
+
+echo add(100, 7)
+echo add("Hello", "World")
+```
+
+```text
+107
+HelloWorld
+```
+
+运行 `xgo run add.xgo` 即可尝试这两种调用。编译器按声明顺序检查各个函数原型，选择第一个匹配实参类型的原型。XGo 也支持用标识符声明重载以及重载方法。
+
+## 运算符重载
+
+可以为自定义类型重载运算符。一元和二元运算符采用与函数相同的重载解析规则，操作数的类型决定候选实现。
+
+当操作数的类型足以明确表达意图时，可以用重载表示领域操作。编译器将选定的实现转换为普通 Go 代码，因此仍可与 Go 包互操作。
+
+声明方式、解析规则和生成的名称见[重载](/zh-CN/docs/reference/overloads)。[混合 Go 与泛型示例](/zh-CN/docs/examples/mixed-go-generics)展示如何在普通 Go 和 XGo 源文件中使用重载。

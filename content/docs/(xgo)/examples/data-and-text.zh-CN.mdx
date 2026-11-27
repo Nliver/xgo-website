@@ -1,0 +1,891 @@
+---
+title: 数据、查询与文本模板
+description: 在 XGo 源码目录中运行 DQL 和文本模板示例。
+---
+
+请在 XGo 源码目录中切换到各示例标注的子目录，再运行相应命令。请使用「本页来源」中标注的 XGo 版本，并按[安装指南](/zh-CN/docs/getting-started/installation)构建工具链。 See the [domain text literals reference](/zh-CN/docs/reference/domain-text-literals).
+
+## JSON 配置
+
+在 `demo/domaintext` 中运行。
+
+读取内嵌 JSON 文档中的 `port` 属性。
+
+### domaintext.xgo
+
+```xgo title="domaintext.xgo"
+config := json`{
+	"server": "localhost",
+	"port": 8080,
+	"features": ["auth", "logging"]
+}`!
+
+echo config.port
+```
+
+```sh
+xgo run .
+```
+
+程序输出如下。
+
+```text
+8080
+```
+
+## 查询文件系统
+
+在 `demo/dql-fs` 中运行。
+
+在当前目录及其所有子目录中查找 `.xgo` 文件。以下结果假设上游示例目录只包含原有的源文件。
+
+### fsq.xgo
+
+```xgo
+for e in fs`.`.**.file.match("*.xgo") {
+	echo e.path
+}
+```
+
+```sh
+xgo run .
+```
+
+程序输出如下。
+
+```text
+fsq.xgo <nil>
+```
+
+## 筛选 JSON 数组
+
+在 `demo/dql-json` 中运行。
+
+选出 `class` 字段等于 `zebra` 的对象，再输出它们的 `at` 字段。
+
+### jq.xgo
+
+```xgo title="jq.xgo"
+doc := json`{
+	"animals": [
+		{"class": "gopher", "at": "Line 1"},
+		{"class": "armadillo", "at": "Line 2"},
+		{"class": "zebra", "at": "Line 3"},
+		{"class": "unknown", "at": "Line 4"},
+		{"class": "gopher", "at": "Line 5"},
+		{"class": "bee", "at": "Line 6"},
+		{"class": "gopher", "at": "Line 7"},
+		{"class": "zebra", "at": "Line 8"}
+	]
+}
+`!
+
+for animal in doc.animals.*@($class == "zebra") {
+	echo animal.$at
+}
+```
+
+```sh
+xgo run .
+```
+
+程序输出如下。
+
+```text
+Line 3
+Line 8
+```
+
+## 从 HTML 中提取链接
+
+在 `demo/dql-links` 中运行。
+
+把本地 HTML 文件的路径作为程序参数。查询会输出锚元素中非空的 `href` 属性。
+
+### links.xgo
+
+```xgo
+import "os"
+import "github.com/goplus/xgo/dql/html"
+
+doc := html.source(os.Args[1])
+
+for a in doc.**.a {
+	if url := a.$href; url != "" {
+		echo url
+	}
+}
+```
+
+```sh
+printf '%s\n' '<a href="/docs">Docs</a><a>Plain</a><a href="/notes">Notes</a>' > fixture.html
+xgo run . fixture.html
+```
+
+程序输出如下。
+
+```text
+/docs
+/notes
+```
+
+## 查询 XGo 语法
+
+在 `demo/dql-xgo` 中运行。
+
+从解析后的脚本中选出表达式语句，并提取各次调用所用的被调用方标识符。
+
+### xgoq.xgo
+
+```xgo title="xgoq.xgo"
+doc := xgo`
+x, y := "Hi", 123
+echo x
+print y
+`!
+
+stmts := doc.shadowEntry.body.list.*@(self.class == "ExprStmt")
+for fn in stmts.x@(self.class == "CallExpr").fun@(self.class == "Ident") {
+	echo fn.$name
+}
+```
+
+```sh
+xgo run .
+```
+
+程序输出如下。
+
+```text
+echo
+print
+```
+
+## 读取 YAML 配置
+
+在 `demo/dql-yaml` 中运行。
+
+输出端口，再逐项输出功能列表。
+
+### yq.xgo
+
+```xgo title="yq.xgo"
+config := yaml`server: localhost
+port: 8080
+features:
+  - auth
+  - logging
+`!
+
+echo config.port
+
+for feature in config.features.* {
+	echo feature._value
+}
+```
+
+```sh
+xgo run .
+```
+
+程序输出如下。
+
+```text
+8080
+auth
+logging
+```
+
+## 用计算器文法求值
+
+在 `demo/tpl-calc` 中运行。
+
+用模板字面量定义文法，再用它解析算术表达式。
+
+### calc.xgo
+
+```xgo
+import (
+	"os"
+	"xgo/tpl"
+)
+
+cl := tpl`
+
+expr = operand % ("*" | "/") % ("+" | "-") => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		switch op.Tok {
+		case '+': return x.(float64) + y.(float64)
+		case '-': return x.(float64) - y.(float64)
+		case '*': return x.(float64) * y.(float64)
+		case '/': return x.(float64) / y.(float64)
+		}
+		panic("unexpected")
+	})
+}
+
+operand = basicLit | unaryExpr
+
+unaryExpr = "-" operand => {
+	return -(self[1].(float64))
+}
+
+basicLit = INT | FLOAT => {
+	return self.(*tpl.Token).Lit.float!
+}
+`!
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print err, "\n> "
+	} else {
+		print e, "\n> "
+	}
+}
+```
+
+```sh
+printf '2+3*4\n' | xgo run .
+```
+
+程序输出如下。
+
+```text
+> 14
+>
+```
+
+## 查看计算器输入的解析结果
+
+在 `demo/tpl-calc-dump` 中运行。
+
+输出算术表达式的解析结果。
+
+### calc_dump.xgo
+
+```xgo
+import (
+	"os"
+	"xgo/tpl"
+)
+
+cl := tpl`
+expr = termExpr % ("+" | "-")
+
+termExpr = unaryExpr % ("*" | "/")
+
+unaryExpr = operand | "-" unaryExpr
+
+operand = INT | FLOAT | "(" expr ")"
+`!
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print "${err}\n> "
+	} else {
+		tpl.dump e
+		print "> "
+	}
+}
+```
+
+```sh
+printf '2+3\n' | xgo run .
+```
+
+程序输出如下。
+
+```text
+> [
+  2
+  [
+    [+ 3]
+  ]
+]
+>
+```
+
+## 将匹配的词法单元转换为整数
+
+在 `demo/tpl-intlist` 中运行。
+
+用模板动作读取以逗号分隔的整数列表。
+
+### ints.xgo
+
+```xgo title="ints.xgo"
+import "xgo/tpl"
+
+cl := tpl`
+expr = INT % "," => {
+	return tpl.ListOp[int](self, v => {
+		return v.(*tpl.Token).Lit.int!
+	})
+}
+`!
+
+echo cl.parseExpr("1, 2, 3", nil)!
+```
+
+```sh
+xgo run .
+```
+
+程序输出如下。
+
+```text
+[1 2 3]
+```
+
+## 匹配简单句
+
+在 `demo/tpl-natural-lang` 中运行。
+
+用文法词表解析含有主语、动词和宾语的句子。
+
+### nlang.xgo
+
+```xgo
+import "os"
+
+cl := tpl`
+expr = subject verb object
+subject = "I" | "You" | "He" | "She" | "It" | "Dog" | "Cat"
+object = "me" | "you" | "him" | "her" | "it" | "fish" | "apple" | "banana" | "dog" | "cat"
+verb = "attack" | "love" | "eat" | "hate"
+`!
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print "${err}\n> "
+	} else {
+		print e, "\n > "
+	}
+}
+```
+
+```sh
+printf 'I love you\n' | xgo run .
+```
+
+程序输出如下。
+
+```text
+> [I love you]
+ >
+```
+
+## 比较模板中的重复模式
+
+在 `demo/tpl-parser-demo` 中运行。
+
+比较重复出现的词法单元与用逗号或算术运算符分隔的列表。
+
+### demo.xgo
+
+```xgo title="demo.xgo"
+cl := tpl`expr = *INT`!
+echo cl.parseExpr("1 2 3", nil)!
+
+cl = tpl`expr = INT % ","`!
+echo cl.parseExpr("1, 2, 3", nil)!
+
+cl = tpl`expr = INT % ("+" | "-")`!
+echo cl.parseExpr("1 + 2 - 3", nil)!
+```
+
+```sh
+xgo run .
+```
+
+程序输出如下。
+
+```text
+[1 2 3]
+[1 [[, 2] [, 3]]]
+[1 [[+ 2] [- 3]]]
+```
+
+## 运行伪代码程序
+
+在 `demo/tpl-pseudo` 中运行。
+
+把同目录下的 `gauss.pseudo` 文件传给解释器。程序读取一个数，再输出从 1 加到该数的总和。
+
+### gauss.pseudo
+
+```text
+DECLARE n, i, sum : INTEGER
+OUTPUT "please input n:"
+INPUT n
+i <- 1
+sum <- 0
+WHILE i <= n DO
+    sum <- sum + i
+    i <- i + 1
+ENDWHILE
+OUTPUT sum
+```
+
+### pseudo.gox
+
+```xgo
+import (
+	"fmt"
+	"os"
+	"reflect"
+	"xgo/tpl"
+	"xgo/tpl/token"
+	"xgo/tpl/variant/delay"
+
+	_ "xgo/tpl/variant/builtin"
+	_ "xgo/tpl/variant/math"
+	_ "xgo/tpl/variant/time"
+)
+
+var (
+	vars   map[string]any
+	consts map[string]any
+)
+
+func exists(name string) bool {
+	_, ok := vars[name]
+	if !ok {
+		_, ok = consts[name]
+	}
+	return ok
+}
+
+func value(name string) (v any, ok bool) {
+	v, ok = vars[name]
+	if !ok {
+		v, ok = consts[name]
+	}
+	return
+}
+
+func setValue(name string, v any) {
+	oldv, ok := vars[name]
+	if !ok {
+		panic "variable ${name} is undefined"
+	}
+	if reflect.typeOf(oldv) != reflect.typeOf(v) {
+		panic "assignment of ${name}: type mismatch"
+	}
+	vars[name] = v
+}
+
+func chgValue(name string, chg func(oldv any) any) {
+	oldv, ok := vars[name]
+	if !ok {
+		panic "variable ${name} is undefined"
+	}
+	vars[name] = chg(oldv)
+}
+
+if len(os.Args) < 2 {
+	echo "Usage: tpl-pseudo <file>"
+	return
+}
+
+vars = {}
+consts = {}
+
+cl := tpl`
+
+stmts = *stmtEOS => {
+	return delay.stmtList(self)
+}
+
+stmtEOS = stmt ";" => {
+	return self[0]
+}
+
+stmt = varStmt | constStmt | outputStmt | inputStmt | ifStmt | whileStmt | untilStmt | assignStmt
+
+varStmt = "DECLARE" (IDENT % ",") ":" typeExpr => {
+	namelist := self[1].([]any)
+	typeVal := self[3]
+	return delay.rangeOp(namelist, v => {
+		t := v.(*tpl.Token)
+		name := t.Lit
+		if exists(name) {
+			tpl.panic t.Pos, "${name} exists"
+		}
+		vars[name] = typeVal
+	})
+}
+
+constStmt = "CONSTANT" IDENT "<-" expr => {
+	t := self[1].(*tpl.Token)
+	return delay.evalOp(self[3], v => {
+		name := t.Lit
+		if exists(name) {
+			tpl.panic t.Pos, "${name} exists"
+		}
+		consts[name] = v
+	})
+}
+
+assignStmt = IDENT "<-" expr => {
+	t := self[0].(*tpl.Token)
+	return delay.setValue(t.Lit, setValue, self[2])
+}
+
+inputStmt = "INPUT" IDENT => {
+	t := self[1].(*tpl.Token)
+	return delay.chgValue(t.Lit, chgValue, oldv => {
+		v := reflect.new(type(oldv))
+		fmt.scanln(v.Interface())!
+		return v.elem.Interface()
+	})
+}
+
+outputStmt = "OUTPUT" (expr % ",") => {
+	exprlist := self[1].([]any)
+	return delay.list(exprlist, vals => {
+		echo vals...
+	})
+}
+
+ifStmt = "IF" expr "THEN" ";" stmts ?("ELSE" ";" stmts) "ENDIF" => {
+	return delay.ifElse(self[1], self[4], self[5], 2)
+}
+
+whileStmt = "WHILE" expr "DO" ";" stmts "ENDWHILE" => {
+	return delay.while(self[1], self[4])
+}
+
+untilStmt = "REPEAT" ";" stmts "UNTIL" expr => {
+	return delay.repeatUntil(self[2], self[4])
+}
+
+typeExpr = integer | real | string | boolean
+
+integer = "INTEGER" => {
+	return 0
+}
+
+real = "REAL" => {
+	return 0.0
+}
+
+string = "STRING" => {
+	return ""
+}
+
+boolean = "BOOLEAN" => {
+	return false
+}
+
+expr = cmpExpr % and % or => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return delay.logicOp(op.Tok, x, y)
+	})
+}
+
+and = "AND" => {
+	return &tpl.Token{Tok: token.LAND}
+}
+
+or = "OR" => {
+	return &tpl.Token{Tok: token.LOR}
+}
+
+cmpExpr = mathExpr % ("<" | "<=" | ">" | ">=" | "=" | "<>") => {
+	return tpl.binaryOp(false, self, (op, x, y) => {
+		return delay.compare(op.Tok, x, y)
+	})
+}
+
+mathExpr = operand % ("*" | "/" | "%") % ("+" | "-") => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return delay.mathOp(op.Tok, x, y)
+	})
+}
+
+operand = basicLit | parenExpr | unaryExpr | identOrCall
+
+identOrCall = IDENT ?("(" ?(expr % ",") ")") => {
+	t := self[0].(*tpl.Token)
+	if params := self[1]; params != nil {
+		return delay.call(true, t.Lit, params.([]any)[1])
+	}
+	return delay.valueOf(t.Lit, value)
+}
+
+parenExpr = "(" expr ")" => {
+	return self[1]
+}
+
+unaryExpr = ("-" | "+" | "!") operand => {
+	op := self[0].(*tpl.Token)
+	return delay.unaryOp(op.Tok, self[1])
+}
+
+basicLit = intVal | floatVal | stringVal | true | false
+
+true = "true" => {
+	return true
+}
+
+false = "false" => {
+	return false
+}
+
+stringVal = STRING => {
+	return self.(*tpl.Token).Lit.unquote!
+}
+
+floatVal = FLOAT => {
+	return self.(*tpl.Token).Lit.float!
+}
+
+intVal = INT => {
+	return self.(*tpl.Token).Lit.int!
+}
+`!
+
+delay.initUniverse "builtin", "math", "time"
+
+e, err := cl.parse(os.Args[1], nil, nil)
+if err != nil {
+	fprintln os.Stderr, err
+} else {
+	delay.eval e
+}
+```
+
+```sh
+printf '5\n' | xgo run . gauss.pseudo
+```
+
+程序输出如下。
+
+```text
+please input n:
+15
+```
+
+## 对 Variant 表达式求值
+
+在 `demo/tpl-vcalc` 中运行。
+
+通过模板文法和 Variant 表达式辅助函数对算术表达式求值。
+
+### variant_calc.xgo
+
+```xgo
+import (
+	"os"
+	"xgo/tpl"
+	"xgo/tpl/token"
+	"xgo/tpl/variant"
+
+	_ "xgo/tpl/variant/builtin"
+	_ "xgo/tpl/variant/math"
+	_ "xgo/tpl/variant/time"
+)
+
+cl := tpl`
+
+expr = cmpExpr % and % or => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return variant.logicOp(op.Tok, x, y)
+	})
+}
+
+and = "and" | "AND" | "&&" => {
+	return &tpl.Token{Tok: token.LAND}
+}
+
+or = "or" | "OR" | "||" => {
+	return &tpl.Token{Tok: token.LOR}
+}
+
+cmpExpr = mathExpr % ("==" | "=" | "!=" | "<>" | "<" | "<=" | ">" | ">=") => {
+	return tpl.binaryOp(false, self, (op, x, y) => {
+		return variant.compare(op.Tok, x, y)
+	})
+}
+
+mathExpr = operand % ("*" | "/" | "%") % ("+" | "-") => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return variant.mathOp(op.Tok, x, y)
+	})
+}
+
+operand = basicLit | parenExpr | unaryExpr | callExpr
+
+parenExpr = "(" expr ")" => {
+	return self[1]
+}
+
+unaryExpr = ("-" | "+" | "!") operand => {
+	op := self[0].(*tpl.Token)
+	return variant.unaryOp(op.Tok, self[1])
+}
+
+callExpr = IDENT "(" ?(expr % ",") ")" => {
+	fn := self[0].(*tpl.Token).Lit
+	return variant.call(true, fn, self[2])
+}
+
+basicLit = intVal | floatVal | stringVal | true | false
+
+true = "true" => {
+	return true
+}
+
+false = "false" => {
+	return false
+}
+
+stringVal = STRING => {
+	return self.(*tpl.Token).Lit.unquote!
+}
+
+floatVal = FLOAT => {
+	return self.(*tpl.Token).Lit.float!
+}
+
+intVal = INT => {
+	return self.(*tpl.Token).Lit.int!
+}
+`!
+
+variant.initUniverse "builtin", "math", "time"
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print err, "\n> "
+	} else {
+		print e, "\n> "
+	}
+}
+```
+
+```sh
+printf '2+3*4\n' | xgo run .
+```
+
+程序输出如下。
+
+```text
+> 14
+>
+```
+
+## 生成 JSON 语法树
+
+在 `demo/fullspec/tpl-gen-ast` 中运行。
+
+解析加法表达式，并以 JSON 格式输出抽象语法树。运算符和字面量的类别用相应的词法单元数值表示。
+
+### gen_calc_ast.xgo
+
+```xgo
+import (
+	"encoding/json"
+	"os"
+	"xgo/tpl"
+	"xgo/tpl/token"
+)
+
+type Expr any
+
+type UnaryExpr struct {
+	OpPos token.Pos
+	Op    token.Token
+	X     Expr
+}
+
+type BinaryExpr struct {
+	X     Expr
+	OpPos token.Pos
+	Op    token.Token
+	Y     Expr
+}
+
+type BasicLit struct {
+	ValuePos token.Pos
+	Kind     token.Token
+	Value    string
+}
+
+cl := tpl`
+
+expr = operand % ("*" | "/") % ("+" | "-") => {
+	return tpl.binaryOp(true, self, (op, x, y) => {
+		return &BinaryExpr{
+			X:     x,
+			OpPos: op.Pos,
+			Op:    op.Tok,
+			Y:     y,
+		}
+	})
+}
+
+operand = basicLit | unaryExpr
+
+unaryExpr = "-" operand => {
+	op := self[0].(*tpl.Token)
+	return &UnaryExpr{
+		OpPos: op.Pos,
+		Op:    op.Tok,
+		X:     self[1],
+	}
+}
+
+basicLit = INT | FLOAT => {
+	op := self.(*tpl.Token)
+	return &BasicLit{
+		ValuePos: op.Pos,
+		Kind:     op.Tok,
+		Value:    op.Lit,
+	}
+}
+`!
+
+print "> "
+for line in os.Stdin {
+	e, err := cl.parseExpr(line, nil)
+	if err != nil {
+		print err, "\n> "
+	} else {
+		print string(json.marshalIndent(e, "", "  ")!), "\n> "
+	}
+}
+```
+
+```sh
+printf '1+2\n' | xgo run .
+```
+
+程序输出如下。
+
+```text
+> {
+  "X": {
+    "ValuePos": 1,
+    "Kind": 5,
+    "Value": "1"
+  },
+  "OpPos": 2,
+  "Op": 43,
+  "Y": {
+    "ValuePos": 3,
+    "Kind": 5,
+    "Value": "2"
+  }
+}
+>
+```

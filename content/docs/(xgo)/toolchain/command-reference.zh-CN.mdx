@@ -15,7 +15,7 @@ description: 查找运行、构建、测试、格式化和检查 XGo 项目的�
 | `xgo install .` | 构建并安装当前主包。默认的 Go 后端会装到 `GOBIN` 指定的目录。未设置时使用 `GOPATH` 第一项下的 `bin` 目录。 |
 | `xgo test .` | 为 XGo 包和测试生成 Go 代码，然后运行测试。 |
 
-[多文件项目教程](/zh-CN/docs/tutorials/organize-projects)提供完整的运行和构建示例。[测试类文件示例（英文）](/docs/examples/mixed-go-generics#run-a-test-classfile)演示如何运行命名子测试，[测试覆盖率（英文）](/docs/toolchain/code-coverage)讲解如何生成覆盖率报告。
+[多文件项目教程](/zh-CN/docs/tutorials/organize-projects)提供完整的运行和构建示例。[测试类文件示例](/zh-CN/docs/examples/mixed-go-generics#运行测试类文件)演示如何运行命名子测试，[测试覆盖率](/zh-CN/docs/toolchain/code-coverage)讲解如何生成覆盖率报告。
 
 构建选项放在包或源文件参数之前。使用默认的 Go 后端时，`xgo build -tags debug .` 启用 `debug` 构建标签，`xgo test -run TestGreeting .` 用正则表达式筛选测试。按导入路径运行包时，`xgo run` 默认在包目录中执行，可用 `-nc` 保持当前工作目录。帮助中列出的旧选项 `-prof` 仍未实现。
 
@@ -34,7 +34,35 @@ description: 查找运行、构建、测试、格式化和检查 XGo 项目的�
 
 `xgo go -t` 应接收包目录或导入路径。在当前源码版本中，传入具体文件的 `xgo go -t hello.xgo` 仍会写出 Go 源码。按包生成时，`-s` 为各个 `.xgo` 或 `.gop` 文件单独生成 Go 文件，`-tags` 指定额外构建标签。`-ignore-notated-error` 仅在 `-t` 模式生效，用于跳过标记为预期错误的结果。
 
-确认预览后再运行 `xgo clean .`。命令会扫描子目录并按文件名匹配，其中包括以 `_autogen.go` 结尾的文件。生成文件的名称和源码映射见 [工具链约定（英文）](/docs/toolchain/tooling-conventions#generated-go)。格式化与语法转换的示例见 [XGo 源码格式化（英文）](/docs/toolchain/code-style)。
+确认预览后再运行 `xgo clean .`。命令会扫描子目录并按文件名匹配，其中包括以 `_autogen.go` 结尾的文件。生成文件的名称和源码映射见 [工具链约定](/zh-CN/docs/toolchain/tooling-conventions#生成的-go-代码)。格式化与语法转换的示例见 [XGo 源码格式化](/zh-CN/docs/toolchain/code-style)。
+
+### 生成并运行 Go 包
+
+在新目录中将以下程序保存为 `main.xgo`。示例使用默认的 Go 工具链，只依赖标准库。
+
+```xgo title="main.xgo"
+import "strings"
+
+println strings.toUpper("ready")
+```
+
+初始化模块，检查 XGo 源码，再生成 Go 代码。随后列出包中的 Go 文件并运行该包。
+
+```sh
+go mod init example.com/generated
+xgo go -t .
+xgo go .
+go list -f '{{join .GoFiles " "}}' .
+go run .
+```
+
+检查结束时尚未生成 `xgo_autogen.go`。生成后，`go list` 输出 `xgo_autogen.go`。程序输出如下。
+
+```text
+READY
+```
+
+要更新生成的文件，编辑 `main.xgo` 后重新运行 `xgo go .`。
 
 ## 管理模块和项目配置
 
@@ -47,7 +75,7 @@ description: 查找运行、构建、测试、格式化和检查 XGo 项目的�
 | `xgo get <package>` | 获取指定的包，并在当前模块中添加对应的模块依赖。 |
 | `xgo pack .` | 合并索引配置文件。操作步骤见 [打包项目配置](/zh-CN/docs/toolchain/pack-project-configuration)。 |
 
-直接运行不带参数的 `xgo mod download` 会显示帮助。使用默认的 Go 工具链时，可以用 `go mod download` 将当前模块的依赖下载到本地缓存。`xgo mod init` 写入的注释格式见[模块编译器注释（英文）](/docs/toolchain/modules)。
+直接运行不带参数的 `xgo mod download` 会显示帮助。使用默认的 Go 工具链时，可以用 `go mod download` 将当前模块的依赖下载到本地缓存。`xgo mod init` 写入的注释格式见[模块编译器注释](/zh-CN/docs/toolchain/modules)。
 
 ## 查看工具链信息
 
@@ -60,4 +88,4 @@ description: 查找运行、构建、测试、格式化和检查 XGo 项目的�
 | `xgo serve` | 通过标准输入和标准输出为兼容客户端运行 XGo 语言服务器。 |
 | `xgo bug` | 打开填写了报告模板的上游问题表单。提交前请检查模板内容。 |
 
-如果在不同终端得到不同的构建结果，参阅[工具链环境](/zh-CN/docs/toolchain/environment)。编辑器操作见 [Visual Studio Code 配置（英文）](/docs/toolchain/vscode)。源码仓库还提供独立的 [HTML 查询命令](/zh-CN/docs/toolchain/html-query-cli)。
+如果在不同终端得到不同的构建结果，参阅[工具链环境](/zh-CN/docs/toolchain/environment)。编辑器操作见 [Visual Studio Code 配置](/zh-CN/docs/toolchain/vscode)。源码仓库还提供独立的 [HTML 查询命令](/zh-CN/docs/toolchain/html-query-cli)。

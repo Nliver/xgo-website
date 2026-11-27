@@ -1,0 +1,78 @@
+---
+title: 在 goroutine 之间传递值
+description: 通过通道发送分数，并使用 select 检查结果或错误。
+---
+
+在一个 goroutine 中发送一组分数，再在另一个 goroutine 中计算总分。goroutine 可以让一个函数与程序的其他部分并发运行。通道（channel）用于在 goroutine 之间传递值。第二个示例会用 `select` 检查两个通道中是否有新消息。
+
+## 发送分数并在循环中接收
+
+将此程序保存为 `sum-scores.xgo`。
+
+```xgo title="sum-scores.xgo"
+func sendScores(scores chan<- int) {
+    for score in [92, 58, 76] {
+        scores <- score
+    }
+    close(scores)
+}
+
+scores := make(chan int)
+go sendScores(scores)
+
+total := 0
+for score in scores {
+    total += score
+}
+echo "Total:", total
+```
+
+运行 `xgo run sum-scores.xgo`。
+
+```text
+Total: 226
+```
+
+`make(chan int)` 创建一个无缓冲的整数通道。`go sendScores(scores)` 在新的 goroutine 中启动发送方。参数类型 `chan<- int` 允许 `sendScores` 向通道发送值，每次执行 `scores <- score` 都会等待接收方接收。
+
+`for score in scores` 在每轮循环中接收一个值。发送方发完最后一个值后调用 `close(scores)`，循环接收完所有值后结束。
+
+## 检查结果或错误
+
+将此程序保存为 `choose-update.xgo`。
+
+```xgo title="choose-update.xgo"
+func showUpdate(results <-chan string, errors <-chan string) {
+    select {
+    case result := <-results:
+        echo "Result:", result
+    case message := <-errors:
+        echo "Error:", message
+    default:
+        echo "No update yet"
+    }
+}
+
+results := make(chan string, 1)
+errors := make(chan string, 1)
+
+showUpdate(results, errors)
+results <- "report ready"
+showUpdate(results, errors)
+errors <- "missing report"
+showUpdate(results, errors)
+```
+
+运行 `xgo run choose-update.xgo`。
+
+```text
+No update yet
+Result: report ready
+Error: missing report
+```
+
+`make(chan string, 1)` 中的 `1` 表示通道可以缓冲一个值。在函数内部，`<-chan string` 是只接收的通道类型，`<-results` 从 `results` 中接收一个值。
+
+`select` 执行一个已经就绪的分支。如果两个接收操作均未就绪，就执行 `default`。如果没有 `default`，`select` 会等待其中一个分支就绪。在此示例中，`showUpdate` 每次运行时最多只有一个通道中有值，因此输出顺序是确定的。
+
+关于遍历通道和其他值的更多信息，请参阅[for 语句参考](/zh-CN/docs/reference/for-loops#可迭代表达式)。

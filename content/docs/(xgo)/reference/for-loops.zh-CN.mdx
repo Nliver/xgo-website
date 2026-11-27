@@ -1,0 +1,283 @@
+---
+title: for 语句
+description: XGo 上游参考文档中的 for 语句。
+---
+
+XGo 只有一个循环关键字 `for`，可以写成无条件循环、条件循环、C 风格三段式循环，以及 `for..in`。前三种沿用 Go 的规则。`for..in` 是 XGo 的原生遍历语法，支持可选的 `if` 筛选条件。它是 XGo 推荐的遍历方式，覆盖 Go 中使用 `for range` 的场景。
+
+## 概览
+
+最常见的遍历意图是逐个处理值。`for v in expr` 依次把每个值绑定到 `v`。需要键或索引以及值时，使用 `for k, v in expr`，第一个变量为键或索引，第二个为值。
+
+`for..in` 可遍历整数、数组、切片、字符串、映射、通道、范围表达式（`start:end:step`）、迭代器函数，以及提供 `XGo_Enum` 方法并返回迭代器函数的类型。
+
+类和自定义对象也可以参与 `for..in` 遍历。按照 `XGo_Enum()` 约定实现一个方法即可，无需实现类似 `sort.Interface` 的多方法协议。
+
+## 无条件 `for` 循环
+
+```xgo
+for {
+    // ...
+}
+```
+省略条件就会无限循环。可用 `break` 或 `return` 退出。
+
+## 带条件的 `for` 循环
+
+```xgo
+sum := 0
+i := 1
+for i <= 100 {
+    sum += i
+    i++
+}
+echo sum // 5050
+```
+类似其他语言的 `while`，只要布尔条件为 `true` 就继续执行。条件外不加括号，循环体必须使用花括号。
+
+## C 风格的 `for` 循环
+
+```xgo
+for i := 0; i < 10; i += 2 {
+    if i == 6 {
+        continue
+    }
+    echo i
+    // 0
+    // 2
+    // 4
+    // 8
+}
+```
+传统三段式写法依次放置初始化语句、条件和后置语句，以 `;` 分隔。将计数器更新放在循环头部，可避免在循环体中忘记更新。
+
+## `for..in`
+
+### 语法
+
+基本形式为 `for <identifiers> in <expr> { ... }`。可以在待遍历表达式与左花括号之间添加 `if <condition>`。支持以下两种变量绑定形式。
+
+```xgo
+for v in expr { ... }     // binds the value
+for k, v in expr { ... }  // binds the key/index and the value
+```
+`for..in` 总是在循环体作用域中声明新变量。与 XGo 和 Go 的其他声明一样，不使用的变量可写成 `_`。
+
+不允许省略全部标识符，即 `for in expr` 无效。若只需执行副作用，不使用迭代产生的值，可以根据需要使用 `for expr {}` 等形式。
+
+### 变量绑定规则
+
+单变量形式 `for v in expr` 绑定**值**。双变量形式 `for k, v in expr` 依次绑定键或索引，以及值。
+
+规则适用于所有可迭代类型。对产生两个分量的类型，单变量形式丢弃键或索引，双变量形式按键（或索引）、值的顺序绑定。对只产生一个分量的类型，单变量直接绑定该分量，双变量形式会因缺少第二个分量而编译失败。
+
+### 可选的 `if` 筛选
+
+`for..in` 可以带尾随 `if` 子句。条件为 `true` 时才执行循环体，不满足条件的元素会被跳过。条件表达式可以引用 `in` 子句刚绑定的变量。
+
+```xgo
+numbers := [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+for num in numbers if num%3 == 0 {
+    echo num
+    // 0
+    // 3
+    // 6
+    // 9
+}
+
+for num in :10 if num%3 == 0 {
+    echo num
+    // 0
+    // 3
+    // 6
+    // 9
+}
+```
+## 可迭代表达式
+
+`for..in` 中的 `expr` 可以是以下类型或形式。
+
+1. `int`：依次产生 `0, 1, ..., n-1`。`n` 等价于范围表达式 `:n`，即起始值和步长均取默认值。
+2. `array`、`slice`、`string`、`map` 和 `chan`：这些是标准 Go 容器和通道。遍历字符串会产生 rune，索引是字节偏移；遍历映射会产生键和值；遍历通道只产生接收到的值，没有键或索引。
+3. 范围表达式 `start:end`、`:end` 或 `start:end:step` 是 XGo 的数值范围语法。省略 `start` 时从 `0` 开始，省略 `step` 时步长为 `1`，步长不能为 `0`。`start:end` 产生半开区间 `start, start+1, ..., end-1`。指定步长时依次产生 `start, start+step, start+2*step, ...`，正步长在值小于 `end` 时继续，负步长在值大于 `end` 时继续。起点和终点可以是具有共同整数类型的表达式。范围表达式只能直接用作 `in` 子句的 `expr`，不能作为独立值。
+4. 符合以下签名之一的迭代器函数：
+   - `func(yield func() bool)`
+   - `func(yield func(V) bool)`
+   - `func(yield func(K, V) bool)`
+5. 具有 `XGo_Enum() F` 方法的类型 `T` 或 `*T`。`XGo_Enum` 不接收参数，只有一个返回值 `F`，其类型须为上列三种迭代器函数之一。
+
+对第 5 种情形，编译器将遍历目标改写为 `expr.XGo_Enum()`，然后按第 4 种情形处理。
+
+编译器先检查 `expr` 是否属于内置可遍历类型（int、array、slice、string、map、chan、func）或范围表达式，再查找该类型或其指针类型上的 `XGo_Enum() F` 方法。两者都不满足时编译失败。
+
+## 各类表达式的绑定语义
+
+下表列出 `for v in expr` 和 `for k, v in expr` 对每种类型的绑定结果。
+
+| 类型 | 产生的分量 | `for v in expr` 绑定 | `for k, v in expr` 绑定 |
+|----------------------------------|-----------------------------|-------------------------------|---------------------------------|
+| `int` | 索引 | 索引 | 无效，只有一个值 |
+| `array` / `slice` | 索引、元素 | 元素 | 索引、元素 |
+| `string` | 字节索引、rune | rune | 字节索引、rune |
+| `map` | 键、值 | 值 | 键、值 |
+| `chan` | 值 | 值 | 无效，只有一个值 |
+| 范围表达式（`start:end:step`） | 按步长递进的值 | 当前值 | 无效，只有一个值 |
+| `func(yield func() bool)` | 无 | 无效，没有值 | 无效，没有值 |
+| `func(yield func(V) bool)` | 值 | 值 | 无效，只有一个值 |
+| `func(yield func(K, V) bool)` | 键、值 | 值，键被丢弃 | 键、值 |
+| 具有 `XGo_Enum() F` 的 `T` | 取决于 `F` | 见上列对应的 `F` | 见上列对应的 `F` |
+
+## 分类示例
+
+### 数组、切片、字符串、映射与通道
+
+```xgo
+for v in [1, 2, 3] {
+    echo v               // 1, 2, 3
+}
+
+for i, v in [1, 2, 3] {
+    echo i, v            // index, element
+}
+
+for k, v in {"a": 1, "b": 2} {
+    echo k, v            // key, value
+}
+
+for v in {"one": 1, "two": 2} {
+    echo v               // 1, 2
+}
+
+for c in "héllo" {
+    echo c               // rune, not byte index
+}
+
+ch := ... // ch is a channel
+for v in ch {
+    echo v
+}
+```
+`for k, v in ch` 无法编译，因为通道每次只产生一个值。
+
+### 整数
+
+`for i in 5` 依次产生 `0, 1, 2, 3, 4`。它等价于下文的 `for i in :5`。
+
+```xgo
+for i in :5 {
+    echo i
+    // 0, 1, 2, 3, 4
+}
+```
+`for k, v in 5` 无法编译，因为整数迭代每次只产生一个值。
+
+### 范围表达式
+
+`start:end:step` 是 XGo 原生范围表达式。它从 `start`（默认 `0`）开始，每次按 `step`（默认 `1`，不可为 `0`）递进，不包含 `end`。负步长表示递减。
+
+```xgo
+for v in 1:10 {
+    echo v              // 1, 2, ..., 9
+}
+
+for v in :10 {
+    echo v              // 0, 1, ..., 9 (start defaults to 0)
+}
+
+for v in :10:2 {
+    echo v              // 0, 2, 4, 6, 8
+}
+
+for v in 10:0:-1 {
+    echo v              // 10, 9, ..., 1
+}
+```
+`for k, v in 1:10:2` 无法编译，因为范围表达式每次只产生一个值。
+
+### 函数（迭代器函数）
+
+只指定一个变量时，`for..in` 绑定值并丢弃可能存在的键。
+
+```xgo
+for v in Seq {          // Seq: func(yield func(int) bool)
+    echo v
+}
+
+for k, v in Seq2 {      // Seq2: func(yield func(string, int) bool)
+    echo k, v
+}
+
+for v in Seq2 {         // key discarded; only the value is bound
+    echo v
+}
+```
+不产生值的迭代器（`func(yield func() bool)`）没有可绑定的分量。
+
+### 具有 `XGo_Enum()` 的对象
+
+类型提供 `XGo_Enum() F` 方法时，遍历它等价于遍历 `expr.XGo_Enum()` 的结果，绑定规则由 `F` 的函数签名决定。
+
+```xgo
+type Tree struct {
+    // ...
+}
+
+func (t *Tree) XGo_Enum() func(func(int) bool) {
+    return func(yield func(int) bool) {
+        // in-order traversal, calling yield(v) for each element
+    }
+}
+
+tree := new(Tree)
+...
+for v in tree {
+    echo v
+}
+```
+产生两个值的 `XGo_Enum` 遵循前述双值规则。
+
+```xgo
+type OrderedMap struct {
+    // ...
+}
+
+func (m *OrderedMap) XGo_Enum() func(func(string, int) bool) {
+    return func(yield func(string, int) bool) {
+        // iterate in insertion order
+    }
+}
+
+om := new(OrderedMap)
+...
+for k, v in om {
+    echo k, v
+}
+```
+### 带 `if` 的 `for..in`
+
+```xgo
+numbers := [1, 3, 5, 7, 11, 13, 17]
+sum := 0
+for x in numbers if x > 5 {
+    sum += x
+}
+echo sum // 48
+```
+绑定值和可能存在的键之后，才对筛选条件求值，因此条件可以引用这两个标识符。
+
+```xgo
+names := ["Sam", "Peter", "Alice"]
+for i, name in names if i > 0 {
+    echo i, name
+    // 1 Peter
+    // 2 Alice
+}
+```
+## 限制
+
+- `for k, v in expr` 要求迭代产生两个分量，适用于数组、切片、字符串、映射、`func(yield func(K, V) bool)` 或返回相应迭代器的 `XGo_Enum()`。用于整数、通道、范围表达式或 `func(yield func(V) bool)` 时编译失败。
+- `for v in expr` 至少需要一个分量。对 `func(yield func() bool)` 或返回该类型的 `XGo_Enum()` 使用这种写法会编译失败。
+- 范围表达式省略起点时从 `0` 开始，省略步长时采用 `1`。步长为常量 `0` 时编译失败，运行时算出的步长为 `0` 时触发运行时错误。范围表达式只允许直接出现在 `in` 子句中，不能赋值、传参或保存。
+- `XGo_Enum` 必须无参数并且只返回一个值，返回类型必须匹配三种迭代器签名之一。同名但签名不同的方法不满足该约定，表达式不能据此遍历。
+- 方法集遵循标准规则。与其他指针接收者方法相同，只有 `T` 类型的值可寻址时，才能通过该值访问定义在 `*T` 上的 `XGo_Enum`。
+- 每次迭代的循环变量绑定之后、循环体执行之前，对 `if` 筛选条件求值一次。

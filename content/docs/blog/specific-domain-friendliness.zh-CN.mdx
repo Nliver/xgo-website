@@ -1,0 +1,12 @@
+---
+title: 面向特定领域的设计与 XGo 类框架
+description: 类文件、类框架和面向特定领域的 XGo 应用背后的设计思路。
+---
+
+XGo 用类框架封装可复用的领域知识。框架可以定义文件后缀、生成的代码结构、开发约定和辅助 API，让程序自然地表达领域概念。
+
+> 无需为每个领域另造一门语言。把领域知识抽象出来。
+
+类框架之于 XGo 的重要性，可以类比接口之于 Go。二者各有分工：接口描述多个值共有的行为，类框架描述一个领域的词汇和应用结构。
+
+实现模型见 [XGo 类框架](/zh-CN/docs/toolchain/classfiles)，源码层面的规则见[类文件规范](/zh-CN/docs/toolchain/classfile-specification)。[类文件示例](/zh-CN/docs/examples/gsh-and-classfiles)展示了这些设计在项目中的用法。

@@ -1,0 +1,556 @@
+---
+title: 映射类型
+description: XGo 上游参考文档中的映射类型。
+---
+
+映射（map）存储键值对，支持按键写入和读取数据。XGo 为这些操作提供了简洁的语法。
+
+## 创建映射
+
+可以用映射字面量直接填入数据，也可以用 `make` 指定类型和初始容量提示。
+
+### 映射字面量
+
+用花括号 `{}` 可以创建映射。
+
+```xgo
+a := {"Hello": 1, "xsw": 3}     // map[string]int
+b := {"Hello": 1, "xsw": 3.4}   // map[string]float64
+c := {"Hello": 1, "xsw": "XGo"} // map[string]any
+e := {1: "one", 2: "two"}       // map[int]string
+d := {}                         // map[string]any
+```
+#### 自动类型推断
+
+使用 `:=` 且没有显式类型声明时，编译器根据字面量的写法及其值推断完整类型 `map[KeyType]ValueType`。
+
+**类型推断规则**
+
+键类型 `KeyType` 和值类型 `ValueType` 分别按同一套规则推断。
+
+1. **相同类型**：所有元素类型相同时使用该类型。
+2. **混合类型**：元素类型不同时可推断为 `any`。
+3. **空映射** `{}`：默认推断为 `map[string]any`，可容纳不同类型的值。
+
+也可以显式声明映射类型来覆盖自动推断。
+
+```xgo
+var a map[string]float64 = {"Hello": 1, "xsw": 3}  // Values converted to float64
+var c map[string]any = {"x": 1, "y": "text"}       // Explicit any type
+```
+显式声明时，字面量中的值按所声明的类型转换。
+
+### 使用 `make` 创建映射
+
+需要空映射，或希望预留容量以减少分配时，可以使用 `make`。
+
+#### `make` 的基本语法
+
+```xgo
+// Basic creation
+m := make(map[string]int)
+
+m["count"] = 42
+echo m  // Output: map[count:42]
+
+// Create a map with complex key types
+type Point (x, y int)
+positions := make(map[Point]string)
+positions[(0, 0)] = "origin"
+```
+#### 预留容量
+
+可以在创建时提供初始容量提示。
+
+```xgo
+// Create a map with initial capacity for ~100 elements
+// Pre-allocating capacity (helps performance for large maps)
+largeMap := make(map[string]int, 100)
+
+// This doesn't limit the map size, but helps reduce allocations
+for i := 0; i < 150; i++ {
+    largeMap["key${i}"] = i
+}
+```
+容量提示不会限制映射的最终大小。如果已知大致会添加多少条目，运行时可以据此更有效地分配内存。
+
+#### 选择 `make` 或字面量
+
+**使用映射字面量**（`{}`）的场景：
+- 已有初始数据。
+- 希望编译器自动推断类型。
+- 希望代码简洁易读。
+
+**显式指定映射类型**（`var m map[K]V = {}`）的场景：
+- 初始数据有特定的类型要求。
+- 希望兼顾类型安全与简洁语法。
+- 需要确保值按指定类型转换。
+
+**使用 `make`** 的场景：
+- 先创建空映射，稍后添加元素。
+- 需要预留容量以改善性能。
+- 希望沿用传统 Go 写法。
+- 项目统一使用 `make`。
+
+## 映射操作
+
+XGo 支持两种引用映射键的写法。
+
+- **方括号写法**（`m["key"]`）：适用于所有键类型，也可以用变量作为键。
+- **字段访问写法**（`m.key`）：字符串键是合法标识符时可以使用此简写，键中不能有空格或特殊字符。
+
+**字段访问是语法简写**：`m.field` 与 `m["field"]` 在各处含义相同。
+
+两种写法都可以用于赋值和读取。
+
+### 添加与更新元素
+
+使用任一写法向键赋值。如果键已存在，就更新对应的值；否则创建新条目。
+
+```xgo
+a := {"a": 1, "b": 0}
+
+// Using bracket notation
+a["c"] = 100
+
+// Using field notation
+a.d = 200
+
+echo a  // Output: map[a:1 b:0 c:100 d:200]
+
+// Works with maps created by make too
+m := make(map[string]int)
+m["x"] = 10
+m.y = 20
+echo m  // Output: map[x:10 y:20]
+```
+### 删除元素
+
+用 `delete` 删除指定键的条目。
+
+```xgo
+a := {"a": 1, "b": 0, "c": 100}
+delete(a, "b")
+echo a  // Output: map[a:1 c:100]
+
+// Works with any key type
+m := make(map[int]string)
+m[1] = "one"
+m[2] = "two"
+delete(m, 1)
+echo m  // Output: map[2:two]
+```
+### 获取映射长度
+
+用 `len` 获取映射中的条目数。
+
+```xgo
+a := {"a": 1, "b": 2, "c": 3}
+echo len(a)  // Output: 3
+
+b := make(map[string]int)
+b["x"] = 10
+echo len(b)  // Output: 1
+```
+### 访问元素
+
+XGo 提供多种取值方式，也可以检查键是否存在。
+
+#### 方括号写法
+
+传统写法是将键放入 `[]` 中。
+
+```xgo
+a := {"name": "Alice", "age": 25}
+echo a["name"]  // Output: Alice
+
+// Works with any key type
+m := make(map[int]string)
+m[42] = "answer"
+echo m[42]  // Output: answer
+```
+#### 字段访问写法
+
+如果字符串键是合法标识符，可以用点号访问。
+
+```xgo
+config := {"host": "localhost", "port": 8080}
+echo config.host  // Output: localhost
+echo config.port  // Output: 8080
+
+// Equivalent to:
+echo config["host"]
+echo config["port"]
+```
+##### 如何选择写法
+
+**适合使用字段写法**（`m.field`）的情形：
+- 编写代码时已知键名。
+- 键是合法标识符，字符由字母、数字和下划线组成。
+- 希望让访问路径更容易阅读。
+
+**适合使用方括号写法**（`m["key"]`）的情形：
+- 键在运行时计算。
+- 键包含特殊字符、空格，或以数字开头。
+- 需要显式兼容标准 Go。
+- 键的类型不是字符串。
+
+```xgo
+// Field notation - clean and readable
+user := {"name": "Alice", "age": 30}
+echo user.name
+echo user.age
+
+// Bracket notation - necessary for dynamic or special keys
+keyName := "name"
+echo user[keyName]           // Dynamic key
+echo user["first-name"]      // Key with hyphen
+echo user["2024-score"]      // Key starting with digit
+
+// Bracket notation - required for non-string keys
+scores := make(map[int]float64)
+scores[1] = 95.5
+echo scores[1]  // Must use bracket notation
+```
+##### 嵌套访问
+
+嵌套映射也可以连续使用字段访问语法。
+
+```xgo
+data := {
+    "user": {
+        "profile": {
+            "name": "Alice",
+            "age": 30,
+        },
+    },
+}
+
+// Clean nested access
+echo data.user.profile.name  // Output: Alice
+
+// Equivalent to:
+echo data["user"]["profile"]["name"]
+```
+##### 处理 `any` 类型
+
+对于类型为 `any` 的变量，也可以用这两种写法访问，按 `map[string]any` 处理。
+
+```xgo
+var response any = {"status": "ok", "code": 200}
+echo response.status  // Output: ok
+echo response.code    // Output: 200
+
+echo response["status"]  // Output: ok
+echo response["code"]    // Output: 200
+```
+#### 使用 comma-ok 安全访问
+
+处理来自 JSON 或外部 API 等结构不确定的数据时，可以使用 comma-ok（以第二个返回值判断成功与否）检查访问路径是否存在。它返回两个值。
+- 对应的值，若路径不存在则返回零值。
+- 一个布尔值，表示访问是否成功。
+
+```xgo
+a := {"a": 1, "b": 0}
+
+// Check if key exists
+v, ok := a["c"]
+echo v, ok  // Output: 0 false (key doesn't exist)
+
+v, ok = a["b"]
+echo v, ok  // Output: 0 true (key exists with value 0)
+
+// Works with field notation too
+v, ok = a.c
+echo v, ok  // Output: 0 false
+
+// Direct conditional check
+if v, ok := a["c"]; ok {
+    echo "Found:", v
+} else {
+    echo "Not found"  // Output: Not found
+}
+```
+**使用 comma-ok 时，访问不存在的路径会返回 `false`**，不会因路径缺失而 panic。
+
+```xgo
+data := {"user": {"name": "Alice"}}
+
+// Safe single-level access
+name, ok := data.user
+if ok {
+    echo "User found:", name
+}
+
+// Safe nested access
+profile, ok := data.user.profile
+if !ok {
+    echo "Profile not found"  // This will print
+}
+
+// Safe access with type assertion
+var response any = {"status": "ok", "code": 200}
+code, ok := response.code.(int)
+if ok {
+    echo "Status code:", code
+}
+```
+这种写法特别适合处理动态数据。
+
+```xgo
+var data any = {"user": "Alice"}
+
+// Without comma-ok - may panic if structure is wrong
+// name := data.user.profile.name  // Would panic!
+
+// With comma-ok - safe, never panics
+name, ok := data.user.profile.name
+if !ok {
+    echo "Path does not exist"  // Output: Path does not exist
+    name = "Unknown"
+}
+
+// Processing API response
+var apiResponse any = fetchFromAPI()
+
+// Safely extract nested values
+if userID, ok := apiResponse.data.user.id.(string); ok {
+    processUser(userID)
+} else {
+    echo "Invalid response structure"
+}
+
+// With fallback values
+city := "Unknown"
+if c, ok := apiResponse.user.address.city.(string); ok {
+    city = c
+}
+echo "City:", city
+```
+### 遍历映射
+
+可以通过两种 `for in` 写法遍历映射。
+
+#### 遍历键和值
+
+```xgo
+m := {"x": 10, "y": 20, "z": 30}
+for key, value in m {
+    echo key, value
+}
+
+// Works with any map type
+ages := make(map[string]int)
+ages["Alice"] = 30
+ages["Bob"] = 25
+for name, age in ages {
+    echo name, "is", age, "years old"
+}
+```
+#### 仅遍历键
+
+只需要键时，可将值对应的变量写为空白标识符 `_`。
+
+```xgo
+m := {"x": 10, "y": 20, "z": 30}
+for key, _ in m {
+    echo key
+}
+```
+#### 仅遍历值
+
+```xgo
+m := {"x": 10, "y": 20, "z": 30}
+for value in m {
+    echo value
+}
+```
+## 映射推导式
+
+映射推导式对已有序列进行转换或筛选，生成新的映射，语法类似 Python 的字典推导式。
+
+### 基本语法
+
+映射推导式的一般形式如下。
+
+```xgo
+{keyExpr: valueExpr for vars in iterable}
+```
+`iterable` 中的每个元素转换为一个键值对，组成新的映射。
+
+#### 从切片创建映射
+
+```xgo
+// Map slice values to their indices
+numbers := [10, 20, 30, 40, 50]
+valueToIndex := {v: i for i, v in numbers}
+echo valueToIndex  // Output: map[10:0 20:1 30:2 40:3 50:4]
+```
+#### 从字符串创建映射
+
+```xgo
+// Character positions in a string
+word := "hello"
+charPositions := {char: i for i, char in word}
+echo charPositions  // Output: map[h:0 e:1 l:3 o:4]
+// Note: 'l' appears twice, so the last occurrence (index 3) is kept
+```
+### 带条件的推导式
+
+可以添加条件来筛选元素。
+
+```xgo
+{keyExpr: valueExpr for vars in iterable if condition}
+```
+#### 筛选奇数或偶数元素
+
+```xgo
+numbers := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+// Only even numbers
+evenSquares := {v: v * v for v in numbers if v%2 == 0}
+echo evenSquares  // Output: map[2:4 4:16 6:36 8:64 10:100]
+
+// Only odd indices
+oddIndexValues := {i: v for i, v in numbers if i%2 == 1}
+echo oddIndexValues  // Output: map[1:2 3:4 5:6 7:8 9:10]
+```
+### 编写推导式的建议
+
+1. **简单转换适合用推导式**：逻辑直接时最容易阅读。
+2. **复杂逻辑可以改用循环**：需要多条语句或复杂条件时，普通循环可能更清楚。
+3. **留意重复键**：同一个键出现多次时，后产生的值覆盖先前的值。
+4. **保持条件简洁**：复杂的筛选逻辑往往更适合普通循环。
+
+## 常见用法
+
+### 用映射保存配置
+
+```xgo
+// Using literals for initial configuration
+config := {
+    "host": "localhost",
+    "port": 8080,
+    "debug": true,
+}
+
+// Access with field notation
+echo "Connecting to", config.host, "on port", config.port
+
+// Using explicit type for type safety
+var settings map[string]int = {
+    "maxConnections": 100,
+    "timeout": 30,
+}
+
+// Using make for type-safe configuration
+options := make(map[string]int)
+options["maxConnections"] = 100
+options["timeout"] = 30
+```
+### 处理 JSON 响应
+
+```xgo
+var response any = parseJSON(apiData)
+
+// Safe extraction with defaults
+userID, ok := response.user.id.(string)
+if !ok {
+    userID = "guest"
+}
+
+userName, ok := response.user.name.(string)
+if !ok {
+    userName = "Anonymous"
+}
+
+echo "User:", userName, "(", userID, ")"
+```
+### 统计出现次数
+
+```xgo
+// Using make with pre-allocated capacity
+wordCounts := make(map[string]int, 1000)
+for word in words {
+    wordCounts[word]++
+}
+
+// Using comprehension to initialize
+words := ["apple", "banana", "apple", "orange", "banana", "apple"]
+uniqueWords := {w: 0 for w in words}  // Initialize all to 0
+for word in words {
+    uniqueWords[word]++
+}
+```
+### 查找表
+
+```xgo
+// Simple lookup table with literals
+statusCodes := {
+    "ok": 200,
+    "not_found": 404,
+    "error": 500,
+}
+
+echo statusCodes.ok  // Output: 200
+
+// Using comprehension to reverse the mapping
+codeToStatus := {code: status for status, code in statusCodes}
+echo codeToStatus[200]  // Output: ok
+```
+### 缓存
+
+```xgo
+// Cache with pre-allocated capacity for performance
+cache := make(map[string][]byte, 10000)
+
+func getCachedData(key string) []byte {
+    if data, ok := cache[key]; ok {
+        return data
+    }
+
+    data := fetchData(key)
+    cache[key] = data
+    return data
+}
+```
+### 对数据分组
+
+```xgo
+// Group items by category
+groups := make(map[string][]string)
+
+for item in items {
+    category := getCategory(item)
+    groups[category] = append(groups[category], item)
+}
+
+// Access grouped data
+for category, items in groups {
+    echo "Category:", category
+    for item in items {
+        echo "  -", item
+    }
+}
+```
+## 使用建议
+
+1. **使用字段写法提高可读性**，适用于已知且是合法标识符的键。
+2. **使用方括号写法**处理动态键、含特殊字符的键或非字符串键。
+3. **使用 comma-ok** 处理结构不确定的 API 响应、JSON 或动态数据。
+4. **用映射字面量**快速初始化已知数据。
+5. 需要类型检查或特定转换时，为字面量**显式声明类型**。
+6. 需要指定类型、使用非字符串键或预留容量时，可以使用 **`make`**。
+7. 对序列进行简单转换或筛选时，可以使用**映射推导式**。
+8. 键可能不存在时，检查对应的条目是否存在。
+9. 对于较大的映射，如果已知大致大小，可以用 `make` 预留容量。
+10. 尽量保持值类型一致，以便利用类型检查。
+11. 在较大项目中，配合 `make` 显式指定类型，便于阅读代码并检查类型。
+
+## 性能建议
+
+1. **预留容量**：大致规模已知时，使用 `make(map[K]V, size)` 可以减少内存分配。
+2. **避免反复扩容**：映射会动态增长，预留容量可以减少内部调整。
+3. **选择合适的键类型**：整数、字符串等简单键往往比复杂结构体更高效。
+4. **利用零值**：读取不存在的键会得到零值，这一行为适用于实现计数器。
+5. **选择推导式或循环**：处理大数据集或复杂转换时，预留容量再用普通循环填充可能更高效。

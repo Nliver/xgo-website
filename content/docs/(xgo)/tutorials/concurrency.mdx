@@ -1,0 +1,78 @@
+---
+title: Pass values between goroutines
+description: Send scores through a channel and use select to check for a result or an error.
+---
+
+Send a series of scores from one goroutine and total them in another. A goroutine runs a function concurrently with the rest of the program. A channel carries values between goroutines. The second example uses `select` to check two channels for an update.
+
+## Send scores and receive them in a loop
+
+Save this program as `sum-scores.xgo`.
+
+```xgo title="sum-scores.xgo"
+func sendScores(scores chan<- int) {
+    for score in [92, 58, 76] {
+        scores <- score
+    }
+    close(scores)
+}
+
+scores := make(chan int)
+go sendScores(scores)
+
+total := 0
+for score in scores {
+    total += score
+}
+echo "Total:", total
+```
+
+Run `xgo run sum-scores.xgo`.
+
+```text
+Total: 226
+```
+
+`make(chan int)` creates an unbuffered channel of integers. `go sendScores(scores)` starts the producer in a new goroutine. The parameter type `chan<- int` allows `sendScores` to send values, and each `scores <- score` waits for a receiver.
+
+`for score in scores` receives one value per iteration. The producer calls `close(scores)` after its final send, which lets the loop finish once it has received all the values.
+
+## Check for a result or an error
+
+Save this program as `choose-update.xgo`.
+
+```xgo title="choose-update.xgo"
+func showUpdate(results <-chan string, errors <-chan string) {
+    select {
+    case result := <-results:
+        echo "Result:", result
+    case message := <-errors:
+        echo "Error:", message
+    default:
+        echo "No update yet"
+    }
+}
+
+results := make(chan string, 1)
+errors := make(chan string, 1)
+
+showUpdate(results, errors)
+results <- "report ready"
+showUpdate(results, errors)
+errors <- "missing report"
+showUpdate(results, errors)
+```
+
+Run `xgo run choose-update.xgo`.
+
+```text
+No update yet
+Result: report ready
+Error: missing report
+```
+
+The `1` in `make(chan string, 1)` gives the channel room for one value. Inside the function, `<-chan string` is a receive-only channel type, and `<-results` receives a value from `results`.
+
+`select` executes one ready case. If neither receive is ready, it executes `default`. A `select` without `default` waits for a case to become ready. In this example, at most one channel has a value when `showUpdate` runs, so the output order is predictable.
+
+See [For statements](/docs/reference/for-loops#iterable-expressions) for iteration over channels and other values.

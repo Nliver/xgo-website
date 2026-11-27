@@ -1,0 +1,906 @@
+---
+title: 内置函数
+description: XGo 上游参考文档中的内置函数。
+---
+
+XGo 支持 Go 的标准内置函数，并为常用操作提供扩展。下文按用途列出可用的内置函数。
+
+## Go 标准内置函数
+
+XGo 支持以下 Go 标准内置函数。
+
+### 内存与数据结构操作
+
+**`append(slice []Type, elems ...Type) []Type`**
+
+向切片末尾追加元素，返回更新后的切片。
+
+```xgo
+numbers := []int{1, 2, 3}
+numbers = append(numbers, 4, 5)
+echo numbers  // Output: [1 2 3 4 5]
+```
+**`len(v Type) int`**
+
+返回数组、切片、映射、字符串或通道的长度。
+
+```xgo
+echo len("Hello")      // Output: 5
+echo len([]int{1,2,3}) // Output: 3
+```
+**`cap(v Type) int`**
+
+返回数组、切片或通道的容量。
+
+```xgo
+s := make([]int, 3, 5)
+echo len(s)  // Output: 3
+echo cap(s)  // Output: 5
+```
+**`make(t Type, size ...IntegerType) Type`**
+
+分配并初始化切片、映射或通道。
+
+```xgo
+slice := make([]int, 5, 10)  // length 5, capacity 10
+m := make(map[string]int)     // empty map
+ch := make(chan int, 10)      // buffered channel
+```
+**`copy(dst, src []Type) int`**
+
+将元素从源切片复制到目标切片，返回实际复制的元素数。
+
+```xgo
+src := []int{1, 2, 3}
+dst := make([]int, 3)
+n := copy(dst, src)
+echo n    // Output: 3
+echo dst  // Output: [1 2 3]
+```
+**`delete(m map[Type]Type1, key Type)`**
+
+删除映射中指定键对应的条目。
+
+```xgo
+m := map[string]int{"a": 1, "b": 2}
+delete(m, "a")
+echo m  // Output: map[b:2]
+```
+**`clear[T ~[]Type | ~map[Type]Type1](t T)`**
+
+清空映射中的所有条目，或将切片中的元素设为零值。
+
+```xgo
+m := map[string]int{"a": 1, "b": 2}
+clear(m)
+echo len(m)  // Output: 0
+```
+**`new(Type) *Type`**
+
+分配内存并返回指向该类型零值的指针。
+
+```xgo
+p := new(int)
+echo *p  // Output: 0
+```
+**`new(value)`**
+
+传入一个值时，按该值的类型分配存储空间，并用它初始化。无类型常量取默认类型。表达式返回指向已初始化存储空间的指针。
+
+```xgo title="new-value.xgo"
+number := new(42)
+label := new("ready")
+echo *number, *label
+```
+
+运行 `xgo run new-value.xgo`。
+
+```text
+42 ready
+```
+
+### 数值运算
+
+**`max[T cmp.Ordered](x T, y ...T) T`**
+
+返回实参中的最大值。
+
+```xgo
+echo max(1, 5, 3, 9, 2)  // Output: 9
+echo max(3.14, 2.71)     // Output: 3.14
+```
+**`min[T cmp.Ordered](x T, y ...T) T`**
+
+返回实参中的最小值。
+
+```xgo
+echo min(1, 5, 3, 9, 2)  // Output: 1
+echo min(3.14, 2.71)     // Output: 2.71
+```
+**`complex(r, i FloatType) ComplexType`**
+
+用实部和虚部构造复数。
+
+```xgo
+c := complex(3.0, 4.0)
+echo c  // Output: (3+4i)
+```
+**`real(c ComplexType) FloatType`**
+
+返回复数的实部。
+
+```xgo
+c := 3 + 4i
+echo real(c)  // Output: 3
+```
+**`imag(c ComplexType) FloatType`**
+
+返回复数的虚部。
+
+```xgo
+c := 3 + 4i
+echo imag(c)  // Output: 4
+```
+### 控制流
+
+**`panic(v any)`**
+
+停止正常执行，触发 panic。
+
+```xgo
+if value < 0 {
+    panic("negative value not allowed")
+}
+```
+**`recover() any`**
+
+在延迟执行的函数中恢复当前的 panic。
+
+```xgo
+defer func() {
+    if r := recover(); r != nil {
+        println("Recovered from:", r)
+    }
+}()
+```
+### 通道操作
+
+**`close(c chan<- Type)`**
+
+关闭通道。
+
+```xgo
+ch := make(chan int)
+close(ch)
+```
+## 输入输出与格式化函数
+
+XGo 为输入输出提供了以下便捷函数。
+
+### 标准输出
+
+**`Echo(a ...any) (n int, err error)`**
+
+将实参格式化后写入标准输出，在相邻实参之间插入空格，并在末尾换行。
+
+```xgo
+echo "Hello", "World"  // Output: Hello World
+echo 42, true, 3.14    // Output: 42 true 3.14
+```
+**`Print(a ...any) (n int, err error)`**
+
+写入标准输出，仅当相邻的两个实参都不是字符串时在两者之间插入空格。
+
+```xgo
+print("Hello", "World")  // Output: HelloWorld
+print(1, 2, 3)           // Output: 1 2 3
+```
+**`Println(a ...any) (n int, err error)`**
+
+写入标准输出，在相邻实参之间插入空格，并在末尾换行。
+
+```xgo
+println("Hello", "World")  // Output: Hello World
+```
+**`Printf(format string, a ...any) (n int, err error)`**
+
+按格式说明符格式化实参，并写入标准输出。
+
+```xgo
+printf("Name: %s, Age: %d\n", "Alice", 30)
+// Output: Name: Alice, Age: 30
+```
+### 字符串格式化
+
+**`Sprint(a ...any) string`**
+
+返回格式化后的字符串，仅当相邻实参均非字符串时插入空格。
+
+```xgo
+s := sprint("Hello", "World")
+echo s  // Output: HelloWorld
+```
+**`Sprintln(a ...any) string`**
+
+返回格式化后的字符串，实参之间有空格，末尾有换行符。
+
+```xgo
+s := sprintln("Hello", "World")
+echo s  // Output: Hello World
+```
+**`Sprintf(format string, a ...any) string`**
+
+返回按格式说明符生成的字符串。
+
+```xgo
+s := sprintf("Age: %d", 25)
+echo s  // Output: Age: 25
+```
+### 写入指定目标
+
+**`Fprint(w io.Writer, a ...any) (n int, err error)`**
+
+写入指定的 writer。
+
+```xgo
+file, _ := create("output.txt")
+fprint(file, "Hello", "World")
+```
+**`Fprintln(w io.Writer, a ...any) (n int, err error)`**
+
+写入指定的 writer，并在末尾换行。
+
+```xgo
+file, _ := create("output.txt")
+fprintln(file, "Hello", "World")
+```
+**`Fprintf(w io.Writer, format string, a ...any) (n int, err error)`**
+
+将格式化结果写入指定的 writer。
+
+```xgo
+file, _ := create("output.txt")
+fprintf(file, "Count: %d\n", 42)
+```
+### 错误处理
+
+**`Errorf(format string, a ...any) error`**
+
+创建带格式的错误。支持使用 `%w` 包装错误。
+
+```xgo
+err := errorf("failed to process: %w", originalError)
+```
+**`Errorln(args ...any)`**
+
+格式化实参并写入标准错误输出。
+
+```xgo
+errorln("Warning:", "Something went wrong")
+```
+**`Fatal(args ...any)`**
+
+格式化实参并写入标准错误输出，通常随后退出程序。
+
+```xgo
+fatal("Critical error occurred")
+```
+## 文件操作
+
+**`Open(name string) (*os.File, error)`**
+
+以只读模式 `O_RDONLY` 打开文件。
+
+```xgo
+file, err := open("data.txt")
+if err != nil {
+    fatal(err)
+}
+defer file.close
+```
+**`Create(name string) (*os.File, error)`**
+
+创建文件或截断已有文件，创建时使用权限模式 `0o666`。
+
+```xgo
+file, err := create("output.txt")
+if err != nil {
+    fatal(err)
+}
+defer file.close
+```
+## 类型反射
+
+**`Type(i any) reflect.Type`**
+
+返回表示 `i` 动态类型的 `reflect.Type`。
+
+```xgo
+t := type(42)
+echo t.name  // Output: int
+
+s := "hello"
+echo type(s).name  // Output: string
+```
+## 逐行读取
+
+XGo 提供了逐行读取输入的工具。
+
+**`Lines(r io.Reader) osx.LineReader`**
+
+返回逐行读取的 `LineReader`。
+
+```xgo
+file, _ := open("data.txt")
+for line in lines(file) {
+    echo line
+}
+```
+**`Blines(r io.Reader) osx.BLineReader`**
+
+返回 `BLineReader`，以字节切片的形式读取每一行。
+
+```xgo
+file, _ := open("data.txt")
+for line in blines(file) {
+    echo string(line)
+}
+```
+**`(r io.Reader).XGo_Enum() osx.LineIter`**
+
+返回逐行遍历的 `LineIter`，可用于 `for in` 循环。
+
+```xgo
+file, _ := open("data.txt")
+for line in file {
+    echo line
+}
+```
+## 字符串方法
+
+可以用方法调用语法执行常用的字符串操作。
+
+### 长度与计数
+
+**`(s string).Len() int`**
+
+返回字符串的字节数。
+
+```xgo
+echo "Hello".len  // Output: 5
+```
+**`(s string).Count(substr string) int`**
+
+统计互不重叠的子串出现次数。
+
+```xgo
+echo "hello world".count("l")  // Output: 3
+echo "aaaa".count("aa")        // Output: 2
+```
+### 大小写转换
+
+**`(s string).ToUpper() string`**
+
+将所有字母转为大写。
+
+```xgo
+echo "Hello".toUpper  // Output: HELLO
+```
+**`(s string).ToLower() string`**
+
+将所有字母转为小写。
+
+```xgo
+echo "Hello".toLower  // Output: hello
+```
+**`(s string).ToTitle() string`**
+
+将所有字母转为 Unicode 标题格式（title case）。
+
+```xgo
+echo "hello world".toTitle  // Output: HELLO WORLD
+```
+**`(s string).Capitalize() string`**
+
+仅将首字母转为大写。
+
+```xgo
+echo "hello world".capitalize  // Output: Hello world
+```
+### 字符串处理
+
+**`(s string).Repeat(count int) string`**
+
+返回将原字符串重复 `count` 次的结果。
+
+```xgo
+echo "Ha".repeat(3)  // Output: HaHaHa
+```
+**`(s string).ReplaceAll(old, new string) string`**
+
+将所有互不重叠的 `old` 替换为 `new`。
+
+```xgo
+echo "Hello".replaceAll("l", "L")  // Output: HeLLo
+```
+**`(s string).Replace(old, new string, n int) string`**
+
+返回新字符串，前 `n` 个互不重叠的 `old` 被替换为 `new`。当 `n < 0` 时不限制替换次数。
+
+```xgo
+s := "hello world"
+result := s.replace("world", "XGo", -1)
+echo result  // Output: hello XGo
+```
+### 裁剪
+
+**`(s string).Trim(cutset string) string`**
+
+移除首尾属于 `cutset` 的字符。
+
+```xgo
+echo "  hello  ".trim(" ")  // Output: hello
+echo "!!hello!!".trim("!")  // Output: hello
+```
+**`(s string).TrimSpace() string`**
+
+移除首尾的空白字符。
+
+```xgo
+echo "  hello  ".trimSpace  // Output: hello
+```
+**`(s string).TrimLeft(cutset string) string`**
+
+移除开头属于 `cutset` 的字符。
+
+```xgo
+echo "###hello".trimLeft("#")  // Output: hello
+```
+**`(s string).TrimRight(cutset string) string`**
+
+移除末尾属于 `cutset` 的字符。
+
+```xgo
+echo "hello###".trimRight("#")  // Output: hello
+```
+**`(s string).TrimPrefix(prefix string) string`**
+
+若存在指定前缀，则将其移除。
+
+```xgo
+echo "Hello World".trimPrefix("Hello ")  // Output: World
+```
+**`(s string).TrimSuffix(suffix string) string`**
+
+若存在指定后缀，则将其移除。
+
+```xgo
+echo "file.txt".trimSuffix(".txt")  // Output: file
+```
+### 拆分
+
+**`(s string).Fields() []string`**
+
+按空白字符拆分字符串。
+
+```xgo
+echo "hello world xgo".fields  // Output: [hello world xgo]
+```
+**`(s string).Split(sep string) []string`**
+
+按分隔符拆分字符串。
+
+```xgo
+echo "a,b,c".split(",")  // Output: [a b c]
+```
+**`(s string).SplitN(sep string, n int) []string`**
+
+按分隔符拆分，并限制结果数量。
+
+```xgo
+echo "a-b-c-d".splitN("-", 2)  // Output: [a b-c-d]
+```
+**`(s string).SplitAfter(sep string) []string`**
+
+在每个分隔符之后拆分。
+
+```xgo
+echo "a,b,c".splitAfter(",")  // Output: [a, b, c]
+```
+**`(s string).SplitAfterN(sep string, n int) []string`**
+
+在分隔符之后拆分，并限制结果数量。
+
+```xgo
+echo "a,b,c,d".splitAfterN(",", 2)  // Output: [a, b,c,d]
+```
+### 查找
+
+**`(s string).Index(substr string) int`**
+
+返回子串首次出现的位置，找不到时返回 -1。
+
+```xgo
+echo "hello".index("ll")  // Output: 2
+echo "hello".index("x")   // Output: -1
+```
+**`(s string).IndexByte(c byte) int`**
+
+返回指定字节首次出现的位置。
+
+```xgo
+echo "hello".indexByte('l')  // Output: 2
+```
+**`(s string).IndexRune(r rune) int`**
+
+返回指定 Unicode 码点首次出现的字节位置。
+
+```xgo
+echo "hello".indexRune('o')  // Output: 4
+```
+**`(s string).IndexAny(chars string) int`**
+
+返回 `chars` 中任一字符首次出现的字节位置。
+
+```xgo
+echo "hello".indexAny("aeiou")  // Output: 1 (finds 'e')
+```
+**`(s string).LastIndex(substr string) int`**
+
+返回子串最后一次出现的位置。
+
+```xgo
+echo "hello".lastIndex("l")  // Output: 3
+```
+**`(s string).LastIndexByte(c byte) int`**
+
+返回指定字节最后一次出现的位置。
+
+```xgo
+echo "hello".lastIndexByte('l')  // Output: 3
+```
+**`(s string).LastIndexAny(chars string) int`**
+
+返回指定字符集合中任一字符最后一次出现的字节位置。
+
+```xgo
+echo "hello".lastIndexAny("aeiou")  // Output: 4 (finds 'o')
+```
+### 条件判断
+
+**`(s string).Contains(substr string) bool`**
+
+判断是否包含指定子串。
+
+```xgo
+echo "hello".contains("ll")   // Output: true
+echo "hello".contains("xyz")  // Output: false
+```
+**`(s string).ContainsAny(chars string) bool`**
+
+判断是否包含 `chars` 中的任一字符。
+
+```xgo
+echo "hello".containsAny("aeiou")  // Output: true
+```
+**`(s string).ContainsRune(r rune) bool`**
+
+判断是否包含指定 Unicode 码点。
+
+```xgo
+echo "hello".containsRune('e')  // Output: true
+```
+**`(s string).HasPrefix(prefix string) bool`**
+
+判断字符串是否以指定前缀开头。
+
+```xgo
+echo "hello".hasPrefix("hel")  // Output: true
+echo "hello".hasPrefix("bye")  // Output: false
+```
+**`(s string).HasSuffix(suffix string) bool`**
+
+判断字符串是否以指定后缀结尾。
+
+```xgo
+echo "hello.txt".hasSuffix(".txt")  // Output: true
+```
+**`(s string).EqualFold(t string) bool`**
+
+判断两个字符串在忽略大小写时是否相等。
+
+```xgo
+echo "Hello".equalFold("hello")  // Output: true
+```
+### 比较
+
+**`(s string).Compare(b string) int`**
+
+相等时返回 0，小于时返回 -1，大于时返回 +1。
+
+```xgo
+echo "abc".compare("abc")  // Output: 0
+echo "abc".compare("xyz")  // Output: -1
+echo "xyz".compare("abc")  // Output: 1
+```
+### 引号
+
+**`(s string).Quote() string`**
+
+返回对应的 Go 双引号字符串字面量。
+
+```xgo
+echo "hello\nworld".quote  // Output: "hello\nworld"
+```
+**`(s string).Unquote() (string, error)`**
+
+将带引号的 Go 字符串字面量解析为实际值。
+
+```xgo
+s, err := `"hello\nworld"`.unquote
+echo s  // Output: hello
+        //         world
+```
+### 类型转换
+
+**`(s string).Int() (int, error)`**
+
+将字符串解析为十进制整数。
+
+```xgo
+n, err := "42".int
+if err == nil {
+    echo n  // Output: 42
+}
+```
+**`(s string).Int64() (int64, error)`**
+
+将字符串解析为 64 位有符号整数。
+
+```xgo
+n, err := "9223372036854775807".int64
+if err == nil {
+    echo n  // Output: 9223372036854775807
+}
+```
+**`(s string).Uint64() (uint64, error)`**
+
+将字符串解析为 64 位无符号整数。
+
+```xgo
+n, err := "18446744073709551615".uint64
+if err == nil {
+    echo n  // Output: 18446744073709551615
+}
+```
+**`(s string).Float() (float64, error)`**
+
+将字符串解析为 64 位浮点数。
+
+```xgo
+f, err := "3.14159".float
+if err == nil {
+    echo f  // Output: 3.14159
+}
+```
+## 数值类型的 String 方法
+
+XGo 为数值类型提供 `String()` 方法，方便将数值转换为字符串。
+
+**`(i int).String() string`**
+
+将 `int` 转为十进制字符串。
+
+```xgo
+echo (42).string  // Output: 42
+```
+**`(i int64).String() string`**
+
+将 `int64` 转为十进制字符串。
+
+```xgo
+n := int64(123456789)
+echo n.string  // Output: 123456789
+```
+**`(u uint64).String() string`**
+
+将 `uint64` 转为十进制字符串。
+
+```xgo
+n := uint64(18446744073709551615)
+echo n.string  // Output: 18446744073709551615
+```
+**`(f float64).String() string`**
+
+使用格式 `'g'`、精度 -1 将 `float64` 转为字符串。
+
+```xgo
+echo (3.14159).string  // Output: 3.14159
+```
+## 字符串切片的方法
+
+XGo 支持通过方法调用批量处理字符串切片。
+
+### 基本信息
+
+**`(v []string).Len() int`**
+
+返回元素数量。
+
+```xgo
+words := []string{"hello", "world"}
+echo words.len  // Output: 2
+```
+**`(v []string).Cap() int`**
+
+返回切片容量。
+
+```xgo
+words := make([]string, 2, 5)
+echo words.cap  // Output: 5
+```
+### 连接
+
+**`(v []string).Join(sep string) string`**
+
+用分隔符连接各元素。
+
+```xgo
+words := []string{"hello", "world", "xgo"}
+echo words.join(" ")   // Output: hello world xgo
+echo words.join(", ")  // Output: hello, world, xgo
+```
+### 批量转换大小写
+
+**`(v []string).Capitalize() []string`**
+
+将每个字符串的首字母转为大写。
+
+```xgo
+words := []string{"hello", "world"}
+echo words.capitalize  // Output: [Hello World]
+```
+**`(v []string).ToTitle() []string`**
+
+将所有字符串的字母转为 Unicode 标题格式。
+
+```xgo
+words := []string{"hello", "world"}
+echo words.toTitle  // Output: [HELLO WORLD]
+```
+**`(v []string).ToUpper() []string`**
+
+将所有字符串转为大写。
+
+```xgo
+words := []string{"hello", "world"}
+echo words.toUpper  // Output: [HELLO WORLD]
+```
+**`(v []string).ToLower() []string`**
+
+将所有字符串转为小写。
+
+```xgo
+words := []string{"HELLO", "WORLD"}
+echo words.toLower  // Output: [hello world]
+```
+### 批量处理
+
+**`(v []string).Repeat(count int) []string`**
+
+将每个字符串重复 `count` 次。
+
+```xgo
+words := []string{"ha", "ho"}
+echo words.repeat(3)  // Output: [hahaha hohoho]
+```
+**`(v []string).Replace(old, new string, n int) []string`**
+
+按指定次数替换每个字符串中匹配的部分。
+
+```xgo
+words := []string{"hello", "yellow"}
+echo words.replace("ll", "LL", -1)  // Output: [heLLo yeLLow]
+```
+**`(v []string).ReplaceAll(old, new string) []string`**
+
+替换每个字符串中所有匹配的部分。
+
+```xgo
+words := []string{"hello", "yellow"}
+echo words.replaceAll("l", "L")  // Output: [heLLo yeLLow]
+```
+### 批量裁剪
+
+**`(v []string).Trim(cutset string) []string`**
+
+裁剪每个字符串首尾属于指定集合的字符。
+
+```xgo
+words := []string{"  hello  ", "  world  "}
+echo words.trim(" ")  // Output: [hello world]
+```
+**`(v []string).TrimSpace() []string`**
+
+移除每个字符串首尾的空白字符。
+
+```xgo
+words := []string{"  hello  ", "  world  "}
+echo words.trimSpace  // Output: [hello world]
+```
+**`(v []string).TrimLeft(cutset string) []string`**
+
+移除每个字符串开头属于指定集合的字符。
+
+```xgo
+words := []string{"###hello", "###world"}
+echo words.trimLeft("#")  // Output: [hello world]
+```
+**`(v []string).TrimRight(cutset string) []string`**
+
+移除每个字符串末尾属于指定集合的字符。
+
+```xgo
+words := []string{"hello###", "world###"}
+echo words.trimRight("#")  // Output: [hello world]
+```
+**`(v []string).TrimPrefix(prefix string) []string`**
+
+移除每个字符串的指定前缀。
+
+```xgo
+words := []string{"Mr. John", "Mr. Smith"}
+echo words.trimPrefix("Mr. ")  // Output: [John Smith]
+```
+**`(v []string).TrimSuffix(suffix string) []string`**
+
+移除每个字符串的指定后缀。
+
+```xgo
+files := []string{"file1.txt", "file2.txt"}
+echo files.trimSuffix(".txt")  // Output: [file1 file2]
+```
+## 补充说明
+
+### 方法调用语法
+
+许多标准库函数可以把第一个参数作为接收者，以方法的形式调用。这样既能使用连贯的方法调用语法，也能保持与 Go 标准库的兼容性。例如：
+
+```xgo
+// Traditional Go style
+s := strings.ToUpper("hello")
+
+// XGo method style
+s := "hello".toUpper
+```
+两种调用形式在 XGo 中都有效，可以按需要选择。
+
+### 性能
+
+批量处理字符串切片时，这些方法会创建新切片来存放转换后的值。
+
+```xgo
+// Creates a new slice with all strings uppercased
+upper := words.toUpper
+
+// Original slice unchanged
+echo words  // Original values
+echo upper  // Uppercased values
+```
+### for in 循环
+
+除了 Go 传统的 `for range` 写法，XGo 还支持用 `for in` 直接遍历集合。
+
+```xgo
+// Iterate over slice
+words := []string{"hello", "world", "xgo"}
+for word in words {
+    echo word
+}
+
+// Iterate over file lines
+file, _ := open("data.txt")
+for line in file {
+    echo line
+}
+```

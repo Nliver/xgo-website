@@ -1,0 +1,20 @@
+---
+title: 跟踪 AircraftWar 的战斗消息
+description: 跟踪使用 SPX v1.0.0 编写的 AircraftWar 游戏中的事件处理程序。
+---
+
+## 查看项目
+
+```sh
+git clone https://github.com/goplus/AircraftWar.git
+cd AircraftWar
+git checkout --detach e92768138e5732d2264c9f42dbbedefac74fa960
+```
+
+阅读 `main.spx` 了解共享游戏状态，再打开 `MyAircraft.spx` 查看精灵的事件处理程序。请将 `assets/` 目录与脚本放在一起。该项目当时的启动命令是 `gop run .`，需要兼容的 Go+ 工具链和图形桌面环境。此项目使用 SPX v1.0.0。当前的引擎和启动工具见 [SPX 指南](/zh-CN/docs/spx)。
+
+## 跟踪事件
+
+玩家精灵收到战斗消息后，只要它存活，一个处理程序就会每隔 0.1 秒克隆一颗子弹。另一个处理程序让飞机朝鼠标移动，并检查是否触碰敌人或炸弹。按空格键会消耗一枚可用炸弹，并广播消灭所有敌人的消息。
+
+在 `main.spx` 中找到 `addScore`。得分超过 500 才会发送获胜消息。得分恰好为 500 时，游戏会继续运行。

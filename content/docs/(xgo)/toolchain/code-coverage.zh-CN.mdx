@@ -1,0 +1,15 @@
+---
+title: 测量单元测试覆盖率
+description: 为 XGo 包启用语句覆盖率并保存覆盖率配置文件。
+---
+
+在启用语句覆盖率的情况下运行[测试类文件示例](/zh-CN/docs/examples/mixed-go-generics#运行测试类文件)。请在文档所对应的 XGo 修订版检出目录中使用标准 Go 后端运行：
+
+```sh
+cd demo/unit-test
+xgo test -covermode=atomic -coverprofile=coverage.out .
+```
+
+该测试会使用正数、负数和零值调用 `foo`。程序会报告 `coverage: 100.0% of statements`。`coverage.out` 的第一行是 `mode: atomic`，后续各行记录源码范围及其执行次数。
+
+覆盖率配置文件引用 `foo.xgo`。在这个示例中，`go tool cover -func=coverage.out` 会把该文件当作 Go 源码解析，并在第一个函数处失败，因为 XGo 源码省略了 package 子句。请使用 `xgo test` 输出的语句覆盖率百分比。

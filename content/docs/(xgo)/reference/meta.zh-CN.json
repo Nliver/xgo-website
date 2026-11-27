@@ -1,1 +1,23 @@
-{"title":"语言参考","pages":["language","types"]}
+{
+  "title": "语言参考",
+  "pages": [
+    "language",
+    "types",
+    "mini-specification",
+    "full-specification",
+    "builtins",
+    "strings",
+    "slices",
+    "maps",
+    "functions-and-closures",
+    "function-calls",
+    "for-loops",
+    "overloads",
+    "enums",
+    "domain-text-literals",
+    "structs-and-tuples",
+    "template-receiver-method",
+    "dql",
+    "tpl"
+  ]
+}

@@ -1,0 +1,239 @@
+---
+title: 枚举类型
+description: XGo 上游参考文档中的枚举类型。
+---
+
+在 Go 中，定义一组枚举值需要两项声明。首先定义一个
+具有明确底层类型的命名类型，然后用 `const` 块
+声明属于该类型的常量：
+
+```go
+type Color int
+
+const (
+    ColorRed   Color = iota
+    ColorGreen
+    ColorBlue
+)
+```
+这是一种常见需求，但写法较为繁琐，还会让开发者
+在列出常量之前就选定底层类型，
+例如 `int`、`int8`、`string` 或 `bool`。实际上，
+底层类型通常可以根据枚举值本身推断。
+例如，一组整数值对应某种整数类型，
+一组字符串值对应 `string`。
+
+XGo 简化了这些声明，同时在语义上保持与
+Go 的类型系统、抽象语法树（AST）和工具链兼容。
+
+## 设计
+
+XGo 引入了以下声明形式。
+
+```xgo
+type XXX const (
+    XXXEnum1 = expr1
+    XXXEnum2 = expr2
+    ...
+)
+```
+这会声明新的命名类型 `XXX`，其底层类型由块内的
+常量表达式**推断**得到，同时将
+`XXXEnum1`、`XXXEnum2` 等声明为 `XXX` 类型的命名常量。
+
+在语义上，它等价于以下 Go 代码。
+
+```go
+type XXX <inferred underlying type>
+
+const (
+    XXXEnum1 XXX = expr1
+    XXXEnum2 XXX = expr2
+    ...
+)
+```
+使用 XGo 写法时无需显式写出 `<inferred underlying type>`，
+也不必在每一行重复 `XXX`。
+
+## 语法
+
+```xgo
+type Identifier const (
+    Name1 [= Expr1]
+    Name2 [= Expr2]
+    ...
+)
+```
+- `Identifier` 成为一个新的命名类型。
+- 每个 `Name` 成为一个 `Identifier` 类型的常量。
+- `Expr` 遵循普通 `const` 声明的规则，支持
+  `iota` 以及省略表达式以沿用前一项表达式的写法。
+
+```xgo
+type Weekday const (
+    Sunday = iota
+    Monday
+    Tuesday
+    Wednesday
+    Thursday
+    Friday
+    Saturday
+)
+```
+这个例子的底层类型为 `int`（`iota` 的默认类型），
+等价的写法如下。
+
+```go
+type Weekday int
+
+const (
+    Sunday Weekday = iota
+    Monday
+    Tuesday
+    Wednesday
+    Thursday
+    Friday
+    Saturday
+)
+```
+## 底层类型推断
+
+编译器先按照 Go 的常量类型推断规则处理块内表达式，
+再取所得无类型常量的**默认类型**，
+据此确定 `XXX` 的底层类型。
+
+| 常量表达式 | 推断出的底层类型 |
+|----------------------------------------|---------------------------|
+| 无类型整数常量（`0`、`iota`） | `int` |
+| 无类型字符串常量（`"a"`） | `string` |
+| 无类型布尔常量（`true`） | `bool` |
+| 无类型浮点常量（`1.5`） | `float64` |
+| 无类型 rune 常量（`'a'`） | `rune`（`int32`） |
+
+### 规则
+
+1. **所有表达式的默认类型必须相同**。例如在同一个块中
+   混用字符串与整数常量会导致编译错误。
+
+   ```xgo
+   type Bad const (
+       A = 1
+       B = "x" // error: inconsistent constant types in enum declaration
+   )
+   ```
+
+2. **`iota` 默认使用 `int`**，与 Go 的行为一致。
+
+3. **允许显式类型转换**。如果需要使用其他底层类型，
+   可以按以下方式声明。
+
+   ```xgo
+   type SmallEnum const (
+       A = int8(1)
+       B = int8(2)
+   )
+   // underlying type: int8
+   ```
+
+   此时，所有表达式必须转换为同一类型，或默认具有同一类型，
+   并遵循 Go 通常的转换与类型规则。
+
+4. **存在歧义时由第一个表达式确定类型**，
+   后续表达式必须与之保持一致。
+   这与 Go 中基于 `iota` 的常量块只在首项指定类型时
+   所遵循的规则相符。
+
+## 示例
+
+### 整数枚举（最常见的情形）
+
+```xgo
+type Color const (
+    Red   = iota
+    Green
+    Blue
+)
+```
+等价的 Go 写法：
+
+```go
+type Color int
+
+const (
+    Red   Color = iota
+    Green
+    Blue
+)
+```
+### 字符串枚举
+
+```xgo
+type LogLevel const (
+    Debug = "debug"
+    Info  = "info"
+    Warn  = "warn"
+    Error = "error"
+)
+```
+等价的 Go 写法：
+
+```go
+type LogLevel string
+
+const (
+    Debug LogLevel = "debug"
+    Info  LogLevel = "info"
+    Warn  LogLevel = "warn"
+    Error LogLevel = "error"
+)
+```
+### 布尔枚举
+
+```xgo
+type Toggle const (
+    Off = false
+    On  = true
+)
+```
+等价的 Go 写法：
+
+```go
+type Toggle bool
+
+const (
+    Off Toggle = false
+    On  Toggle = true
+)
+```
+### 用显式表达式声明位标志枚举
+
+```xgo
+type Permission const (
+    Read    = 1 << iota
+    Write
+    Execute
+)
+```
+等价的 Go 写法：
+
+```go
+type Permission int
+
+const (
+    Read    Permission = 1 << iota
+    Write
+    Execute
+)
+```
+## 兼容性
+
+- 这是源码层面新增的语法简写。编译器将
+  `type XXX const (...)` 展开为等价的 Go
+  `type` 和 `const` 声明后，得到的 Go AST
+  与手写这两项 Go 声明所得的结构相同。
+- 类型检查、`go vet`、反射、JSON 序列化，
+  以及通过 `go generate` 生成 `String()` 或 `Stringer` 实现等
+  下游工具可以照常使用，因为生成的类型和常量
+  都是普通的 Go 声明。
+- 已有 Go 代码中传统的两段式声明仍然有效，
+  其行为不受影响。

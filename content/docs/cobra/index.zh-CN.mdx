@@ -1,0 +1,46 @@
+---
+title: 用 Cobra xcmd 编写命令行工具
+description: 用 Cobra xcmd 类文件定义 version 子命令和布尔选项。
+---
+
+创建一个带 `version` 子命令的命令行程序。Cobra xcmd 会为每个 `_cmd.gox` 类文件注册一个命令。
+
+## 创建命令
+
+安装 XGo，然后在空目录中运行以下命令。
+
+```sh
+xgo mod init hellocli
+go get github.com/goplus/cobra@v1.10.8
+```
+
+在 `go.mod` 中，把 Cobra 依赖的注释设为 `//xgo:class`，让 XGo 加载其类框架。
+
+将以下内容保存为 `version_cmd.gox`。`flag` 字段标签定义选项 `--verbose`，其简写是 `-v`。`short` 指令设置帮助文本。
+
+```xgo
+var Verbose bool `flag:"verbose, short: v, usage: print verbose information"`
+
+short "print the example version"
+
+run => {
+    echo "version 1.0", "verbose:", Verbose
+}
+```
+
+运行该命令。
+
+```sh
+xgo mod tidy
+xgo run . version -v
+```
+
+```text
+version 1.0 verbose: true
+```
+
+使用 `xgo run . --help` 查看已注册的命令。使用 `xgo install .` 安装该模块的可执行文件，即可在其他目录中运行 `hellocli version`。请确保 Go 安装可执行文件的目录位于 `PATH` 中。
+
+## 添加参数和子命令
+
+处理程序需要位置参数时，使用 `run args => { ... }`。要定义嵌套命令 `mod init`，在 `mod_cmd.gox` 中定义父命令，在 `mod_init_cmd.gox` 中定义子命令。

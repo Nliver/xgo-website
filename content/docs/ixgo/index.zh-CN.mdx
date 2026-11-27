@@ -3,9 +3,9 @@ title: 使用 iXGo 解释器运行 XGo
 description: 执行脚本、在交互式终端中求值，并在 Go 程序中嵌入解释器。
 ---
 
-先用 iXGo 运行一个计算平方的脚本，再把解释器嵌进 Go 程序。本页所用的版本支持 Go 1.26 和 1.27。
+使用 iXGo 解释执行 XGo 文件，再在交互式读取、求值和打印循环（REPL）中试用表达式。本页所用的版本支持 Go 1.26 和 1.27。
 
-## 安装命令并运行脚本
+## 安装命令
 
 ```sh
 go install github.com/goplus/ixgo/cmd/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
@@ -13,6 +13,8 @@ ixgo version
 ```
 
 若找不到命令，检查 `go env GOBIN`。它有值时，将该目录加入 `PATH`；它为空时，使用 `go env GOPATH` 返回目录下的 `bin`。
+
+## 运行 XGo 文件
 
 在空目录创建 `squares.xgo`。
 
@@ -44,7 +46,7 @@ go mod init example.com/ixgoembed
 go get github.com/goplus/ixgo@61dfa28e05d30b5e60b3cfa83b3c79e870cd629e
 ```
 
-将程序保存为 `main.go`。空白导入 `xgobuild` 会注册处理 XGo 源码的构建器。
+将程序保存为 `main.go`。空白导入 `xgobuild` 会注册 XGo 构建器，使 `RunFile` 可以处理 `.xgo` 源码。
 
 ```go
 package main
@@ -64,4 +66,4 @@ func main() {
 
 执行 `go mod tidy` 和 `go run .`，预期输出为 `Hello from embedded XGo`。解释执行的 Go 源码如果用到了标准库，应注册相应导出。例如，导入 `fmt` 的被解释程序可以在宿主程序中使用空白导入 `github.com/goplus/ixgo/pkg/fmt`。
 
-要从宿主程序调用脚本返回的闭包，或调整递归函数的记忆化行为，可以继续阅读[适配器与记忆化](/zh-CN/docs/ixgo/embedding)。
+[适配器与记忆化](/zh-CN/docs/ixgo/embedding)介绍如何添加直接调用适配器、从被解释的程序向 Go 返回回调，以及如何按解释器上下文控制记忆化。

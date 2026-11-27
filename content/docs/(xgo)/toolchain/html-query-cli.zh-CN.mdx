@@ -3,7 +3,7 @@ title: 用 hdq 查询 HTML
 description: 从 XGo 源码构建基于 DQL 的 hdq 命令，并用 JSON 获取网页链接。
 ---
 
-使用 Go 1.27 或更新版本，从本页记录的 XGo 源码版本构建独立的 `hdq` 命令。它使用 DQL。如果要迁移旧版 HDQ 库，参阅 [HDQ 迁移指南（英文）](/docs/ecosystem/hdq)。
+使用 Go 1.27 或更新版本，从本页记录的 XGo 源码版本构建独立的 `hdq` 命令。它使用 DQL。如果要迁移旧版 HDQ 库，参阅 [HDQ 迁移指南](/zh-CN/docs/ecosystem/hdq)。
 
 ```sh
 cd cmd
@@ -106,4 +106,4 @@ Example documentation
 
 转换函数接收输入和一个 `html.NodeSet`，并返回一个值。示例用一个结构体返回标题及其错误。读取该结果前，先检查 `From` 返回的错误。在本页使用的版本中，查询未注册的名称会得到 `fetcher.ErrUnknownFetchType`。请在注册转换器的同一 Go 进程中调用它。
 
-选择器语法和更多 HTML 示例见 [DQL 参考（英文）](/docs/reference/dql#html)。
+选择器语法和更多 HTML 示例见 [DQL 参考](/zh-CN/docs/reference/dql#html)。

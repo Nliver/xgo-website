@@ -1,0 +1,30 @@
+---
+title: 将 HDQ 查询迁移到 DQL
+description: 迁移已弃用的 HDQ 包时，使用内置 DQL 收集 HTML 链接目标。
+---
+
+HDQ 是 XGo 以前的 HTML 查询包，上游仓库已将其标记为弃用。替代方案 DQL 属于 XGo 标准库。可以从本地 HTML 字符串提取链接目标，无须发送网络请求。
+
+要了解 XGo 主仓库提供的 `hdq` 可执行文件，请参阅[用 hdq 命令查询 HTML](/zh-CN/docs/toolchain/html-query-cli)。
+
+## 提取链接
+
+将示例保存为 `list-links.xgo`。
+
+```xgo title="list-links.xgo"
+doc := html`<main><a href="/docs">Docs</a><a href="/blog">Blog</a></main>`!
+for link in doc.**.a {
+    echo link.$href
+}
+```
+
+运行 `xgo run list-links.xgo`。
+
+```text
+/docs
+/blog
+```
+
+`html` 字面量会解析标记内容。查询 `**.a` 选择任意深度的锚元素，再由 `$href` 选择它们的 `href` 属性。如果文档中的某些锚元素可能缺少该属性，可以用 `link.$href?:""` 在出错时取默认值，然后跳过空字符串。
+
+查询规则见 [DQL 参考](/zh-CN/docs/reference/dql)，另可参阅[数据与文本示例](/zh-CN/docs/examples/data-and-text)中的链接查询示例。

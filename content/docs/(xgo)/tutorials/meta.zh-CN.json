@@ -8,6 +8,7 @@
     "process-collections",
     "exact-arithmetic",
     "structs-and-methods",
-    "organize-projects"
+    "organize-projects",
+    "concurrency"
   ]
 }

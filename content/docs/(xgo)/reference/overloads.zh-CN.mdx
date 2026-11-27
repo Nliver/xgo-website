@@ -1,0 +1,330 @@
+---
+title: "重载"
+description: "介绍 XGo 的函数、方法和运算符重载及其 Go 编码。"
+---
+
+## 函数重载
+
+用内联函数字面量声明重载函数，参见 `overloadfunc1/add.xgo`。
+
+```xgo
+func add = (
+	func(a, b int) int {
+		return a + b
+	}
+	func(a, b string) string {
+		return a + b
+	}
+)
+
+echo add(100, 7)
+echo add("Hello", "World")
+```
+用标识符引用现有函数来声明重载，参见 `overloadfunc2/mul.xgo`。
+
+```xgo
+func mulInt(a, b int) int {
+	return a * b
+}
+
+func mulFloat(a, b float64) float64 {
+	return a * b
+}
+
+func mul = (
+	mulInt
+	mulFloat
+)
+
+echo mul(100, 7)
+echo mul(1.2, 3.14)
+```
+### 重载如何解析
+
+XGo 为每个重载名称维护一组按声明顺序排列的原型。在调用处，编译器依次尝试各个原型，并绑定到实参类型匹配的**第一个**原型。
+
+编译器按顺序选取首个匹配项，无需为各候选项排名或消除歧义。调整原型的声明顺序即可控制匹配的优先级。
+
+### 方法重载
+
+下面的示例展示如何重载方法，参见 `overloadmethod/method.xgo`。
+
+```xgo
+type foo struct {
+}
+
+func (a *foo) mulInt(b int) *foo {
+	echo "mulInt"
+	return a
+}
+
+func (a *foo) mulFoo(b *foo) *foo {
+	echo "mulFoo"
+	return a
+}
+
+func (foo).mul = (
+	(foo).mulInt
+	(foo).mulFoo
+)
+
+var a, b *foo
+var c = a.mul(100)
+var d = a.mul(c)
+```
+### 一元运算符重载
+
+下面的示例展示如何重载一元运算符，参见 `overloadop1/overloadop.xgo`。
+
+```xgo
+type foo struct {
+}
+
+func -(a foo) (ret foo) {
+	echo "-a"
+	return
+}
+
+func ++(a foo) {
+	echo "a++"
+}
+
+var a foo
+var b = -a
+a++
+```
+### 二元运算符重载
+
+下面的示例展示如何重载二元运算符，参见 `overloadop1/overloadop.xgo`。
+
+```xgo
+type foo struct {
+}
+
+func (a foo) * (b foo) (ret foo) {
+	echo "a * b"
+	return
+}
+
+func (a foo) != (b foo) bool {
+	echo "a != b"
+	return true
+}
+
+var a, b foo
+var c = a * b
+var d = a != b
+```
+二元运算符通常需要处理多个类型的组合。下面是这种情况的示例，参见 `overloadop2/overloadop.xgo`。
+
+```xgo
+type foo struct {
+}
+
+func (a foo) mulInt(b int) (ret foo) {
+	echo "a * int"
+	return
+}
+
+func (a foo) mulFoo(b foo) (ret foo) {
+	echo "a * b"
+	return
+}
+
+func intMulFoo(a int, b foo) (ret foo) {
+	echo "int * b"
+	return
+}
+
+func (foo).* = (
+	(foo).mulInt
+	(foo).mulFoo
+	intMulFoo
+)
+
+var a, b foo
+var c = a * 10
+var d = a * b
+var e = 10 * a
+```
+### 类型重载
+
+待补充。
+
+### 类型转换重载
+
+待补充。
+
+---
+
+## 重载如何编码成 Go
+
+Go 是 XGo 的编译目标，两者的关系类似 TypeScript 与 JavaScript。每项 XGo 语言构造都必须能表示为有效的标准 Go 代码。重载展示了这套转换过程。
+
+### 函数重载的两种编码
+
+XGo 根据重载函数的定义方式选用两种 Go 编码。
+
+**内联字面量使用数字后缀 `__N`**
+
+如果重载声明用匿名函数字面量列出各个重载项，编译器会给每一项分配一个序号，并分别生成顶层 Go 函数，使用 `__0`、`__1`、`__2` 等后缀。
+
+```xgo
+// XGo source
+func add = (
+    func(a, b int) int       { return a + b }
+    func(a, b string) string { return a + b }
+)
+```
+```go
+// Generated Go
+func add__0(a, b int) int {
+    return a + b
+}
+
+func add__1(a, b string) string {
+    return a + b
+}
+```
+生成的都是普通 Go 函数。`go vet`、`go test` 和其他静态分析工具可按 Go 代码处理这些函数。
+
+**标识符形式使用 `XGoo_` 常量**
+
+如果重载项引用已经命名的函数，编译器会原样生成这些函数，并用一个字符串常量记录重载组包含哪些成员。
+
+```xgo
+// XGo source
+func mul = (
+    mulInt
+    mulFloat
+)
+```
+```go
+// Generated Go
+func mulInt(a, b int) int            { return a * b }
+func mulFloat(a, b float64) float64  { return a * b }
+
+const XGoo_mul = "mulInt,mulFloat"
+```
+支持 XGo 的工具读取这个包时，可以根据 `XGoo_` 前缀识别重载组 `mul`，并得知它包括 `mulInt` 和 `mulFloat`。普通 Go 工具可以直接处理包含该常量的代码。
+
+### 方法重载中的点号前缀
+
+方法重载沿用函数重载的两种编码。`XGoo_` 常量值中的方法引用带有点号前缀，以区分方法和包级函数。`.mulInt` 表示 `foo.mulInt`，也就是接收者类型的方法。`intMulFoo` 这样的名称则表示包级函数。
+
+```xgo
+// XGo source
+func (foo).mul = (
+    (foo).mulInt
+    (foo).mulFoo
+)
+```
+```go
+// Generated Go
+func (a *foo) mulInt(b int) *foo  { ... }
+func (a *foo) mulFoo(b *foo) *foo { ... }
+
+const XGoo_foo_mul = ".mulInt,.mulFoo"
+```
+常量名采用 `XGoo_<TypeName>_<MethodName>` 的格式，把该重载限定在它的接收者类型上。各重载项开头的 `.` 表示它是 `foo` 上的方法。
+
+> **转义规则**。如果 `<TypeName>` 或 `<MethodName>` 包含下划线，整个常量名中的分隔符都使用双下划线，即 `XGoo__<TypeName>__<MethodName>`。这样可以明确分辨名称的各组成部分。
+
+### 运算符重载的 `XGo_` 名称和映射表
+
+Go 没有内置的运算符重载机制，所以 XGo 为每个运算符指定一个带 `XGo_` 前缀的名称。运算符符号无法直接作为 Go 标识符，这些名称可以用作有效的 Go 函数名。
+
+**二元运算符名称表**
+
+| 运算符 | `XGo_` 名称 | 运算符 | `XGo_` 名称 |
+|----------|-------------------|----------|----------------------|
+| `+`      | `XGo_Add`         | `+=`     | `XGo_AddAssign`      |
+| `-`      | `XGo_Sub`         | `-=`     | `XGo_SubAssign`      |
+| `*`      | `XGo_Mul`         | `*=`     | `XGo_MulAssign`      |
+| `/`      | `XGo_Quo`         | `/=`     | `XGo_QuoAssign`      |
+| `%`      | `XGo_Rem`         | `%=`     | `XGo_RemAssign`      |
+| `&`      | `XGo_And`         | `&=`     | `XGo_AndAssign`      |
+| `\|`     | `XGo_Or`          | `\|=`    | `XGo_OrAssign`       |
+| `^`      | `XGo_Xor`         | `^=`     | `XGo_XorAssign`      |
+| `<<`     | `XGo_Lsh`         | `<<=`    | `XGo_LshAssign`      |
+| `>>`     | `XGo_Rsh`         | `>>=`    | `XGo_RshAssign`      |
+| `&^`     | `XGo_AndNot`      | `&^=`    | `XGo_AndNotAssign`   |
+| `==`     | `XGo_EQ`          | `!=`     | `XGo_NE`             |
+| `<`      | `XGo_LT`          | `<=`     | `XGo_LE`             |
+| `>`      | `XGo_GT`          | `>=`     | `XGo_GE`             |
+| `&&`     | `XGo_LAnd`        | `\|\|`   | `XGo_LOr`            |
+| `<-`     | `XGo_Send`        | `->`     | `XGo_PointTo`        |
+| `<>`     | `XGo_PointBi`     |          |                      |
+
+**一元运算符名称表**
+
+| 运算符 | `XGo_` 名称 |
+|----------|--------------|
+| `++`     | `XGo_Inc`    |
+| `--`     | `XGo_Dec`    |
+| `-`      | `XGo_Neg`    |
+| `+`      | `XGo_Dup`    |
+| `^`      | `XGo_Not`    |
+| `!`      | `XGo_LNot`   |
+| `<-`     | `XGo_Recv`   |
+
+**用于单一类型的运算符重载**
+
+如果二元运算符只处理一种类型，它会转换成一个方法，方法名采用该运算符对应的 `XGo_` 名称。
+
+```xgo
+// XGo source
+func (a foo) * (b foo) (ret foo) { ... }
+func (a foo) != (b foo) bool     { ... }
+```
+```go
+// Generated Go
+func (a foo) XGo_Mul(b foo) (ret foo) { ... }
+func (a foo) XGo_NE(b foo) bool       { ... }
+```
+一元运算符也会转换成方法，且该方法没有参数。
+
+```xgo
+// XGo source
+func -(a foo) (ret foo) { ... }
+func ++(a foo)          { ... }
+```
+```go
+// Generated Go
+func (a foo) XGo_Neg() (ret foo) { ... }
+func (a foo) XGo_Inc()           { ... }
+```
+**支持多种类型组合的二元运算符**
+
+如果运算符需要处理多种类型的组合，例如 `foo * int`、`foo * foo`、`int * foo`，则采用标识符形式的重载编码。`XGoo_` 常量名的方法部分采用运算符的 `XGo_` 名称。各重载项仍用 `.method` 表示方法，用不带点号的名称表示包级函数。
+
+```xgo
+// XGo source
+func (foo).* = (
+    (foo).mulInt
+    (foo).mulFoo
+    intMulFoo
+)
+```
+```go
+// Generated Go
+func (a foo) mulInt(b int) (ret foo)  { ... }  // foo * int
+func (a foo) mulFoo(b foo) (ret foo)  { ... }  // foo * foo
+func intMulFoo(a int, b foo) (ret foo){ ... }  // int * foo
+
+const XGoo__foo__XGo_Mul = ".mulInt,.mulFoo,intMulFoo"
+```
+`XGoo__foo__XGo_Mul` 声明了类型 `foo` 上的重载 `*` 运算符，即 `XGo_Mul`。由于 `XGo_Mul` 包含下划线，分隔符统一使用双下划线。`.mulInt` 与 `.mulFoo` 是 `foo` 的方法，`intMulFoo` 是处理 `int * foo` 的包级函数。
+
+### 两种编码方式小结
+
+在生成的 Go 代码中，XGo 的函数、方法和运算符重载都由以下两种编码表示。
+
+| 编码方式 | 使用场景 | 示例 |
+|---|---|---|
+| `__N` 数字后缀 | 内联函数字面量形式的重载项 | `add__0`、`add__1` |
+| `XGoo_` 字符串常量 | 用标识符组成的函数、方法和运算符重载组 | `XGoo_mul`、`XGoo_foo_mul`、`XGoo__foo__XGo_Mul` |
+
+在 `XGoo_` 常量值中，`.name` 表示接收者类型上的方法，`name` 表示包级函数。
+
+两种编码都能直接使用现有的 Go 编译器和运行时。XGo 编译器、`xgofmt` 和语言服务器等支持 XGo 的工具读取常量来还原重载组。Go 工具看到的都是普通函数和字符串常量，可以照常处理。

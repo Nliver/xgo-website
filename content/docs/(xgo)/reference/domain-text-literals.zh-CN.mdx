@@ -1,0 +1,229 @@
+---
+title: 领域文本字面量
+description: XGo 上游参考文档中的领域文本字面量。
+---
+
+XGo 的领域文本字面量可以把专用语言直接嵌入源码，并支持语法高亮与类型检查。通用程序可以直接表达领域概念，更便于阅读和维护。
+
+## 概览
+
+使用领域文本字面量，可以直接书写 JSON、XML、正则表达式或自定义领域专用语言（DSL），并保留编译检查和编辑器支持。
+
+**基本语法**
+
+```xgo
+result := domainTag`content`
+```
+**带参数的写法**
+
+```xgo
+result := domainTag`> param1, param2
+content
+`
+```
+后缀 `!` 会在解析失败时引发 panic，适用于预期始终有效的字面量。
+
+## 设计灵感
+
+这一写法借鉴了 **Markdown 代码围栏**。Markdown 用三个反引号和语言标识符标记特定语言的代码块，例如在围栏开头标注 json。XGo 用标签后接反引号的形式嵌入领域文本。熟悉 Markdown 的读者可以沿用已有经验，同时在程序中清楚区分不同语言的语义。
+
+## 主要特性
+
+- **类型安全**：可在编译时发现类型错误。
+- **语法高亮**：编辑器可以识别并高亮嵌入语言。
+- **可读性**：领域代码与使用它的位置相邻。
+- **可维护性**：比逐段拼接字符串更容易修改和重构。
+- **工具支持**：格式化工具和集成开发环境可以理解文本的领域语义。
+
+## 内置格式
+
+XGo 原生支持多种领域文本格式。
+
+### 文本处理语言（tpl）
+
+TPL 是基于文法的文本处理语言。与正则表达式相比，规则容易阅读和组合，适合定义解析器和文本处理器。
+
+```xgo
+grammar := tpl`
+expr = term % ("+" | "-")
+term = INT % ("*" | "/")
+`!
+
+result := grammar.parseExpr("10+5*2", nil)
+echo result
+```
+更多用法见 TPL 文档。
+
+### JSON
+
+在代码中直接解析和验证 JSON 结构。
+
+```xgo
+config := json`{
+	"server": "localhost",
+	"port": 8080,
+	"features": ["auth", "logging"]
+}`!
+
+echo config.port
+```
+### XML
+
+直接处理 XML 文档。
+
+```xgo
+doc := xml`
+<configuration>
+	<database>
+		<host>localhost</host>
+		<port>5432</port>
+	</database>
+</configuration>
+`!
+```
+### CSV
+
+在代码中定义表格数据。
+
+```xgo
+data := csv`
+name,age,city
+Alice,30,NYC
+Bob,25,SF
+`!
+```
+### HTML
+
+嵌入并解析 HTML，需要 `golang.org/x/net/html`。
+
+```xgo
+import "golang.org/x/net/html"
+
+page := html`
+<html>
+	<body>
+		<h1>Welcome</h1>
+		<p>Domain-specific literals in action</p>
+	</body>
+</html>
+`!
+```
+### 正则表达式
+
+使用领域文本可以更清楚地书写正则表达式。XGo 支持标准正则表达式和 POSIX 正则表达式。
+
+```xgo
+pattern := regexp`^[a-z]+\[[0-9]+\]$`!
+
+if pattern.matchString("item[42]") {
+	echo "Match found"
+}
+
+// POSIX variant
+posixPattern := regexposix`[[:alpha:]]+`!
+```
+## 实现细节
+
+编译器会将领域文本字面量转换成对相应包的 `New()` 函数的调用。例如：
+
+```xgo
+json`{"key": "value"}`
+// Compiles to:
+json.New(`{"key": "value"}`)
+```
+这种设计便于复用现有 Go 包。`domainTag` 表示一个包，该包必须提供包级函数 `func New(string)`，返回类型不限。
+
+## 创建自定义格式
+
+要接入自己的领域语言，可以实现一个提供包级 `New(string)` 函数的包。
+
+```go
+// Package sql provides SQL query literals
+package sql
+
+type Query struct {
+	text string
+}
+
+func New(query string) (*Query, error) {
+	// Validate and parse SQL
+	if err := validateSQL(query); err != nil {
+		return nil, err
+	}
+	return &Query{text: query}, nil
+}
+```
+**使用方式**
+
+```xgo
+import "myproject/sql"
+
+query := sql`
+SELECT id, name, email 
+FROM users 
+WHERE active = true
+`!
+```
+## 工具如何理解领域文本
+
+除了简化写法，领域文本字面量还让 XGo 工具可以识别嵌入文本的语义。这种信息可以用于以下任务。
+
+- **格式化工具**（例如 `xgo fmt`）可以同时格式化 XGo 代码和受支持的领域文本。
+- **IDE 插件**可以为识别出的领域文本提供语法高亮和其他编辑功能。
+- **静态分析工具**可以在构建时检查领域文本。
+- **文档生成器**可以提取嵌入的领域内容并生成说明。
+
+## 使用建议
+
+1. **预期始终有效的静态字面量可加 `!` 后缀**，让解析失败及时暴露。
+2. **对可能验证失败的动态内容显式处理错误。**
+3. **每段字面量聚焦一个领域任务**，便于维护。
+4. **为嵌入语言配置编辑器**，启用相应的语法高亮。
+5. **为自定义格式编写说明**，让其他开发者了解其用法。
+
+## 错误处理
+
+省略 `!` 后缀时，可以接收并处理领域字面量返回的错误。
+
+```xgo
+query, err := sql`SELECT * FROM ${table}`
+if err != nil {
+	return fmt.Errorf("invalid query: %w", err)
+}
+```
+加上 `!` 后缀时，无效字面量将引发 panic。
+
+```xgo
+// This panics if the JSON is malformed
+data := json`{"invalid": }`!
+```
+---
+
+## 历史背景
+
+2024 年初，社区有人提议为 XGo 增加 JSX 语法支持。JSX 在前端尤其是 React 应用中已经得到广泛使用，但把该语法直接加入 XGo 的收益当时尚不明确，提案因此暂时搁置。
+
+后来，XGo Mini Spec 项目需要支持文本处理语言 TPL 的语法。这个具体需求促使项目重新考虑如何在 XGo 中统一表达领域记法。
+
+### 领域文本字面量的设计理念
+
+语言设计讨论中常有人认为，**领域专用语言（DSL）**难以与通用语言竞争。然而许多领域语言一直活跃在各自的应用场景中。
+
+- **界面描述**：HTML、JSX。
+- **配置与数据表示**：JSON、YAML、CSV。
+- **文本语法表示**：类似 EBNF 的文法（包括 TPL 语法）、正则表达式。
+- **文档格式**：Markdown、DOCX、HTML。
+
+这些领域语言通常不具备图灵完备性，也缺少通用语言的完整功能，例如输入输出、函数定义和完整的流程控制结构。
+
+它们和通用语言通常相互补充。大多数主流语言通过官方支持或社区库与这些领域语言交互。
+
+“领域文本字面量”这一名称强调了这种互补关系：这些专用文本格式可以直接嵌入通用程序中。
+
+### 语法的演变
+
+项目讨论过多种写法，最终从 Markdown 的代码围栏获得灵感。最初考虑完全沿用 Markdown 语法，但这样会妨碍把 XGo 代码作为领域文本嵌入 Markdown 文档，影响两者的互操作性。现有设计保留了熟悉的书写方式，同时兼顾两种格式的兼容性。
+
+---
+
+需要处理多种专用格式的项目可以直接利用这一机制。它让领域语言在 XGo 代码中有明确的位置，并有助于编写清晰、安全、易于维护的程序。

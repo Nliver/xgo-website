@@ -1,0 +1,110 @@
+---
+title: YAP 路由、HTTP 测试和 YDB
+description: 使用 YAP 提供 HTML 和 JSON，用 yaptest 测试路由，并用 YDB 查询内存中的 SQLite 数据库。
+---
+
+创建一个带 HTML 首页和 JSON 端点的 YAP 服务器。各处理程序的文件名决定其 HTTP 方法和请求路径。
+
+## 创建 YAP 项目
+
+安装 XGo，然后在新目录中运行以下命令。
+
+```sh
+xgo mod init example.com/yaphello
+go get github.com/goplus/yap@1caa1d123c9ab24ffec95d0d8cbb472d6c87862d
+```
+
+在 `go.mod` 中，将 YAP 依赖的注释改为 `//xgo:class`，让 XGo 加载其类框架。
+
+将首页处理程序保存为 `get.yap`，对应 `GET /`。
+
+```xgo
+html `<html><body>Hello, YAP!</body></html>`
+```
+
+将带参数的处理程序保存为 `get_p_#id.yap`，对应 `GET /p/:id`。YAP 通过 `${id}` 提供路由参数。
+
+```xgo
+json {
+    "id": ${id},
+}
+```
+
+启动服务器。
+
+```sh
+xgo mod tidy
+xgo run .
+```
+
+打开另一个终端，检查两个响应。
+
+```sh
+curl -fsS http://localhost:8080/
+curl -fsS http://localhost:8080/p/123
+```
+
+第一个响应包含 `Hello, YAP!`，第二个包含 `{"id":"123"}`。在启动服务器的终端中按 Ctrl+C 停止服务器。
+
+## 使用 yaptest 检查路由
+
+在同一个项目中添加名为 `routes_ytest.gox` 的文件。
+
+```xgo
+mock "foo.com", new(AppV2)
+
+get "http://foo.com/p/123"
+ret 200
+json {
+    "id": "123",
+}
+```
+
+运行 `xgo test -v .`。测试通过模拟 HTTP 服务器检查状态码和 JSON 响应。要改用监听随机本地端口的真实 HTTP 服务，可将 `mock` 指令替换为 `testServer "foo.com", new(AppV2)`。
+
+## 模板和静态资源
+
+处理程序可以用 `yap "article", {"id": ${id}}` 按 Go 模板语法渲染 `yap/article_yap.html`。在模板中，通过 `{{.id}}` 访问传入的值。在 `main.yap` 中定义静态路由。比如用 `static "/foo", FS("public")` 在 `/foo` 下提供 `yap/public` 中的文件。
+
+## 使用 YDB 插入和查询一行数据
+
+YDB 类文件使用 `_ydb.gox` 后缀。请在独立目录中创建此示例。SQLite 驱动需要启用 cgo 的 Go 和 C 编译器。
+
+```sh
+xgo mod init example.com/ydbbooks
+go get github.com/goplus/yap@1caa1d123c9ab24ffec95d0d8cbb472d6c87862d
+```
+
+在 `go.mod` 中用 `//xgo:class` 标记 YAP 依赖。将以下内容保存为 `books_ydb.gox`。
+
+```xgo
+import _ "github.com/goplus/yap/ydb/sqlite3"
+
+type Book struct {
+    Id    string `CHAR(32) UNIQUE`
+    Title string
+}
+
+engine "sqlite3"
+table Book, "book v0.1.0"
+use "book"
+
+insert &Book{Id: "b1", Title: "A Field Guide"}
+
+var found Book
+query "id=?", "b1"
+ret &found
+
+echo found.Title
+```
+
+```sh
+xgo mod tidy
+xgo run .
+```
+
+```text
+A Field Guide
+```
+
+空白导入会注册 SQLite 引擎，其默认 YDB 数据源位于内存中。`table` 根据 `Book` 的字段创建表结构，`use` 选择当前使用的表。`query` 调用将 `"b1"` 绑定到占位符 `?`，`ret &found` 将返回行读入结构体。

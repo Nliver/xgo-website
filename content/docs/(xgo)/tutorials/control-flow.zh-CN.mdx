@@ -58,7 +58,7 @@ Total: 226
 
 索引从零开始。加一后可以得到适合展示的结果编号。`total += score` 会把当前分数加到累计总分中。
 
-如果只需要值，可以使用 `for score in scores`。关于切片的更多内容，请参阅[类型和值](/docs/reference/types)。
+如果只需要值，可以使用 `for score in scores`。关于切片的更多内容，请参阅[类型和值](/zh-CN/docs/reference/types)。
 
 ## 跳过值或结束循环
 
@@ -88,6 +88,8 @@ for score in scores {
 
 `continue` 跳过本轮剩余的语句，从下一轮继续。`break` 直接退出循环，因此程序不会处理最后的 `88`。在嵌套循环中，不带标签的 `break` 和 `continue` 在这里都作用于最内层循环。
 
-请参阅[for 语句参考](/docs/reference/for-loops)，了解数值范围、按条件筛选元素以及条件控制循环。
+请参阅[for 语句参考](/zh-CN/docs/reference/for-loops)，了解数值范围、按条件筛选元素以及条件控制循环。
 
-继续阅读[处理错误](/docs/tutorials/error-handling)，学习处理可能失败的操作。
+继续阅读[处理错误](/zh-CN/docs/tutorials/error-handling)，学习处理可能失败的操作。
+
+要用 `for` 循环接收来自另一个 goroutine 的值，请参阅[在 goroutine 之间传递值](/zh-CN/docs/tutorials/concurrency)。

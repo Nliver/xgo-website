@@ -1,0 +1,9 @@
+{
+  "title": "YAP",
+  "description": "处理 HTTP 路由、测试处理程序并查询数据库。",
+  "root": true,
+  "icon": "Server",
+  "pages": [
+    "index"
+  ]
+}

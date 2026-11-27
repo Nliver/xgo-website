@@ -3,22 +3,221 @@ title: 参与贡献
 description: 向 XGo 报告问题，并提出代码或文档改进建议。
 ---
 
-如果你想为 XGo 提交改动，请先阅读上游贡献指南。着手实现较大的改动前，先在 GitHub Issue 里讨论方案。除小修小补之外，指南要求把改动关联到已有的 Issue。
+欢迎参与 XGo 项目。你的贡献有助于持续改进这门语言。
 
-## 准备贡献
+参与 XGo 项目即表示同意遵守本页的[行为准则](/zh-CN/docs/contributing#行为准则)，共同为所有贡献者营造互相尊重、包容的环境。
 
-1. 阅读贡献指南和行为准则。
-2. 在 GitHub 上 Fork 仓库，并将 Fork 与上游同步。
-3. 为这项改动单独创建一个分支。
-4. 检查改动，并在提交信息末尾加上 `Signed-off-by` 签署行。
-5. 将分支推送到你的 Fork，再创建 Pull Request 供维护者审阅。
+本指南介绍参与 XGo 贡献的流程和建议，适合已了解 XGo 基础知识，并熟悉 Git 和 GitHub 协作流程的读者。
 
-上游指南解释了提交消息和开发者来源证明（DCO）的要求。签署提交前，请先阅读这些要求。
+## 提交代码前
 
-贡献流程和提交规范已完整列在本页下方。
+XGo 欢迎代码贡献。对于较大的改动，请先在 GitHub 的 Issue 中讨论。你可以新建 Issue，或在已有 Issue 中说明你愿意接手。也可以浏览已分类的 Issue，寻找合适的贡献机会。
 
-行为准则已完整列在本页下方。
+除极小的改动外，每项贡献都应关联到一个已有 Issue。尽早讨论方案，可以在写代码前验证设计、避免重复工作，并确认它符合语言和工具的目标。
 
-## 报告文档问题
+## 提交代码改动
 
-请提供页面 URL、使用的 XGo 版本、执行的命令和预期结果。附上一个简短的可复现程序，有助于维护者检查问题。
+下面以修正 `goplus/xgo` 仓库 `README.md` 中的拼写为例，将 “Github” 改成 “GitHub”，并向上游的 `main` 分支提交改动。
+
+### 第 1 步：Fork 上游仓库
+
+按 [GitHub 的 Fork 指南](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo)将上游仓库 Fork 到个人账号或你拥有的组织。
+
+以下示例假设 Fork 的地址为 `https://github.com/YOUR_USERNAME/gop.git`。
+
+### 第 2 步：克隆 Fork
+
+在终端中克隆 Fork，然后进入克隆得到的目录。后续命令都在该目录下执行。
+
+```sh
+git clone https://github.com/YOUR_USERNAME/gop.git
+cd gop
+```
+
+### 第 3 步：创建分支
+
+建议为每项贡献创建独立分支。改动合入上游目标分支后，可以删除该分支。
+
+按 [GitHub 的同步指南](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)将 Fork 的 `main` 同步到上游 `main`，再创建并切换到功能分支。
+
+```sh
+git checkout -b typo main
+```
+
+### 第 4 步：修改文件
+
+修改 `README.md`，将 “Github” 改为 “GitHub”。实际贡献中，这一步通常耗时最长。
+
+### 第 5 步：提交并推送
+
+将改动加入暂存区并创建带签署行的提交。
+
+```sh
+git add README.md
+git commit -s -m 'README.md: correct typo "Github" to "GitHub"'
+```
+
+示例中的提交消息较短。撰写正式提交时，可以参考本页的[提交消息](#提交消息)。
+
+将提交推送到 GitHub 上的 Fork。
+
+```sh
+git push --set-upstream origin typo
+```
+
+### 第 6 步：创建 Pull Request
+
+在上游仓库按 [GitHub 的说明](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)创建 Pull Request。请清楚说明改动内容和理由。
+
+Pull Request 的标题和说明通常取自 Fork 分支中的第一条提交消息，可以按需调整。
+
+### 第 7 步：处理审阅反馈
+
+上游维护者可能会提出后续改动或审阅意见。修改后，重复[第 5 步](#第-5-步提交并推送)。建议在提交时使用 `--amend`，将改动并入同一次提交，便于保持线性提交历史。
+
+```sh
+git add README.md
+git commit --amend
+```
+
+提交数量由贡献者自行决定。
+
+### 第 8 步：合并后清理分支
+
+Pull Request 通过 [Squash and merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits) 合并后，删除本地和 Fork 中的贡献分支。
+
+```sh
+git checkout main
+git branch -d typo
+git push origin -d typo
+```
+
+## 提交消息
+
+XGo 对提交消息有以下约定。完整示例如下。
+
+```text
+docs: revise contribution guidelines for clarity and inclusivity
+
+As our project grows, we want to ensure that our community understands
+how to contribute effectively and feels welcomed to do so. This update
+to our contribution guidelines aims to clarify the process and encourage
+more developers to get involved.
+
+Key changes include:
+  - Simplified the language to make the guidelines more accessible to
+    non-native English speakers and newcomers to open source.
+  - Included a step-by-step guide on setting up the development
+    environment, submitting a pull request, and what to expect during
+    the review process.
+  - Added a new section on community standards and code of conduct to
+    foster a respectful and inclusive community atmosphere.
+  - Provided clear examples of desirable contributions, such as bug
+    fixes, feature proposals, and documentation improvements.
+
+Fixes #123
+
+Signed-off-by: John Doe <john@example.com>
+```
+
+### 首行
+
+首行用一句简短的摘要说明提交的作用，通常以主要受影响的组件开头，例如包名。许多 Git 界面适合显示约 72 个字符，XGo 将这个长度作为建议。
+
+把英文摘要看作 “This commit modifies XGo to …” 的续写。动作描述用小写字母起首，直接说明提交的作用，采用简短短语。
+
+如有正文，请在摘要和正文之间空一行。
+
+### 正文
+
+正文使用完整句子和准确的标点，说明改动背景和动机。使用纯文本。对于性能改动，请提供相关信息，例如基准测试数据。
+
+为便于 Git 界面显示，正文每行尽量控制在约 72 个字符。ASCII 图、表格和长 URL 可以超出这一宽度。
+
+### 引用 Issue
+
+`Fixes #123` 将提交关联到 Issue 123。提交合入后，问题跟踪系统会自动将对应 Issue 标记为已解决。
+
+只解决 Issue 的一部分时，使用 `Updates #123`。合入这类提交后，Issue 仍然保持打开。
+
+同时解决多个 Issue 时，以逗号和空格分隔编号，例如 `Fixes #123, #456`。跨仓库引用使用完整的 `user/repo#number` 形式，如 `Fixes goplus/xgo#123`。
+
+### Signed-off-by
+
+每条提交消息的末尾都必须有符合[开发者来源证明（DCO）](https://developercertificate.org/)的 `Signed-off-by` 签署行，贡献才会被接受。
+
+## 行为准则
+
+## 我们的承诺
+
+作为成员、贡献者和领导者，我们承诺让每个人都能在不受骚扰的环境中参与社区，无论其年龄、体型、可见或不可见的残障、族裔、性别特征、性别认同与表达、经验水平、教育程度、社会经济地位、国籍、外貌、种族、宗教、性身份或性取向。
+
+我们承诺以有利于开放、友善、多元、包容和健康的社区的方式行事和交流。
+
+## 我们的标准
+
+有助于营造良好社区环境的行为包括以下做法。
+
+- 以同理心和善意对待他人。
+- 尊重不同的观点、立场和经历。
+- 提出建设性的意见，并以得体的态度接受反馈。
+- 为自己的错误承担责任，向受影响者道歉，并从中学习。
+- 兼顾个人和整个社区的利益。
+
+社区不可接受的行为包括以下做法。
+
+- 使用性暗示的语言或图像，或以任何方式对他人表达性关注或提出性邀约。
+- 挑衅，发表侮辱性或贬损性评论，以及进行人身或政治攻击。
+- 公开或私下骚扰他人。
+- 未经明确许可发布他人的私人信息，例如住址或电子邮箱地址。
+- 其他在专业环境中可被合理认为不当的行为。
+
+## 执行职责
+
+社区领导者负责解释可接受行为的标准。对于他们认定的不当、威胁性、冒犯性或有害行为，他们将采取恰当、公平的纠正措施。
+
+社区领导者有权且有责任删除、编辑或拒绝不符合准则的评论、提交、代码、Wiki 编辑、Issue 和其他贡献，并在适当时说明处理理由。
+
+## 适用范围
+
+本准则适用于所有社区空间，也适用于个人以官方身份在公共场合代表社区的情形，例如使用官方电子邮箱地址、通过官方社交媒体账号发布内容，或作为获委派的代表参加线上或线下活动。
+
+## 举报与处理
+
+遇到辱骂、骚扰或其他不可接受的行为，可以发送邮件至负责执行准则的社区领导者，邮箱为 conduct@xgo.dev。所有投诉都会得到及时、公平的审查与调查。
+
+每位社区领导者都有义务保护举报人的隐私和安全。
+
+## 处理指引
+
+社区领导者依据以下社区影响指引，确定违反行为准则时应采取的措施。
+
+### 1. 纠正
+
+**社区影响。** 使用不当语言，或者有其他被认为不专业或不受社区欢迎的行为。
+
+**处理措施。** 社区领导者会发出私下的书面警告，说明违规性质和行为不当的原因，并可能要求公开道歉。
+
+### 2. 警告
+
+**社区影响。** 一次事件或一系列行为构成违规。
+
+**处理措施。** 告知行为持续时将面临的后果，并在指定期限内禁止与相关人员互动，包括主动接触行为准则的执行者。禁令适用于社区空间以及社交媒体等外部渠道。违反禁令可能导致暂时或永久封禁。
+
+### 3. 暂时封禁
+
+**社区影响。** 严重违反社区标准，包括持续的不当行为。
+
+**处理措施。** 在指定期限内禁止以任何方式与社区互动或进行公开交流。这段期间也禁止与相关人员进行公开或私下互动，包括主动接触行为准则的执行者。违反禁令可能导致永久封禁。
+
+### 4. 永久封禁
+
+**社区影响。** 多次违反社区标准，包括持续的不当行为、骚扰个人，或攻击、贬损某类人群。
+
+**处理措施。** 永久禁止在社区内进行任何公开互动。
+
+## 署名与来源
+
+本行为准则改编自 [Contributor Covenant 2.0](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html)。社区影响指引参考了 [Mozilla 的行为准则执行分级](https://github.com/mozilla/diversity)。
+
+有关本准则的常见问题，请参阅 [FAQ](https://www.contributor-covenant.org/faq)。其他语言版本见 [Contributor Covenant 译文列表](https://www.contributor-covenant.org/translations)。

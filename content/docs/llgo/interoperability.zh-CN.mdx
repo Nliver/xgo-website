@@ -1,0 +1,107 @@
+---
+title: LLGo 互操作
+description: 通过 LLGo 从 XGo 调用 C、C++ 和 Python 库。
+---
+
+XGo 可以使用不同的 Go 编译器作为后端。上游项目介绍了 Go 官方编译器、[LLGo](/zh-CN/docs/llgo)和 [TinyGo](/zh-CN/docs/examples/tinygo-demos)。LLGo 是 XGo 团队维护的基于 LLVM 的 Go 编译器。其跨语言包可让 XGo 程序调用 C、C++ 和 Python 库。
+
+## 选择 LLGo
+
+使用 `-llgo` 选项初始化模块。
+
+```sh
+xgo mod init -llgo YourModulePath
+```
+
+生成的 `go.mod` 包含类似下方的编译器注解。
+
+```text
+module YourModulePath
+
+go 1.21 // llgo 1.0
+
+require github.com/goplus/lib v0.7.0
+```
+
+具体版本取决于安装的 XGo 和 LLGo。编译器注解指定 LLGo 及其版本，`go` 指令仍指定 Go 语言版本。
+
+## 生成并运行 Go 包
+
+安装 LLGo 并完成工具链检查。参阅 [LLGo 初次编译](/zh-CN/docs/llgo)。
+
+在 XGo 包目录中先生成 Go 源码，再直接调用 LLGo。
+
+```sh
+xgo go .
+llgo run .
+```
+
+在 LLGo v1.0.10 上，上游 C 示例中的 `XGO_GOCMD=llgo xgo run .` 会报错 `unsupported LLGo linker options`。分两步执行可以避免向 LLGo 传入 XGo 的链接器参数。
+
+## 调用 C
+
+导入 `c` 包。当 API 需要以空字符结尾的 C 字符串时，使用 C 字符串字面量。
+
+```xgo
+import "c"
+
+c.printf c"Hello world\n"
+```
+
+`c"Hello world\n"` 是 XGo 的 C 风格字符串字面量。完整源码见 [C 标准流示例](/zh-CN/docs/llgo/examples#c-标准流)。
+
+## 调用 C++ 库
+
+LLGo 通过 `cpp/std` 等导入路径提供 C++ 包。
+
+```xgo
+import "cpp/std"
+
+println std.str("Hello world").str
+```
+
+编译所需条件见 [C++ 示例](/zh-CN/docs/llgo/examples#读取-c-字符串)。
+
+## 调用 Python
+
+导入 `py/std`，使用 Python 字符串字面量调用 Python API。
+
+```xgo
+import "py/std"
+
+std.print py"Hello world"
+```
+
+完整源码见 [Python 示例](/zh-CN/docs/llgo/examples#调用-python-的-print)。
+
+## 处理 Python 数据
+
+`py` 包表示 Python 的值，`py/torch` 提供 PyTorch 绑定。
+
+```xgo
+import (
+    "py"
+    "py/std"
+    "py/torch"
+)
+
+data := py.list(
+    py.list(1.0, 2.0),
+    py.list(3.0, 4.0),
+)
+x := torch.tensor(data)
+std.print(x)
+```
+
+在 LLGo 使用的 Python 环境中安装 PyTorch。参阅 [PyTorch 示例](/zh-CN/docs/llgo/examples#构建-pytorch-张量)。
+
+## 完整应用示例
+
+仓库中有使用同一互操作层的完整程序。
+
+- 通过 `c/raylib` 打开程序窗口并绘图。[Raylib 示例](/zh-CN/docs/llgo/examples#打开原生-raylib-窗口)
+- 使用 `c/sqlite` 操作数据库。[SQLite 示例](/zh-CN/docs/llgo/examples#执行-sqlite-查询)
+- 通过 Python 计算算术平均值。[Statistics 示例](/zh-CN/docs/llgo/examples#调用-python-的-statistics)
+
+运行 LLGo 示例前，请安装工具链与示例所需的原生或 Python 库。支持的平台与环境配置见 [LLGo 项目文档](/zh-CN/docs/llgo)。
+

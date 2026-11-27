@@ -1,0 +1,404 @@
+---
+title: DQL 查询参考
+description: 遍历树形数据、读取属性、处理错误，并实现自己的 NodeSet。
+---
+
+DQL 是为 [XGo](/zh-CN/docs) 设计的结构化数据查询语言。JSON、XML、HTML、抽象语法树（AST）、文件系统以及其他可表示为树的数据都能使用同一套查询接口。
+
+
+## 概览
+
+DQL 提供简洁的链式查询语法。它与 XPath 或 CSS 选择器有相似之处，同时适配 XGo 的类型系统，支持惰性求值、错误传播和领域专用适配。
+
+```xgo
+// Find all hyperlinks in an HTML document
+for a in doc.**.a {
+    if url := a.$href; url != "" {
+        echo url
+    }
+}
+
+// Filter JSON records
+for animal in doc.animals.*@($class == "zebra") {
+    echo animal.$at
+}
+
+// Walk the file system
+for e in fs`.`.**.file.match("*.xgo") {
+    echo e.path
+}
+```
+
+---
+
+## 支持的数据
+
+任何能表示为树的数据都可以使用 DQL 查询。
+
+- **JSON**：查询字段、数组和嵌套对象。
+- **YAML**：数据模型与 JSON 相同。
+- **HTML / XML**：遍历元素、属性和文本。
+- **Go / XGo AST**：检查和筛选语法树。
+- **文件系统**：遍历目录，按名称或扩展名匹配文件。
+- **自定义树结构**：实现 NodeSet 接口即可接入。
+
+---
+
+## 核心概念
+
+### NodeSet
+
+DQL 查询的输入和输出都是 `NodeSet`（节点集合）。查询通常从整个文档的根节点 `doc` 开始。
+
+```xgo
+doc NodeSet  // root of the query
+```
+
+NodeSet 采用**惰性求值**。构造查询时先描述要执行的操作，实际遍历或读取数据时才执行。这样可以降低内存占用，并组合复杂查询。
+
+### 访问子节点
+
+使用点号逐层遍历树。
+
+```xgo
+ns.name          // direct child named "name"
+ns."elem-name"   // child with a hyphenated name
+ns.*             // all direct children (wildcard)
+ns.**.name       // all descendants named "name" (deep query)
+ns.**.*          // all descendants
+ns[0]            // first element of an array/list node (0-based)
+```
+
+### 筛选节点
+
+使用 `@` 筛选节点。
+
+```xgo
+ns@name          // keep only nodes named "name"
+ns@(condExpr)    // keep nodes matching a boolean expression
+ns@fn(args)      // keep nodes where fn(...) returns true
+```
+
+例如：
+
+```xgo
+doc.users.*@($role == "admin")         // users whose role attribute is "admin"
+doc.users.*@($age.int?:100 < 18)       // users under 18
+doc.**.div@hasClass("widget")          // all divs with a given CSS class
+```
+
+### 属性
+
+使用 `$` 读取节点数据。
+
+```xgo
+val := ns.$name              // single-value: zero value on error
+val, err := ns.$name         // dual-value: explicit error handling
+val := ns.$name!             // panic on error
+val := ns.$name?:"default"   // use a fallback value on error
+val := ns.$"attr-name"       // hyphenated attribute names
+```
+
+属性访问始终作用于 NodeSet 的**第一个节点**。要收集每个节点的某个属性，可以使用列表推导式。
+
+```xgo
+names := [user.$name for user in doc.users.*]
+```
+
+### 方法
+
+方法用于访问计算得到的数据或具有特定类型的数据。
+
+```xgo
+text := div.text             // call Text() method (single-value)
+text, err := div.text        // dual-value
+count := div.count?:0        // explicit default for numeric methods
+age, err := node.$age.int    // numeric methods require dual-value
+```
+
+带 `_` 前缀的方法对应带 `XGo_` 前缀的实现。
+
+```xgo
+node._text    // → node.XGo_text()
+node._count   // → node.XGo_count()
+node._first   // → node.XGo_first()
+```
+
+> **数值方法**：返回数值的方法（如 `int`、`float`、`count`）没有单值形式，以免默认的零值掩盖错误。请使用双值形式，或通过 `?:` 指定默认值。
+
+---
+
+## 语法速查
+
+| 语法 | 含义 |
+|---|---|
+| `ns.name` | 名为 `name` 的直接子节点 |
+| `ns."elem-name"` | 名称含特殊字符的直接子节点 |
+| `ns.*` | 全部直接子节点 |
+| `ns[n]` | 索引为 `n` 的子节点，从 0 开始计数 |
+| `ns.**.name` | 在后代中查找名为 `name` 的节点 |
+| `ns.**.*` | 所有后代节点 |
+| `ns@name` | 保留名为 `name` 的节点 |
+| `ns@(expr)` | 保留满足表达式的节点 |
+| `ns.$name` | 以单值形式读取属性，出错时返回零值 |
+| `val, err := ns.$name` | 以双值形式读取属性 |
+| `ns.$name!` | 读取属性，出错时引发 panic |
+| `ns.$name?:def` | 读取属性，出错时返回指定默认值 |
+| `ns.method(args)` | 调用方法 |
+| `ns._method` | 通过 `XGo_method()` 调用方法 |
+| `ns.all` / `ns._all` | 求出并缓存所有结果 |
+| `ns.one` / `ns._one` | 找到第一个匹配项即停止 |
+| `ns.single` / `ns._single` | 验证恰好有一个匹配项 |
+
+---
+
+## 查询示例
+
+### JSON
+
+```xgo
+doc := json`{
+    "animals": [
+        {"class": "gopher", "at": "Line 1"},
+        {"class": "armadillo", "at": "Line 2"},
+        {"class": "zebra", "at": "Line 3"},
+        {"class": "unknown", "at": "Line 4"},
+        {"class": "gopher", "at": "Line 5"},
+        {"class": "bee", "at": "Line 6"},
+        {"class": "gopher", "at": "Line 7"},
+        {"class": "zebra", "at": "Line 8"}
+    ]
+}`!
+
+// Iterate filtered records
+for animal in doc.animals.*@($class == "zebra") {
+    echo animal.$at
+}
+
+// Collect all names into a list
+names := [a.$class for a in doc.animals.*]
+
+// Access by index
+first := doc.animals[0].$class
+
+// Find unique admin (validate exactly one exists)
+user := doc.users.*@($role == "admin")._single
+name, err := user.$name
+```
+
+### HTML
+
+```xgo
+import "os"
+import "github.com/goplus/xgo/dql/html"
+
+doc := html.source(os.Args[1])
+
+// Print all hyperlink URLs
+for a in doc.**.a {
+    if url := a.$href; url != "" {
+        echo url
+    }
+}
+
+// Collect text from all paragraphs
+texts := [p.text for p in doc.**.p]
+
+// Find the first element with a specific class (early termination)
+widget := doc.**.*@($class == "widget").one
+id := widget.$id
+```
+
+### XGo 抽象语法树
+
+```xgo
+doc := xgo`
+x, y := "Hi", 123
+echo x
+print y
+`!
+
+// Find all expression statements
+stmts := doc.shadowEntry.body.list.*@(self.class == "ExprStmt")
+
+// Extract function names from call expressions
+for fn in stmts.x@(self.class == "CallExpr").fun@(self.class == "Ident") {
+    echo fn.$name
+}
+```
+
+### 文件系统
+
+```xgo
+// Walk current directory and print all .xgo files
+for e in fs`.`.**.file.match("*.xgo") {
+    echo e.path
+}
+
+// Collect all Go source file names
+names := [f.$name for f in root.**.file@match("*.go", $name)]
+```
+
+---
+
+## 错误处理
+
+DQL 与 XGo 的错误处理运算符配合使用。属性和方法访问遵循一致的双形式设计。
+
+### 两种访问形式
+
+大部分访问器支持下列两种形式。
+
+```xgo
+// Single-value: convenient, returns zero on error
+name := node.$name
+
+// Dual-value: explicit, lets you inspect the error
+name, err := node.$name
+```
+
+XGo 的错误处理运算符也可以直接用于 DQL 表达式。
+
+```xgo
+name := node.$name!           // panic if error
+name := node.$name?:"N/A"     // custom fallback
+```
+
+### NodeSet 的错误状态
+
+有些操作会返回内部携带错误的 NodeSet，例如 `_one` 找不到匹配项，或 `_single` 没有找到匹配项、找到多个匹配项时。错误会自动传播给后续的属性访问和方法调用。
+
+```xgo
+admin := doc.users.*@($role == "admin")._one
+
+// All of these reflect the internal ErrNotFound:
+name := admin.$name              // returns zero value
+name, err := admin.$name         // err == dql.ErrNotFound
+name := admin.$name!             // panics
+```
+
+空的 NodeSet 依然有效，遍历时循环体执行零次。
+
+```xgo
+for user in admin {
+    // Not reached if admin has ErrNotFound
+}
+```
+
+---
+
+## 性能与缓存
+
+DQL 默认使用**惰性求值**。只有遍历 NodeSet 或读取其中的数据时才执行查询。它节省内存，也便于组合查询，但每次访问同一个未缓存的 NodeSet 都会重新执行查询。
+
+可以使用缓存控制方法避免重复执行。
+
+### `_all` / `all`：缓存所有结果
+
+执行查询并缓存所有结果。适用于需要多次访问同一个 NodeSet 的情况。
+
+```xgo
+users := doc.users.*@($active == true)._all
+
+names  := [u.$name  for u in users]   // uses cache
+emails := [u.$email for u in users]   // uses cache, no re-query
+```
+
+### `_one` / `one`：找到首项即停止
+
+找到第一个匹配节点后停止。适用于确定或假设最多只有一个结果的情况。
+
+```xgo
+admin := doc.users.*@($role == "admin")._one
+name := admin.$name   // ErrNotFound if no match
+```
+
+### `_single` / `single`：验证唯一性
+
+验证是否恰好有一个匹配节点。有多个匹配节点时返回 `ErrMultipleEntities`。
+
+```xgo
+user := doc.users.*@($id == 12345)._single
+name, err := user.$name
+// err may be ErrNotFound or ErrMultipleEntities
+```
+
+### 选择缓存方法
+
+| 需求 | 方法 |
+|---|---|
+| 多次访问同一批结果 | `_all` |
+| 预期只有一个结果，希望尽早结束 | `_one` |
+| 要求恰好有一个结果 | `_single` |
+| 只遍历一次 | 使用默认的惰性求值，无需缓存 |
+
+---
+
+## 实现 NodeSet
+
+要让自定义数据源支持 DQL，需要在自己的 NodeSet 类型上实现以下接口。
+
+### 必需方法
+
+```go
+// Iteration
+func (ns NodeSet) XGo_Enum() iter.Seq[NodeSet]
+
+// Extract first node
+func (ns NodeSet) XGo_first() (NodeType, error)
+
+// Type conversion from raw sequence
+func NodeSet_Cast(seq func(func(NodeType) bool)) NodeSet
+```
+
+### 遍历子节点
+
+```go
+func (ns NodeSet) XGo_Elem(name string) NodeSet    // ns.name
+func (ns NodeSet) XGo_Child() NodeSet              // ns.*
+func (ns NodeSet) XGo_Index(index int) NodeSet     // ns[n]
+func (ns NodeSet) XGo_Any(name string) NodeSet     // ns.**.name  ("" = all)
+```
+
+### 筛选
+
+```go
+func (ns NodeSet) XGo_Select(name string) NodeSet  // ns@name
+// Conditional filters are compiler-generated using NodeSet_Cast
+```
+
+### 属性访问
+
+```go
+func (ns NodeSet) XGo_Attr__0(name string) ValueType          // single-value
+func (ns NodeSet) XGo_Attr__1(name string) (ValueType, error) // dual-value
+```
+
+### 缓存控制
+
+可以提供通用形式的方法（`XGo_all`、`XGo_one`、`XGo_single`），也可以使用领域专用形式（`All`、`One`、`Single`）。
+
+```go
+func (ns NodeSet) XGo_all()    NodeSet  // or All()
+func (ns NodeSet) XGo_one()    NodeSet  // or One()
+func (ns NodeSet) XGo_single() NodeSet  // or Single()
+```
+
+各个实现可以自行定义领域类型 `NodeType`、`ValueType` 和 `IndexType`。
+
+---
+
+## 标准错误
+
+`dql` 包定义了两个可直接判断的标准错误值。
+
+```go
+package dql
+
+var (
+    ErrNotFound         = errors.New("node not found")
+    ErrMultipleEntities = errors.New("multiple entities found, expected single")
+)
+```
+
+`_one` 在没有匹配项时返回相应错误，`_single` 在匹配项为零或多于一个时返回相应错误。这些错误会通过 NodeSet 传播给后续的属性访问和方法调用。

@@ -1,0 +1,32 @@
+---
+title: 使用 GSH 编写 Shell 脚本
+description: 从 XGo GSH 文件运行 Shell 命令，检查失败并捕获输出。
+---
+
+创建一个目录，并将目录名读回 XGo。GSH 使用内置的 `.gsh` 类文件扩展名，因此可以在没有模块文件的新建目录中用 XGo 运行脚本。示例会调用 Unix 的 `mkdir` 和 `ls` 命令。
+
+## 运行脚本
+
+在一个新建的空目录中，将以下内容保存为 `example.gsh`。
+
+```xgo
+mkdir! "testgsh"
+capout => { ls "-d", "testgsh" }
+echo output.fields
+```
+
+```sh
+xgo run ./example.gsh
+```
+
+```text
+[testgsh]
+```
+
+脚本会创建 `testgsh` 目录。带有 `!` 后缀的命令失败时，脚本会停止。重复运行示例时，请换到另一个空目录。可以在 `capout` 代码块中用 `output` 读取捕获的标准输出，其 `fields` 属性会按空白字符拆分输出。
+
+## 调用程序并检查错误
+
+当程序名是 XGo 关键字时，可以用 `exec "go", "version"` 调用。按路径调用时，可以用 `exec "./tool.sh"`。也可以省略命令的 `!` 后缀，在脚本中读取 `lastErr` 来处理失败。通过 ``${HOME}`` 或 `$HOME` 可以读取环境变量。
+
+更多来自 XGo 仓库的代码请参阅 [GSH 和类文件示例](/zh-CN/docs/examples/gsh-and-classfiles)。

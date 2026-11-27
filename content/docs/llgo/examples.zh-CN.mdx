@@ -1,0 +1,533 @@
+---
+title: LLGo 示例程序
+description: 使用 LLGo 运行调用 C、C++ 和 Python 库的 XGo 示例。
+---
+
+安装 LLGo，并确认可以从命令行调用 `llgo`。请在 XGo 源码目录中切换到各示例标注的子目录，再运行相应命令。Python 示例需要 LLGo 配置使用的 Python 运行时。有关环境配置和如何导入原生库及 Python 库，请参阅 [LLGo 初次编译](/zh-CN/docs/llgo)与 [LLGo 互操作指南](/zh-CN/docs/llgo/interoperability)。
+
+这些示例共用的模块固定使用 `github.com/goplus/lib v0.2.0`。先用 `xgo go .` 生成 Go 源码，再用 `llgo run .` 运行该包。如果用 `XGO_GOCMD=llgo xgo run .` 跨工具调用，LLGo v1.0.10 会拒绝此版本 XGo 传入的链接器参数。
+
+## Hello World
+
+在 `demo/_llgo/hello` 中运行。
+
+使用 XGo 内置函数 `echo` 输出一行。
+
+### hello.xgo
+
+```xgo
+echo "Hello world"
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## C 标准流
+
+在 `demo/_llgo/hellollgo` 中运行。
+
+通过 `import "c"` 导入 libc，这是 `import "github.com/goplus/lib/c"` 的简写。示例使用 C 字符串字面量，通过 `printf` 写入标准输出，通过 `fprintf` 写入标准错误。
+
+### hello.xgo
+
+```xgo
+import "c"
+
+c.printf c"Hello, llgo!\n"
+c.fprintf c.Stderr, c"Hi, %6.1f\n", 3.14
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+程序输出以下各行。
+
+```text
+Hello, llgo!
+Hi,    3.1
+```
+
+## 调用 C 的 printf
+
+在 `demo/_llgo/chello` 中运行。
+
+通过 libc 输出一个 C 字符串。
+
+### hello.xgo
+
+```xgo
+import "c"
+
+c.printf c"Hello world\n"
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 读取 C++ 字符串
+
+在 `demo/_llgo/cpphello` 中运行。
+
+通过 `cpp/std` 绑定构造一个 C++ 标准库字符串。
+
+### cpphello.xgo
+
+```xgo
+import "cpp/std"
+
+println std.str("Hello world").str
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 调用 Python 的 print
+
+在 `demo/_llgo/pyhello` 中运行。
+
+把 Python 字符串字面量传给 Python 的输出函数。
+
+### hello.xgo
+
+```xgo
+import "py/std"
+
+std.print py"Hello world"
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 将浮点数转换为 Python 值
+
+在 `demo/_llgo/pyprint` 中运行。
+
+把浮点数封装为 Python 对象，再输出它。
+
+### print.xgo
+
+```xgo
+import (
+	"py"
+	"py/std"
+)
+
+x := py.float(3.14)
+std.print(x)
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 调用 Python 的 max
+
+在 `demo/_llgo/pymax` 中运行。
+
+先从 Python 位置参数中找出最大值，再从 Python 列表迭代器中找出最大值。
+
+### pymax.xgo
+
+```xgo
+import (
+	"py"
+	"py/std"
+)
+
+x := std.max(py.float(3.0), py.float(9.0), py.float(23.0), py.float(100.0))
+std.print(x)
+
+list := py.list(3.0, 9.0, 23.0, 100.0)
+y := std.max(std.iter(list))
+std.print(y)
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 调用 Python 的 math 模块
+
+在 `demo/_llgo/callpy` 中运行。
+
+用 Python 计算 2 的平方根，再用 libc 格式化结果。
+
+### callpy.xgo
+
+```xgo
+import (
+	"c"
+	"py"
+	"py/math"
+)
+
+x := math.sqrt(py.float(2))
+c.printf c"sqrt(2) = %f\n", x.float64
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 用 NumPy 做矩阵加法
+
+在 `demo/_llgo/matrix` 中运行。
+
+在 LLGo 使用的 Python 环境中安装 NumPy。示例把嵌套的 Python 列表传给 `numpy.add`。
+
+### matrix.xgo
+
+```xgo
+import (
+	"c"
+	"py"
+	"py/numpy"
+)
+
+a := py.list(
+	py.list(1.0, 2.0, 3.0),
+	py.list(4.0, 5.0, 6.0),
+	py.list(7.0, 8.0, 9.0),
+)
+b := py.list(
+	py.list(9.0, 8.0, 7.0),
+	py.list(6.0, 5.0, 4.0),
+	py.list(3.0, 2.0, 1.0),
+)
+x := numpy.add(a, b)
+c.printf c"a+b = %s\n", x.str.cStr
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 构建 PyTorch 张量
+
+在 `demo/_llgo/pytensor` 中运行。
+
+在 LLGo 使用的 Python 环境中安装 PyTorch。示例将嵌套的 Python 列表转换为张量。
+
+### tensor.xgo
+
+```xgo
+import (
+	"py"
+	"py/std"
+	"py/torch"
+)
+
+data := py.list(
+	py.list(1.0, 2.0),
+	py.list(3.0, 4.0),
+)
+x := torch.tensor(data)
+std.print(x)
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 调用 Python 的 statistics
+
+在 `demo/_llgo/statistics` 中运行。
+
+计算 Python 列表的算术平均值，再通过 libc 输出。
+
+### statistics.xgo
+
+```xgo
+import (
+	"c"
+	"py"
+	"py/statistics"
+)
+
+list := py.list(1.0, 2.0, 3.0, 4.0, 4.0)
+mean := statistics.mean(list)
+c.printf c"mean(1, 2, 3, 4, 4) = %f\n", mean.float64
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 延迟调用 C 函数
+
+在 `demo/_llgo/defer` 中运行。
+
+观察程序退出前，延迟调用以相反的顺序执行。
+
+### defer.xgo
+
+```xgo
+import "c"
+
+func f(s string) bool {
+	return len(s) > 2
+}
+
+defer func() {
+	c.printf c"hi\n"
+}()
+if s := "hello"; f(s) {
+	defer c.printf(c"%s\n", c.allocaCStr(s))
+} else {
+	defer c.printf(c"world\n")
+}
+defer c.printf(c"bye\n")
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 格式化自定义错误
+
+在 `demo/_llgo/errors` 中运行。
+
+实现 Go 的 `error` 接口，并将格式化后的错误传给 C。
+
+### errors.xgo
+
+```xgo
+import (
+	"c"
+)
+
+// New returns an error that formats as the given text.
+// Each call to New returns a distinct error value even if the text is identical.
+func New(text string) error {
+	return &errorString{text}
+}
+
+// errorString is a trivial implementation of error.
+type errorString struct {
+	s string
+}
+
+func (e *errorString) Error() string {
+	return e.s
+}
+
+e := new("an error")
+c.printf c.allocaCStr(e.error+"\n")
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 启动 goroutine
+
+在 `demo/_llgo/goroutine` 中运行。
+
+这个示例演示 goroutine 语法。程序在没有同步的情况下访问共享的 `done` 标志，因此输出和结束时机取决于运行时行为。
+
+### goroutine.xgo
+
+```xgo
+import "c"
+
+done := false
+go func() {
+	c.printf c"Hello, goroutine\n"
+	done = true
+}()
+for !done {
+	c.printf c"."
+}
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 将比较函数作为回调传给 C
+
+在 `demo/_llgo/qsort` 中运行。
+
+把 lambda 作为 libc 的 `qsort` 函数的比较回调。
+
+### qsort.xgo
+
+```xgo
+import (
+	"c"
+	"unsafe"
+)
+
+a := [100, 8, 23, 2, 7]
+c.qsort unsafe.Pointer(&a[0]), 5, unsafe.Sizeof(0), (a, b) => {
+	return c.Int(*(*int)(a) - *(*int)(b))
+}
+for v in a {
+	c.printf c"%d\n", v
+}
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 用反射构造切片
+
+在 `demo/_llgo/reflect` 中运行。
+
+构造切片类型，追加整数，再输出通过反射取得的值。
+
+### reflect.xgo
+
+```xgo
+import (
+	"c"
+	"reflect"
+)
+
+tyIntSlice := reflect.sliceOf(reflect.typeOf(0))
+v := reflect.zero(tyIntSlice)
+v = reflect.append(v, reflect.valueOf(1), reflect.valueOf(2), reflect.valueOf(3))
+for i, n := 0, v.len; i < n; i++ {
+	item := v.index(i)
+	c.Printf c"%d\n", item.int
+}
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 执行 SQLite 查询
+
+在 `demo/_llgo/sqlitedemo` 中运行。
+
+为 LLGo 目标平台安装 SQLite。请在临时目录中运行，示例会删除并重新创建工作目录中的 `test.db`。
+
+### sqlitedemo.xgo
+
+```xgo
+import (
+	"c"
+	"c/os"
+	"c/sqlite"
+)
+
+func check(err sqlite.Errno, db *sqlite.Sqlite3, at string) {
+	if err != sqlite.OK {
+		c.printf c"==> %s Error: (%d) %s\n", c.allocaCStr(at), err, db.errmsg
+		c.exit 1
+	}
+}
+
+func checkDone(err sqlite.Errno, db *sqlite.Sqlite3, at string) {
+	if err != sqlite.Done {
+		check err, db, at
+	}
+}
+
+os.remove c"test.db"
+
+db, err := sqlite.open(c"test.db")
+check err, db, "sqlite: Open"
+
+err = db.exec(c"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)", nil, nil, nil)
+check err, db, "sqlite: Exec CREATE TABLE"
+
+stmt, err := db.prepareV3("INSERT INTO users (id, name) VALUES (?, ?)", 0, nil)
+check err, db, "sqlite: PrepareV3 INSERT"
+
+stmt.bindInt 1, 100
+stmt.bindText 2, c"Hello World", -1, nil
+
+err = stmt.step
+checkDone err, db, "sqlite: Step INSERT 1"
+
+stmt.reset
+stmt.bindInt 1, 200
+stmt.bindText 2, c"This is llgo", -1, nil
+
+err = stmt.step
+checkDone err, db, "sqlite: Step INSERT 2"
+
+stmt.close
+
+stmt, err = db.prepareV3("SELECT * FROM users", 0, nil)
+check err, db, "sqlite: PrepareV3 SELECT"
+
+for {
+	if err = stmt.step; err != sqlite.HasRow {
+		break
+	}
+	c.printf c"==> id=%d, name=%s\n", stmt.columnInt(0), stmt.columnText(1)
+}
+checkDone err, db, "sqlite: Step done"
+
+stmt.close
+db.close
+```
+
+```sh
+xgo go .
+llgo run .
+```
+
+## 打开原生 raylib 窗口
+
+在拥有图形环境、且已为 LLGo 目标平台安装 raylib 的环境中，从 `demo/_llgo/tetris` 运行。绑定通过 `pkg-config` 查找 raylib，也可以回退到 `-lraylib`。
+
+```sh
+pkg-config --libs raylib
+xgo go .
+llgo run .
+```
+
+游戏会打开一个 300 × 600 像素的窗口，棋盘有 10 列、20 行。按左、右方向键移动，按空格键、上方向键或下方向键旋转。撞到棋盘边界或已锁定方块的移动和旋转会被拒绝。填满一行可获得 100 分，该行上方的内容随之下移。当下一个方块无法生成时，游戏结束画面会显示得分。
+
+可以先阅读 `checkCollision` 和 `clearLines`，了解格子状态如何变化。主循环按帧耗时累计，每隔 0.2 秒让方块下落一次，并将棋盘坐标转换为 raylib 绘图函数所用的像素坐标。示例使用 `c.sprintf` 将分数格式化为 C 字符串，再传给 `raylib.drawText`。
+
+### 初始化窗口
+
+程序使用棋盘常量定义的尺寸初始化 raylib，并将目标帧率设为每秒 60 帧。
+
+```xgo
+raylib.initWindow SCREENWIDTH, SCREENHEIGHT, c"tetris (powered by raylib and XGo)"
+raylib.setTargetFPS 60
+```
+
+### 绘制棋盘
+
+每帧先清空背景，再按各格子保存的颜色绘制。矩形的宽、高各减一个像素，给相邻格子留出间隙。
+
+```xgo
+raylib.beginDrawing
+raylib.clearBackground raylib.RAYWHITE
+for y := 0; y < BOARD_HEIGHT; y++ {
+	for x := 0; x < BOARD_WIDTH; x++ {
+		raylib.drawRectangle c.Int(x*BLOCK_SIZE), c.Int(y*BLOCK_SIZE), c.Int(BLOCK_SIZE-1), c.Int(BLOCK_SIZE-1), board[y][x]
+	}
+}
+```
+
+原始的 `tetris.xgo` 还会在调用 `raylib.endDrawing` 前绘制正在下落的方块和得分。

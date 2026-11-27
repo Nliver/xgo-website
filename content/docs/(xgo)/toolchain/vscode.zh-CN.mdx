@@ -1,0 +1,19 @@
+---
+title: 在 Visual Studio Code 中编辑 XGo
+description: 安装 Go/XGo 扩展，打开模块并检查 XGo 文件的编辑器支持。
+---
+
+在 Visual Studio Code 中打开[Hello World](/zh-CN/docs/getting-started/hello-world)示例所在的文件夹。若要创建新模块，请先阅读[组织 XGo 项目](/zh-CN/docs/tutorials/organize-projects)。
+
+1. 按照[安装指南](/zh-CN/docs/getting-started/installation)安装 Go 和 XGo 工具链，并在编辑器的集成终端中确认两个命令都能正常运行。
+2. 打开 Extensions，搜索扩展 ID `goplus.gop`，安装 `goplus` 发布的扩展。
+3. 打开 `hello.xgo`。扩展会识别这个后缀，以及 `.gox`、`.spx`、`.yap` 和 `.gsh` 等类文件后缀。Go/XGo 状态栏会显示工具链信息。
+4. 如果编辑器显示 **Analysis Tools Missing**，打开提示查看所需工具。语言服务器 `xgols` 提供跳转和补全等功能，Delve（`dlv`）用于调试。
+
+在集成终端中运行程序：
+
+```sh
+xgo run hello.xgo
+```
+
+对于包含多个文件的项目，请打开包含 `go.mod` 的模块目录，然后在该目录运行 `xgo run .`。编辑器需要处理的语言细节见[工具链约定](/zh-CN/docs/toolchain/tooling-conventions)。

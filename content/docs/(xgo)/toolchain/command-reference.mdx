@@ -36,6 +36,34 @@ Use a package directory or an import path with `xgo go -t`. At this revision, an
 
 Review the preview before running `xgo clean .`. The command scans subdirectories and matches files by name, including files ending in `_autogen.go`. For generated filenames and source mappings, see [Tooling conventions](/docs/toolchain/tooling-conventions#generated-go). For conversion examples, see [Convert Go code to XGo style](/docs/toolchain/code-style).
 
+### Generate and run a Go package
+
+In a new directory, save the following program as `main.xgo`. This example uses the default Go toolchain and only standard-library packages.
+
+```xgo title="main.xgo"
+import "strings"
+
+println strings.toUpper("ready")
+```
+
+Initialize the module, check the XGo source, and generate Go code. Then list the Go files in the package and run it.
+
+```sh
+go mod init example.com/generated
+xgo go -t .
+xgo go .
+go list -f '{{join .GoFiles " "}}' .
+go run .
+```
+
+The check leaves `xgo_autogen.go` absent. After generation, `go list` prints `xgo_autogen.go`. The program prints the following line.
+
+```text
+READY
+```
+
+Edit `main.xgo` and rerun `xgo go .` to update the generated file.
+
 ## Manage modules and project configuration
 
 | Command | What it does |

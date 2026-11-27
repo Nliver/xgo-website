@@ -1,0 +1,9 @@
+{
+  "title": "MCP",
+  "description": "编写并测试模型上下文协议服务器。",
+  "root": true,
+  "icon": "Network",
+  "pages": [
+    "index"
+  ]
+}
