@@ -3,9 +3,14 @@ import { parseCodeBlockAttributes, rehypeCodeDefaultOptions } from 'fumadocs-cor
 import { remarkMdxFiles } from 'fumadocs-core/mdx-plugins/remark-mdx-files';
 import { replaceSource } from 'fumadocs-core/mdx-plugins/stringifier';
 import type { Root } from 'mdast';
-import type { LanguageRegistration } from 'shiki';
+import { bundledLanguagesInfo, type LanguageRegistration } from 'shiki';
 import type { VFile } from 'vfile';
 import xgoGrammar from './lib/grammars/xgo/grammar.json';
+
+const languageNames = new Map<string, string>([['xgo', 'XGo']]);
+for (const { id, name, aliases } of bundledLanguagesInfo) {
+  for (const key of [id, ...aliases ?? []]) languageNames.set(key, name);
+}
 
 function remarkFileTrees() {
   const transform = remarkMdxFiles();
@@ -22,6 +27,23 @@ function remarkFileTrees() {
   };
 }
 
+// Some guides introduce a listing with its filename as a Markdown heading.
+function remarkCodeFilenames() {
+  return (tree: Root) => {
+    for (const [index, node] of tree.children.entries()) {
+      if (node.type !== 'code') continue;
+      const heading = tree.children[index - 1];
+      if (heading?.type !== 'heading' || heading.children.length !== 1) continue;
+      const name = heading.children[0];
+      if (name.type !== 'text' && name.type !== 'inlineCode') continue;
+      if (!/^(?:[\w.-]+\/)*[\w.-]+\.[\w-]+$/.test(name.value)) continue;
+      if (!parseCodeBlockAttributes(node.meta ?? '', ['title']).attributes.title) {
+        node.meta = [node.meta, `title="${name.value}"`].filter(Boolean).join(' ');
+      }
+    }
+  };
+}
+
 function remarkRunnableXGo() {
   return (tree: Root, file: VFile) => {
     const path = file.path;
@@ -34,12 +56,9 @@ function remarkRunnableXGo() {
       if (node.type !== 'code') continue;
       if (node.lang === 'xgo' || node.lang === 'go') {
         const { attributes: { title } } = parseCodeBlockAttributes(node.meta ?? '', ['title']);
-        const previous = tree.children[index - 1];
-        const heading = previous?.type === 'heading' && previous.depth === 3 && previous.children[0]?.type === 'text'
-          ? previous.children[0].value
-          : '';
-        const name = typeof title === 'string' ? title : heading;
-        if (/^[a-z0-9-]+\.(?:go|xgo)$/.test(name)) sourceBlocks.push({ index, name, code: node.value });
+        if (typeof title === 'string' && /^[a-z0-9-]+\.(?:go|xgo)$/.test(title)) {
+          sourceBlocks.push({ index, name: title, code: node.value });
+        }
       }
       if (node.lang !== 'text' || sourceBlocks.length === 0) continue;
       const sources = sourceBlocks.splice(0);
@@ -67,16 +86,19 @@ function remarkRunnableXGo() {
 
 export default defineConfig({
   mdxOptions: {
-    remarkPlugins: [remarkFileTrees, remarkRunnableXGo],
+    remarkPlugins: [remarkFileTrees, remarkCodeFilenames, remarkRunnableXGo],
     rehypeCodeOptions: {
       fallbackLanguage: 'text',
+      icon: { shortcuts: { powershell: 'shellscript', bat: 'shellscript' } },
       langs: ['go', { ...xgoGrammar, name: 'xgo', displayName: 'XGo' } as LanguageRegistration],
       transformers: [
         ...rehypeCodeDefaultOptions.transformers ?? [],
         {
-          name: 'xgo-code-block',
+          name: 'code-block-language',
           pre(node) {
-            if (this.options.lang === 'xgo') node.properties['data-xgo'] = true;
+            const language = this.options.lang;
+            node.properties['data-language'] = language;
+            if (!this.options.meta?.title) node.properties['data-language-label'] = languageNames.get(language);
           },
         },
       ],
