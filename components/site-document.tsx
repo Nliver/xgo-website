@@ -1,12 +1,16 @@
-import { source } from '@/lib/source';
-import { SiteProvider } from './site-provider';
-import type { ReactNode } from 'react';
+'use client';
 
-export function SiteDocument({ locale, children }: {
-  locale: 'en' | 'zh-CN';
+import { useParams } from 'next/navigation';
+import type { ReactNode } from 'react';
+import { i18n } from '@/lib/shared';
+import { SiteProvider } from './site-provider';
+
+export function SiteDocument({ translatedPaths, children }: {
+  translatedPaths: string[];
   children: ReactNode;
 }) {
-  const translatedPaths = source.getPages('zh-CN').map((page) => page.url.replace(/^\/zh-CN/, ''));
+  const { lang } = useParams<{ lang: string }>();
+  const locale = i18n.languages.find((language) => language === lang) ?? i18n.defaultLanguage;
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
