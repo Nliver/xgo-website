@@ -5,6 +5,7 @@ import { uiTranslations } from 'fumadocs-ui/i18n';
 export const i18n = defineI18n({
   languages: ['en', 'zh-CN'],
   defaultLanguage: 'en',
+  parser: 'dir',
   hideLocale: 'default-locale',
   fallbackLanguage: null,
 });

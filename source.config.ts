@@ -46,9 +46,12 @@ function remarkCodeFilenames() {
 
 function remarkRunnableXGo() {
   return (tree: Root, file: VFile) => {
-    const path = file.path;
-    if (!/(?:^|\/)\(xgo\)\/(?:tutorials\/[^/]+|getting-started\/hello-world|interoperability\/go)(?:\.zh-CN)?\.mdx$/.test(path)) return;
-    const locale = path.endsWith('.zh-CN.mdx') ? 'zh-CN' : 'en';
+    const normalizedPath = file.path.replaceAll('\\', '/');
+    const directoryMatch = normalizedPath.match(/(?:^|\/)content\/docs\/(en|zh-CN)\/(.+\.mdx)$/);
+    const legacyMatch = normalizedPath.match(/(?:^|\/)content\/docs\/(.+?)(?:\.(en|zh-CN))?\.mdx$/);
+    const locale = directoryMatch?.[1] ?? legacyMatch?.[2] ?? 'en';
+    const contentPath = directoryMatch?.[2] ?? `${legacyMatch?.[1] ?? ''}.mdx`;
+    if (!/(?:^|\/)\(xgo\)\/(?:tutorials\/[^/]+|getting-started\/hello-world|interoperability\/go)\.mdx$/.test(`/${contentPath}`)) return;
     const sourceBlocks: { index: number; name: string; code: string }[] = [];
     const inserts: { index: number; node: Root['children'][number] }[] = [];
 

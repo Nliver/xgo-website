@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
 
-export default function UnknownChinesePage() {
+export default function UnknownPage() {
   notFound();
 }
