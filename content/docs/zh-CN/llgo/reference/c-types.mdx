@@ -1,0 +1,32 @@
+---
+title: 将 C 类型映射为 Go 类型
+description: 选择符合 C ABI 的 Go 声明，保持指针和聚合类型的布局。
+---
+
+LLGo 的 C 绑定用 Go 声明来表达 C ABI。跨边界传递值时，双方的类型位宽和符号属性应一致。
+
+| C 类型 | Go 类型 |
+| --- | --- |
+| `char` | `c.Char` 或 `int8` |
+| `short` | `int16` |
+| `int` | `c.Int` |
+| `long` | `c.Long` |
+| `unsigned int` | `c.Uint` |
+| `unsigned long` | `c.Ulong` |
+| `long long` | `int64` |
+| `unsigned char` | `byte` |
+| `unsigned long long` | `uint64` |
+| `size_t` | `uintptr` |
+| `float` | `float32` |
+| `double` | `float64` |
+| `void*` | `c.Pointer` |
+| `T*` | `*T` |
+| C 函数指针参数 | `func` |
+
+如果本机头文件使用位宽因平台而异的 C 类型，请选用 `github.com/goplus/lib/c` 中的 `c` 类型。结构体中的 C 函数指针字段用 C 指针表示。函数指针参数可以用 Go 函数类型表示。
+
+在 C 函数的参数列表中，`T[N]` 会转换为指针，对应的 Go 参数应声明为 `*T`。在结构体中，同样的写法会在结构体内部为 N 个元素分配存储空间，对应的 Go 字段应声明为 `[N]T`。与 Wasm 宿主交互时，请核对[目标配置的指针位宽](/zh-CN/docs/llgo/reference/webassembly)。
+
+关于原生结构体，请参阅[调用约定与 HostLayout 结构体](/zh-CN/docs/llgo/reference/calling-conventions)。
+
+当带有 `structs.HostLayout` 的记录跨越 J32、W32 或其他 Memory32 边界时，指针和 `uintptr` 字段仍使用 Go 宿主机的位宽。宿主侧记录应定义显式的 32 位整数字段，并在进入或离开原生边界时完成转换。不要依赖 HostLayout 自动缩窄这些字段。
