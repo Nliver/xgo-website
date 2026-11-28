@@ -166,6 +166,27 @@ test('requires translated pages to identify their original and review status', (
   assert.match(errors, /invalid translationReviewStatus/);
 }));
 
+test('supports directory-based locale pages and navigation', () => withFixture((root, docs, header) => {
+  fs.rmSync(docs, { recursive: true, force: true });
+  const english = path.join(root, 'content/docs/en');
+  const chinese = path.join(root, 'content/docs/zh-CN');
+  fs.mkdirSync(english, { recursive: true });
+  fs.mkdirSync(chinese, { recursive: true });
+  fs.writeFileSync(path.join(english, 'next.mdx'), `${header}\n## Details\n\nAn example.\n`);
+  fs.writeFileSync(path.join(chinese, 'next.mdx'), '---\ntitle: 示例\ndescription: 编写第一个程序。\n---\n## 详情\n\n[原文](/docs/next)\n');
+  fs.writeFileSync(path.join(english, 'meta.json'), JSON.stringify({ title: 'Docs', pages: ['next'] }));
+  fs.writeFileSync(path.join(chinese, 'meta.json'), JSON.stringify({ title: '文档', pages: ['next'] }));
+  const file = path.join(root, 'content/sources.json');
+  const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const metadata = manifest.pages['content/docs/next.mdx'];
+  manifest.pages = {
+    'content/docs/en/next.mdx': metadata,
+    'content/docs/zh-CN/next.mdx': { ...metadata, locale: 'zh-CN', translationOf: 'content/docs/en/next.mdx', translationReviewStatus: 'pending' },
+  };
+  fs.writeFileSync(file, JSON.stringify(manifest));
+  assert.deepEqual(checkDocs(root).errors, []);
+}));
+
 function withExamplesFixture(run) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xgo-example-check-'));
   const docs = path.join(root, 'content/docs');
@@ -261,6 +282,9 @@ test('requires source filenames or a separate command for code paired with outpu
   assert.throws(() => discoverExamples(root), /overview.mdx: xgo code.*has expected output/);
   const separate = source.replace('```xgo', '```go verify="go run ."');
   fs.writeFileSync(file, original + separate + output);
+  assert.ok(!discoverExamples(root).some(({ page }) => page === 'reference/overview.mdx'));
+  const singleQuoted = source.replace('```xgo', "```go verify='go run .'");
+  fs.writeFileSync(file, original + singleQuoted + output);
   assert.ok(!discoverExamples(root).some(({ page }) => page === 'reference/overview.mdx'));
   fs.writeFileSync(file, original + separate + source.replace('```xgo', '```xgo title="main.xgo"') + output);
   assert.throws(() => discoverExamples(root), /overview.mdx: go code.*has expected output/);

@@ -17,6 +17,10 @@ function isManualExample(block) {
   return /(?:^|\s)verify=(?:"[^"]*"|'[^']*'|\S+)/.test(block.meta ?? '') || /(?:^|\s)noRun(?:=|\s|$)/.test(block.meta ?? '');
 }
 
+function verificationCommand(block) {
+  return block.meta?.match(/(?:^|\s)verify=(?:"([^"]*)"|'([^']*)'|([^\s]+))/)?.slice(1).find(Boolean);
+}
+
 function exampleFilename(block) {
   const title = block.meta?.match(/(?:^|\s)title=(?:"([^"]+)"|'([^']+)')/);
   const filename = title?.[1] ?? title?.[2];
@@ -53,7 +57,7 @@ function checkOutputGroups(tree, page) {
         const usesRunner = group.some(exampleFilename);
         for (const source of group) {
           if (exampleFilename(source)) continue;
-          const command = source.meta?.match(/(?:^|\s)verify="([^"]+)"/)?.[1];
+          const command = verificationCommand(source);
           if (usesRunner || !command?.trim()) {
             throw new Error(`${page}: ${source.lang} code on body line ${source.position.start.line} has expected output. Name each source with title, or document the separate verification command with verify="..." for the whole group.`);
           }
@@ -95,7 +99,7 @@ function collectRunnableExamples(tree, page, examples) {
       sawOutput = true;
     }
 
-    if (sources.length && sawOutput) throw new Error(`${page}: example is missing a text output block`);
+    if (sources.some((source) => source.title.endsWith('.xgo'))) throw new Error(`${page}: example is missing a text output block`);
   }
 
   function visit(node) {
@@ -132,7 +136,12 @@ export function discoverExamples(root) {
 }
 
 function pageRevisions(manifest, page) {
-  const metadata = manifest.pages?.[`content/docs/${page}`];
+  const metadata = manifest.pages?.[`content/docs/${page}`] ?? (() => {
+    const segments = page.split('/');
+    const locale = segments[0] === 'en' || segments[0] === 'zh-CN' ? segments.shift() : undefined;
+    if (!locale) return undefined;
+    return manifest.pages?.[`content/docs/${segments.join('/')}`];
+  })();
   if (!metadata || typeof metadata.sourcePath !== 'string' || !metadata.sourcePath.trim()) throw new Error(`${page}: missing source metadata`);
   const commits = [metadata.sourceCommit ?? manifest.sourceCommit];
   if (metadata.candidateSourceCommit !== undefined) commits.push(metadata.candidateSourceCommit);
