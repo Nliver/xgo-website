@@ -38,7 +38,13 @@ export async function syncUpstream({ root = process.cwd(), write = false, initia
   const outputDir = path.join(root, 'upstream-sync');
   const outputPath = path.join(outputDir, 'manifest.json');
   const previous = fs.existsSync(outputPath) ? JSON.parse(fs.readFileSync(outputPath, 'utf8')) : null;
-  const mappedFiles = Object.values(sources.pages).flatMap((page) => [page.sourcePath, ...(page.additionalSourcePaths ?? [])]);
+  const mappedPaths = (page) => {
+    if (page.sourceRepository && page.sourceRepository !== config.repository) return [];
+    const externalRepositories = new Set((page.externalSources ?? []).map((source) => source.repository));
+    const externalOnlyReadme = page.sourcePath === 'README.md' && externalRepositories.size > 0 && !externalRepositories.has(config.repository);
+    return externalOnlyReadme ? [] : [page.sourcePath, ...(page.additionalSourcePaths ?? [])];
+  };
+  const mappedFiles = Object.values(sources.pages).flatMap(mappedPaths);
   const trackedFiles = [...new Set([...config.files, ...mappedFiles, ...(sources.licensePath ? [sources.licensePath] : [])])].sort();
   if (!/^[\w.-]+\/[\w.-]+$/.test(config.repository) || !trackedFiles.every(validPath) || new Set(config.files).size !== config.files.length) throw new Error('Invalid upstream repository or source path.');
   if (sources.sourceRepository && sources.sourceRepository !== config.repository) throw new Error('Content sources and upstream synchronization must use the same repository.');
@@ -87,7 +93,7 @@ export async function syncUpstream({ root = process.cwd(), write = false, initia
       fs.writeFileSync(path.join(temporary, 'after'), contents.get(entry.path));
       const result = spawnSync('git', ['diff', '--no-index', '--no-ext-diff', '--no-color', '--', 'before', 'after'], { cwd: temporary, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
       if (![0, 1].includes(result.status)) throw new Error(`Could not generate source diff for ${entry.path}.`);
-      const affectedPages = Object.entries(sources.pages).filter(([, page]) => entry.path === sources.licensePath || [page.sourcePath, ...(page.additionalSourcePaths ?? [])].includes(entry.path)).map(([file]) => file);
+      const affectedPages = Object.entries(sources.pages).filter(([, page]) => entry.path === sources.licensePath || mappedPaths(page).includes(entry.path)).map(([file]) => file);
       changes.push({ path: entry.path, status: before.has(entry.path) ? 'modified' : 'newly-tracked', sourceUrl: entry.url, affectedPages, reviewRequired: ['technical', 'English editorial'] });
       patches.set(`${entry.path}.diff`, result.stdout.replaceAll('a/before', `a/${entry.path}`).replaceAll('b/after', `b/${entry.path}`));
     }
@@ -104,7 +110,7 @@ export async function syncUpstream({ root = process.cwd(), write = false, initia
     const original = mappings.length ? fs.readFileSync(path.join(root, file), 'utf8') : null;
     let page = original;
     for (const mapping of mappings) {
-      if (![metadata.sourcePath, ...(metadata.additionalSourcePaths ?? [])].includes(mapping.sourcePath)) throw new Error('Snippet source must be a mapped page source.');
+      if (!mappedPaths(metadata).includes(mapping.sourcePath)) throw new Error('Snippet source must be a mapped page source.');
       const verifiedCommit = metadata.sourceCommit ?? sources.sourceCommit;
       if (!/^[0-9a-f]{40}$/.test(verifiedCommit)) throw new Error('A mapped snippet requires a verified source commit.');
       const oldSource = await request(rawUrl(verifiedCommit, mapping.sourcePath), false);

@@ -42,9 +42,15 @@ function pageUrl(file) {
 }
 
 function pageIdentity(file) {
-  const name = file.replace(/\.(mdx?|json)$/, '');
-  const locale = name.match(/\.(en|zh-CN)$/)?.[1] ?? 'en';
-  return { slug: name.replace(/\.(en|zh-CN)$/, ''), locale };
+  let name = file.replaceAll(path.sep, '/').replace(/\.(mdx?|json)$/, '');
+  const contentIndex = name.lastIndexOf('/content/docs/');
+  if (contentIndex >= 0) name = name.slice(contentIndex + '/content/docs/'.length);
+  const segments = name.split('/');
+  const directoryLocale = segments[0] === 'en' || segments[0] === 'zh-CN' ? segments.shift() : undefined;
+  const legacyLocale = name.match(/\.(en|zh-CN)$/)?.[1];
+  const locale = directoryLocale ?? legacyLocale ?? 'en';
+  if (!directoryLocale && legacyLocale) segments[segments.length - 1] = segments.at(-1).replace(/\.(en|zh-CN)$/, '');
+  return { slug: segments.join('/'), locale };
 }
 
 function nodeText(node) {
@@ -137,6 +143,7 @@ export function checkDocs(root) {
     if (!metadata) fail('missing source metadata');
     else {
       if (!validSourcePath(metadata.sourcePath)) fail('invalid sourcePath');
+      if (metadata.sourceRepository !== undefined && !/^[\w.-]+\/[\w.-]+$/.test(metadata.sourceRepository)) fail('invalid sourceRepository');
       if (metadata.externalSources !== undefined && (!Array.isArray(metadata.externalSources) ||
         !metadata.externalSources.every((file) => file && /^[\w.-]+\/[\w.-]+$/.test(file.repository) &&
           shaPattern.test(file.commit) && validSourcePath(file.path)))) fail('invalid externalSources');
@@ -149,7 +156,9 @@ export function checkDocs(root) {
       if (metadata.sourceCheckedAt && !validDate(metadata.sourceCheckedAt)) fail('invalid sourceCheckedAt override');
       if (metadata.locale !== undefined && metadata.locale !== locale) fail('source locale does not match the page locale');
       if (locale !== 'en') {
-        const original = `content/docs/${slug}.mdx`;
+        const directoryOriginal = `content/docs/en/${slug}.mdx`;
+        const legacyOriginal = `content/docs/${slug}.mdx`;
+        const original = manifest.pages[directoryOriginal] ? directoryOriginal : legacyOriginal;
         if (metadata.translationOf !== original || !manifest.pages[original]) fail('translationOf must reference the corresponding English page');
         if (!['pending', 'reviewed'].includes(metadata.translationReviewStatus)) fail('invalid translationReviewStatus');
       }
@@ -226,9 +235,14 @@ export function checkDocs(root) {
       if (typeof entry !== 'string') { report(relative, 'navigation entries must be strings'); continue; }
       if (entry === '...' || entry.startsWith('---') || entry.startsWith('[')) continue;
       const target = path.resolve(path.dirname(file), entry.replace(/^!/, '').replace(/\/\*$/, ''));
+      const directoryLocale = path.relative(docsRoot, file).split(path.sep)[0];
+      const isDirectoryLocale = directoryLocale === 'en' || directoryLocale === 'zh-CN';
       const suffix = locale === 'en' ? '' : `.${locale}`;
+      const candidates = isDirectoryLocale
+        ? [target, `${target}.mdx`, `${target}.md`]
+        : [target, `${target}${suffix}.mdx`, `${target}${suffix}.md`];
       if (!target.startsWith(docsRoot + path.sep) && target !== docsRoot) report(relative, `navigation escapes content directory ${entry}`);
-      else if (!fs.existsSync(target) && !fs.existsSync(`${target}${suffix}.mdx`) && !fs.existsSync(`${target}${suffix}.md`)) report(relative, `navigation target is missing ${entry}`);
+      else if (!candidates.some((candidate) => fs.existsSync(candidate))) report(relative, `navigation target is missing ${entry}`);
     }
   }
   return { errors, count: files.length };

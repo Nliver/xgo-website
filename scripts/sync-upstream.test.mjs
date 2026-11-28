@@ -91,6 +91,26 @@ test('default tracking derives mapped sources, additional sources, and the sourc
   assert(Buffer.byteLength(f.report()) < 60_000);
 });
 
+test('external-only README mappings do not become XGo source mappings', async (t) => {
+  const f = fixture(t, {
+    files: ['doc/test.md'],
+    sourcePaths: ['README.md'],
+    content: 'after\n',
+    pageMetadata: {
+      externalSources: [{
+        repository: 'xgo-dev/llgo',
+        commit: newSha,
+        path: 'README.md',
+      }],
+    },
+  });
+  await syncUpstream({ ...f, write: true });
+  const manifest = JSON.parse(f.manifest());
+  assert.deepEqual(manifest.files.map((file) => file.path), ['doc/test.md']);
+  const changes = JSON.parse(fs.readFileSync(path.join(f.root, 'upstream-sync/changes.json'), 'utf8')).changes;
+  assert.deepEqual(changes.find((file) => file.path === 'doc/test.md').affectedPages, []);
+});
+
 test('explicit initialization records a clean pinned baseline and rejects pending page candidates', async (t) => {
   const f = fixture(t, { files: ['doc/test.md', 'README.md'] });
   const sourcesPath = path.join(f.root, 'content/sources.json');
