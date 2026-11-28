@@ -1,0 +1,49 @@
+---
+title: Build LLGo from source
+description: Set up a pinned development environment and run a compiler built from the checkout.
+---
+
+Build the compiler from the LLGo v1.0.10 source tree. This uses Go 1.27.0 and LLVM 22. The root module's Go requirement applies to building LLGo itself. LLGo's user-package compatibility checks also exercise older Go releases.
+
+```sh
+git clone --branch v1.0.10 https://github.com/xgo-dev/llgo.git
+cd llgo
+```
+
+## Enter the development environment
+
+Use the checkout's locked mise or Pixi configuration. Add Xcode Command Line Tools on macOS, or the Visual Studio C++ Build Tools with a Windows SDK and x86-64 C++ tools on Windows.
+
+With mise 2026.10.7 or newer, run these commands from the root.
+
+```sh
+mise -C dev trust
+mise -C dev install --locked
+mise -C dev en
+```
+
+Or use Pixi 0.81.0 or newer.
+
+```sh
+cd dev
+pixi shell --locked
+```
+
+Either shell starts in `dev/`. Both configurations install the pinned Go and LLVM toolchain and native dependencies. They supply `GOFLAGS=-tags=byollvm` to select the environment's LLVM. Retain `byollvm` if you override the tag list. For a manual installation or platform-specific dependencies, use the upstream [development setup](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/CONTRIBUTING.md#manual-development-setup).
+
+## Build and run the compiler
+
+From the development shell, return to the root and build the checkout.
+
+```sh
+cd ..
+go run ./cmd/llgo version
+go build -o llgo ./cmd/llgo
+LLGO_ROOT="$PWD" ./llgo run ./_demo/c/hello
+```
+
+The first command prints the compiler identity. The last compiles and runs the checkout's C hello-world demo through the newly built compiler. `LLGO_ROOT` selects this checkout's target profiles and runtime. In PowerShell, use `go build -o llgo.exe ./cmd/llgo`, set `$env:LLGO_ROOT = (Get-Location).Path`, and invoke `.\llgo.exe run ./_demo/c/hello`.
+
+In an unlocked shell, repeated Bash work can use `./dev/llgo.sh version` or pass another LLGo command to that wrapper. That script supplies `-tags=dev`, which overrides the locked shell's `GOFLAGS=-tags=byollvm`. When you need the pinned LLVM configuration, use the already-built checkout binary or `go run ./cmd/llgo version` inside the locked mise or Pixi shell. The wrapper locates the checkout, builds its CLI, sets `LLGO_ROOT`, and invokes the command from your working directory. To exercise the configured compiler and native dependencies together, run `bash dev/check_devenv.sh` or, on PowerShell, `.\dev\check_devenv.ps1`.
+
+The tag pins the release documented here. Send fixes to the upstream project's development branch following its [contribution guide](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/CONTRIBUTING.md). After setup, [choose checks for the part of the compiler you changed](/docs/llgo/contributing/validation).

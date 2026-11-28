@@ -1,0 +1,48 @@
+---
+title: Register iXGo adapters
+description: Make selected Go functions callable from interpreted code and return interpreted functions to a Go host.
+---
+
+Embedded iXGo programs can call registered standard-library adapters directly. The host can also convert an interpreted function value to an exact Go function type.
+
+## Register a direct-call adapter
+
+The blank imports register package exports and generated adapters. This example exposes `strings.TrimSpace` to interpreted code.
+
+```go title="adapters.go" verify="manual"
+import (
+    "github.com/goplus/ixgo"
+    _ "github.com/goplus/ixgo/directcall/strings"
+    _ "github.com/goplus/ixgo/pkg/strings"
+)
+```
+
+`pkg/strings` registers the package's exported definitions. `directcall/strings` registers supported direct-call adapters. Import `pkg/<package>` for each standard-library package whose exports interpreted code imports. Add `directcall/<package>` only when iXGo provides a generated direct-call adapter for an operation your script uses. The two paths have different support coverage, so they do not form a required pair for every package.
+
+## Convert a returned function
+
+Embed `ixgo.DirectFuncVal` as the first field of a wrapper and register the exact Go function signature.
+
+```go title="adapters.go" verify="manual"
+type intFunc struct {
+    ixgo.DirectFuncVal
+}
+
+func (f intFunc) call(n int) int {
+    return f.Call(n).(int)
+}
+
+func init() {
+    ixgo.RegisterDirectFuncFor(func(value ixgo.DirectFuncVal) func(int) int {
+        return intFunc{value}.call
+    })
+}
+```
+
+Load the script after registration and keep the registration active while a returned callback is in use. A built-in `func()` adapter is available. The `directfunc` package adds common zero-argument signatures with one result. Other signatures can use reflection or an exact adapter registered by the host.
+
+## Choose memoization per context
+
+Import `github.com/goplus/ixgo/memo` to enable the memoization plugin for embedded contexts. Pass `ixgo.DisableMemo` to `NewContext` when one context must use the ordinary interpreter path. Both modes preserve the function result. Memoization can reuse supported pure recursive results and selected accumulator or receiver methods. Side effects, unsupported mutable state, tracing, and custom call interception remain on the ordinary path.
+
+For a complete host program, see [Use adapters and memoization in embedded iXGo](/docs/ixgo/embedding).

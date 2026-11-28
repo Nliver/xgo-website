@@ -1,0 +1,49 @@
+---
+title: 从源码构建 LLGo
+description: 使用固定版本的开发依赖，并运行从本地源码构建的 LLGo。
+---
+
+从 LLGo v1.0.10 源码构建编译器。构建使用 Go 1.27.0 和 LLVM 22。根模块指定的 Go 版本用于构建 LLGo 本身。针对用户包的兼容性检查还会覆盖较早版本的 Go。
+
+```sh
+git clone --branch v1.0.10 https://github.com/xgo-dev/llgo.git
+cd llgo
+```
+
+## 进入开发环境
+
+使用源码树中锁定版本的 mise 或 Pixi 配置。macOS 还需要安装 Xcode Command Line Tools。Windows 需要安装 Visual Studio C++ Build Tools，并包含 Windows SDK 和 x86-64 C++ 工具。
+
+使用 mise 2026.10.7 或更高版本时，从仓库根目录执行以下命令。
+
+```sh
+mise -C dev trust
+mise -C dev install --locked
+mise -C dev en
+```
+
+也可以使用 Pixi 0.81.0 或更高版本。
+
+```sh
+cd dev
+pixi shell --locked
+```
+
+这两种方法都会打开一个以 `dev/` 为当前目录的 shell，并安装指定版本的 Go、LLVM 和原生依赖。环境会设置 `GOFLAGS=-tags=byollvm`，让构建使用环境内的 LLVM。如果覆盖构建标签列表，请保留 `byollvm`。手动安装和各平台依赖见[上游开发环境配置](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/CONTRIBUTING.md#manual-development-setup)。
+
+## 构建并运行编译器
+
+在开发环境的 shell 中返回仓库根目录，然后构建当前源码。
+
+```sh
+cd ..
+go run ./cmd/llgo version
+go build -o llgo ./cmd/llgo
+LLGO_ROOT="$PWD" ./llgo run ./_demo/c/hello
+```
+
+第一条 `go` 命令输出编译器标识。最后一条命令使用刚构建的编译器，编译并运行源码树中的 C 问候语示例。`LLGO_ROOT` 指定使用当前源码树中的目标配置和运行时。在 PowerShell 中执行 `go build -o llgo.exe ./cmd/llgo`，用 `$env:LLGO_ROOT = (Get-Location).Path` 设置环境变量，再运行 `.\llgo.exe run ./_demo/c/hello`。
+
+在未锁定的 shell 中反复使用 Bash 时，可以运行 `./dev/llgo.sh version`，也可以把其他 LLGo 命令交给这个脚本。该脚本会传入 `-tags=dev`，覆盖锁定的 mise 或 Pixi shell 中的 `GOFLAGS=-tags=byollvm`。需要使用锁定的 LLVM 配置时，请在锁定环境中使用已经构建的源码树编译器，或运行 `go run ./cmd/llgo version`。脚本会定位源码树、构建命令行工具、设置 `LLGO_ROOT`，然后从你的工作目录运行命令。要一起检查编译器和原生依赖，运行 `bash dev/check_devenv.sh`，或在 PowerShell 中运行 `.\dev\check_devenv.ps1`。
+
+检出的标签对应本文档介绍的版本。如需向上游提交修复，请按照[贡献指南](https://github.com/xgo-dev/llgo/blob/52d17197e475f1c1f99d8472091defdfc63526ea/CONTRIBUTING.md)将改动提交到开发分支。环境设置完成后，可根据改动涉及的编译器模块[选择验证项目](/zh-CN/docs/llgo/contributing/validation)。

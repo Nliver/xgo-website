@@ -1,0 +1,36 @@
+---
+title: 调用约定与 HostLayout 结构体
+description: 声明 C 和 Windows 回调，并在 ABI 边界上保持原生结构体布局。
+---
+
+使用 `//llgo:cdecl` 声明 C 回调，使用 `//llgo:stdcall` 声明 Windows stdcall 回调。
+
+```go title="callbacks.go" verify="manual"
+//llgo:cdecl
+type Handler func(data unsafe.Pointer) c.Int
+
+//llgo:stdcall
+type WinProc func(hwnd uintptr, msg uint32, wParam, lParam uintptr) uintptr
+```
+
+旧写法 `//llgo:type C` 和 `//llgo:type stdcall` 已弃用，LLGo 仍会识别它们以兼容旧代码。每个函数类型只能带一条调用约定指令。
+
+本机回调只包含一个函数指针。请直接传入函数引用，并通过显式的上下文指针传递状态。在 Windows 386 上，`stdcall` 会选用独立的调用约定。在 Windows amd64 和 arm64 上，它使用平台统一的 C ABI。
+
+## 标记原生结构体布局
+
+如果结构体要与本机代码交换数据，将 `structs.HostLayout` 声明为它的第一个字段。
+
+```go title="host-layout.go" verify="manual"
+import "structs"
+
+type Record struct {
+    _ structs.HostLayout
+    Callback Handler
+    Data *byte
+}
+```
+
+该标记会选用本机字段布局。回调字段仍需使用显式标注了调用约定的函数类型。添加该标记会改变反射中的字段索引，也会影响按字段顺序赋值的结构体字面量。
+
+HostLayout 会保留选定目标的本机字段顺序和对齐方式，但不会自动将 Go 指针或 `uintptr` 字段缩窄到 J32、W32 或其他 Memory32 目标的位宽。与 Memory32 模块交换宿主记录时，应使用显式的 32 位宿主字段，并在原生边界完成转换。

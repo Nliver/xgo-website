@@ -1,0 +1,155 @@
+---
+title: Inspect and format XGo source from Go
+description: Parse an XGo file in memory, locate identifiers and print the formatted program.
+---
+
+Use Go 1.26 or newer. In an empty directory, initialize a module and select the XGo revision for this guide.
+
+```sh
+go mod init example.com/inspect
+go get github.com/goplus/xgo@c70869bd8cc9936c9fa2f3023566662c8963c49a
+```
+
+Save the following program as `main.go`.
+
+```go title="main.go" verify="go mod tidy && go run ."
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/goplus/xgo/ast"
+	"github.com/goplus/xgo/format"
+	"github.com/goplus/xgo/parser"
+	"github.com/goplus/xgo/token"
+)
+
+func main() {
+	const src = "scores:=[2,4]\necho scores\n"
+	files := token.NewFileSet()
+	file, err := parser.ParseFile(files, "scores.xgo", src, 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ast.Inspect(file, func(node ast.Node) bool {
+		if id, ok := node.(*ast.Ident); ok && id.Name == "scores" {
+			fmt.Println(files.Position(id.Pos()))
+		}
+		return true
+	})
+	if err := format.Node(os.Stdout, files, file); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+ParseFile associates the in-memory source with the filename scores.xgo. Inspect visits the syntax tree depth first. Looking up each identifier in the same file set preserves its original line and column even though the formatted output has different spacing.
+
+Run the program.
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+scores.xgo:1:1
+scores.xgo:2:6
+scores := [2, 4]
+echo scores
+```
+
+The two positions identify occurrences of the same spelling. To distinguish definitions from uses across scopes, consult [Type information](/docs/toolchain/tooling-conventions#type-information). To include source comments when formatting, pass `parser.ParseComments` as the parser mode.
+
+## Generate Go source in memory
+
+In the same module, replace `main.go` with the program below, then run `go mod tidy` and `go run .`. BuildFile compiles the in-memory XGo program to Go source. The example parses the result with the Go standard library and prints the package and function names.
+
+```go title="main.go" verify="go mod tidy && go run ."
+package main
+
+import (
+	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
+	"log"
+
+	"github.com/goplus/xgo/x/build"
+)
+
+func main() {
+	src, err := build.Default().BuildFile("hello.xgo", "echo 42")
+	if err != nil {
+		log.Fatal(err)
+	}
+	file, err := parser.ParseFile(token.NewFileSet(), "generated.go", src, 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, decl := range file.Decls {
+		if fn, ok := decl.(*ast.FuncDecl); ok {
+			fmt.Println(file.Name.Name, fn.Name.Name)
+		}
+	}
+}
+```
+
+```text
+main main
+```
+
+To convert existing declaration trees, use the `ASTFile` functions in `ast/fromgo` and `ast/togo`. Both reject the `KeepFuncBody` option at this revision. Use the compilation example above to generate executable function bodies.
+
+## List imports from in-memory files
+
+Replace `main.go` in the same module with the following program. It reads two editor buffers as one package. `memfs.TwoFiles` provides the directory and its two files to `parser.ParseFSDir`. With `parser.ImportsOnly` the parsers stop after the import declarations.
+
+```go title="main.go"
+package main
+
+import (
+	"fmt"
+	"log"
+	"maps"
+	"slices"
+
+	"github.com/goplus/xgo/ast/mod"
+	"github.com/goplus/xgo/parser"
+	"github.com/goplus/xgo/parser/fsx/memfs"
+	"github.com/goplus/xgo/token"
+)
+
+func main() {
+	files := memfs.TwoFiles("report",
+		"query.xgo", "package report\nimport _ \"xgo/tpl\"\nimport _ \"fmt\"",
+		"render.go", "package report\nimport _ \"fmt\"\nimport _ \"io\"",
+	)
+	packages, err := parser.ParseFSDir(token.NewFileSet(), files, "report",
+		parser.Config{Mode: parser.ImportsOnly})
+	if err != nil {
+		log.Fatal(err)
+	}
+	imports := make(map[string]bool)
+	deps := mod.Deps{HandlePkg: func(path string) { imports[path] = true }}
+	deps.Load(packages["report"], true)
+	for _, path := range slices.Sorted(maps.Keys(imports)) {
+		fmt.Println(path)
+	}
+}
+```
+
+```sh
+go mod tidy
+go run .
+```
+
+```text
+fmt
+github.com/goplus/xgo/tpl
+io
+```
+
+The callback receives direct import paths from both files. Both import `fmt`, so the program collects the paths in a set before sorting them. The second argument to `Deps.Load` controls XGo standard-library imports. With `true`, the XGo import `xgo/tpl` becomes `github.com/goplus/xgo/tpl`. With `false`, that import is skipped and the output contains only `fmt` and `io`. To follow a symbol across the files, see [Load and check XGo packages from Go](/docs/toolchain/load-and-check-packages).

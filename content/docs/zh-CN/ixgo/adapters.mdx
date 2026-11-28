@@ -1,0 +1,48 @@
+---
+title: 注册 iXGo 适配器
+description: 让选定的 Go 函数可以被解释执行的代码直接调用，并将解释执行的函数返回给 Go 宿主程序。
+---
+
+嵌入式 iXGo 程序可以直接调用已注册的标准库适配器。宿主程序也可以将解释执行的函数值转换为精确的 Go 函数类型。
+
+## 注册直接调用适配器
+
+空白导入会注册包导出信息和生成的适配器。以下示例将 `strings.TrimSpace` 暴露给解释执行的代码。
+
+```go title="adapters.go" verify="manual"
+import (
+    "github.com/goplus/ixgo"
+    _ "github.com/goplus/ixgo/directcall/strings"
+    _ "github.com/goplus/ixgo/pkg/strings"
+)
+```
+
+`pkg/strings` 注册该包导出的定义。`directcall/strings` 注册受支持的直接调用适配器。脚本导入哪个标准库包，就导入对应的 `pkg/<package>` 来注册导出信息。如果脚本要使用 iXGo 已生成直接调用适配器的操作，再添加 `directcall/<package>`。这两个路径的支持范围不同，并非每个包都必须成对导入。
+
+## 转换返回的函数
+
+将 `ixgo.DirectFuncVal` 嵌入包装类型的第一个字段，并注册精确的 Go 函数签名。
+
+```go title="adapters.go" verify="manual"
+type intFunc struct {
+    ixgo.DirectFuncVal
+}
+
+func (f intFunc) call(n int) int {
+    return f.Call(n).(int)
+}
+
+func init() {
+    ixgo.RegisterDirectFuncFor(func(value ixgo.DirectFuncVal) func(int) int {
+        return intFunc{value}.call
+    })
+}
+```
+
+注册完成后再加载脚本，并在返回的回调仍在使用时保持注册有效。iXGo 内置了 `func()` 适配器。`directfunc` 包还为常见的无参数单返回值签名提供适配器。其他签名可以使用反射，或由宿主注册精确的适配器。
+
+## 按上下文选择记忆化
+
+导入 `github.com/goplus/ixgo/memo`，即可为嵌入式上下文启用记忆化插件。如果某个上下文必须使用普通解释器路径，则在调用 `NewContext` 时传入 `ixgo.DisableMemo`。两种模式都会保留函数结果。记忆化可以复用受支持的纯递归结果，以及部分累加器方法或接收者方法的结果。存在副作用、不受支持的可变状态、跟踪或自定义调用拦截时，会继续使用普通路径。
+
+完整的宿主程序见[在嵌入式 iXGo 中使用适配器和记忆化](/zh-CN/docs/ixgo/embedding)。
