@@ -39,7 +39,7 @@ export function DocumentationPage({ slug, locale }: { slug?: string[]; locale: '
   const chinese = locale === 'zh-CN';
   const MDX = page.data.body;
   const markdownUrl = `${page.url}.md`;
-  const editUrl = getPageEditUrl(page.path);
+  const editUrl = getPageEditUrl(page.path, locale);
   return (
     <DocsPage
       toc={page.data.toc}
@@ -98,14 +98,14 @@ export function ContentPageActions({ path, markdownUrl, locale }: { path: string
   return (
     <div className="flex flex-wrap items-center gap-2 border-b pb-6">
       <MarkdownCopyButton markdownUrl={markdownUrl} />
-      <PageActions markdownUrl={markdownUrl} githubUrl={getPageGitHubUrl(path)} locale={locale} />
+      <PageActions markdownUrl={markdownUrl} githubUrl={getPageGitHubUrl(path, locale)} locale={locale} />
     </div>
   );
 }
 
 export function ContentPageSources({ path, locale }: { path: string; locale: 'en' | 'zh-CN' }) {
   const chinese = locale === 'zh-CN';
-  const sources = getPageSources(path);
+  const sources = getPageSources(path, locale);
   return (
     <details className="doc-sources">
         <summary>{chinese ? '本页来源' : 'Sources for this page'}</summary>
