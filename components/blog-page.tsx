@@ -76,7 +76,7 @@ export function BlogPage({ slug, locale }: { slug?: string[]; locale: Locale }) 
       )}
       <ContentPageSources path={page.path} locale={locale} />
       {!isIndex && (
-        <ContentPageFooter editUrl={getPageEditUrl(page.path)} lastModified={page.data.lastModified} locale={locale} />
+        <ContentPageFooter editUrl={getPageEditUrl(page.path, locale)} lastModified={page.data.lastModified} locale={locale} />
       )}
     </article>
   );

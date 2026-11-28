@@ -1,50 +1,54 @@
 'use client';
 
-import { RootProvider } from 'fumadocs-ui/provider/next';
+import { FrameworkProvider, type Framework } from 'fumadocs-core/framework';
+import { RootProvider } from 'fumadocs-ui/provider/base';
 import { i18nProvider } from 'fumadocs-ui/i18n';
-import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { blogRoute, docsRoute, translations } from '@/lib/shared';
+import { blogRoute, docsRoute, i18n, translations } from '@/lib/shared';
+
+// Static English pages are rendered under /en, but their public URLs omit the locale.
+function usePublicPathname() {
+  const pathname = usePathname();
+  const prefix = `/${i18n.defaultLanguage}`;
+  if (pathname === prefix) return '/';
+  return pathname.startsWith(prefix + '/') ? pathname.slice(prefix.length) : pathname;
+}
 
 export function SiteProvider({ locale, translatedPaths, children }: {
-  locale: 'en' | 'zh-CN';
+  locale: string;
   translatedPaths: string[];
   children: ReactNode;
 }) {
-  const pathname = usePathname();
+  const pathname = usePublicPathname();
   const router = useRouter();
-  const englishPath = pathname.replace(/^\/zh-CN(?=\/|$)/, '') || '/';
-  const translated = translatedPaths.includes(englishPath);
-  const isContentPage = [docsRoute, blogRoute].some((route) =>
-    englishPath === route || englishPath.startsWith(`${route}/`),
-  );
-
-  function changeLanguage(language: string) {
-    if (language === locale) return;
-    if (language === 'en') {
-      router.push(englishPath);
-      return;
-    }
-    if (!isContentPage) {
-      router.push('/zh-CN');
-      return;
-    }
-    router.push(translated
-      ? `/zh-CN${englishPath}`
-      : `${englishPath}?translation=zh-CN`);
-  }
+  const missingChinese = locale === 'en' && [docsRoute, blogRoute].some((route) =>
+    pathname === route || pathname.startsWith(`${route}/`),
+  ) && !translatedPaths.includes(pathname);
 
   const provider = i18nProvider(translations, locale);
   return (
-    <RootProvider i18n={{
-      ...provider,
-      locales: [
-        { locale: 'en', name: 'English' },
-        { locale: 'zh-CN', name: isContentPage && !translated ? '简体中文（此页暂无译文）' : '简体中文' },
-      ],
-      onLocaleChange: changeLanguage,
-    }}>
-      {children}
-    </RootProvider>
+    <FrameworkProvider
+      Link={Link as Framework['Link']}
+      Image={Image as Framework['Image']}
+      useParams={useParams}
+      useRouter={useRouter}
+      usePathname={usePublicPathname}
+    >
+      <RootProvider i18n={{
+        ...provider,
+        locales: [
+          { locale: 'en', name: 'English' },
+          { locale: 'zh-CN', name: missingChinese ? '简体中文（此页暂无译文）' : '简体中文' },
+        ],
+        onLocaleChange: missingChinese ? (language) => {
+          if (language === 'zh-CN') router.push(`${pathname}?translation=zh-CN`);
+        } : undefined,
+      }}>
+        {children}
+      </RootProvider>
+    </FrameworkProvider>
   );
 }
